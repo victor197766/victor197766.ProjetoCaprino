@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CapriCare - Monitoramento de Caprinos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>🐐 ControlCabra</h1>
+            <p>Monitoramento e Cuidados de Caprinos</p>
+        </header>
+
+        <section id="login-section" class="form-section active">
+            <h2>Entrar no Sistema</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="Sua senha" required>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn primary">Acessar Painel</button>
+                    <a href="#" id="forgot-link" class="text-link">Esqueci minha senha</a>
+                    
+                    <div class="divider">ou</div>
+                    
+                    <a href="#" id="register-link" class="text-link secondary">Ainda não tem conta? <strong>Criar Conta</strong></a>
+                </div>
+            </form>
+        </section>
+
+        <section id="recovery-section" class="form-section hidden">
+            <h2>Recuperar Conta</h2>
+            <p class="instruction">Digite o e-mail cadastrado. Enviaremos um link seguro para você redefinir sua senha.</p>
+            <form id="recovery-form">
+                <div class="input-group">
+                    <label for="rec-email">E-mail</label>
+                    <input type="email" id="rec-email" placeholder="seu@email.com" required>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn primary">Enviar Link</button>
+                    <a href="#" class="back-login-btn text-link">Voltar para o Login</a>
+                </div>
+            </form>
+        </section>
+
+        <section id="register-choice-section" class="form-section hidden">
+            <h2>Como você vai usar o sistema?</h2>
+            <p class="instruction">Escolha o seu perfil para personalizarmos a sua experiência.</p>
+            
+            <div class="profile-cards">
+                <button type="button" class="profile-card" id="btn-choice-farmer">
+                    <div class="icon">🚜</div>
+                    <div class="info">
+                        <h3>Sou Produtor</h3>
+                        <p>Quero registrar minha fazenda e gerenciar meu rebanho.</p>
+                    </div>
+                </button>
+
+                <button type="button" class="profile-card" id="btn-choice-visitor">
+                    <div class="icon">👀</div>
+                    <div class="info">
+                        <h3>Sou Visitante</h3>
+                        <p>Quero apenas explorar o sistema e ver informações.</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="actions">
+                <a href="#" class="back-login-btn text-link secondary">Cancelar e voltar</a>
+            </div>
+        </section>
+
+        <section id="register-farmer-section" class="form-section hidden">
+            <h2>Cadastro de Produtor</h2>
+            <form id="register-farmer-form">
+                <div class="input-group">
+                    <label for="farm-name">Nome Completo</label>
+                    <input type="text" id="farm-name" placeholder="Ex: João da Silva" required>
+                </div>
+                <div class="input-group">
+                    <label for="farm-property">Nome da Propriedade</label>
+                    <input type="text" id="farm-property" placeholder="Ex: Sítio das Cabras" required>
+                </div>
+                <div class="input-group">
+                    <label for="farm-email">E-mail</label>
+                    <input type="email" id="farm-email" placeholder="produtor@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="farm-password">Senha</label>
+                    <input type="password" id="farm-password" placeholder="Crie uma senha forte" required>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn primary">Criar Conta de Produtor</button>
+                    <a href="#" id="back-choice-from-farmer" class="text-link secondary">Voltar aos perfis</a>
+                </div>
+            </form>
+        </section>
+
+        <section id="register-visitor-section" class="form-section hidden">
+            <h2>Cadastro de Visitante</h2>
+            <form id="register-visitor-form">
+                <div class="input-group">
+                    <label for="vis-name">Nome Completo</label>
+                    <input type="text" id="vis-name" placeholder="Ex: Maria Souza" required>
+                </div>
+                <div class="input-group">
+                    <label for="vis-email">E-mail</label>
+                    <input type="email" id="vis-email" placeholder="visitante@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="vis-password">Senha</label>
+                    <input type="password" id="vis-password" placeholder="Crie uma senha" required>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn primary">Criar Conta de Visitante</button>
+                    <a href="#" id="back-choice-from-visitor" class="text-link secondary">Voltar aos perfis</a>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Mapeamento das seções
+        const sections = {
+            login: document.getElementById('login-section'),
+            recovery: document.getElementById('recovery-section'),
+            choice: document.getElementById('register-choice-section'),
+            farmer: document.getElementById('register-farmer-section'),
+            visitor: document.getElementById('register-visitor-section')
+        };
+
+        // Função universal para trocar de tela
+        function showSection(sectionName) {
+            // Esconde todas as seções
+            Object.values(sections).forEach(sec => {
+                sec.classList.remove('active');
+                sec.classList.add('hidden');
+            });
+            // Mostra apenas a desejada
+            sections[sectionName].classList.remove('hidden');
+            sections[sectionName].classList.add('active');
+        }
+
+        // Navegação a partir do Login
+        document.getElementById('forgot-link').addEventListener('click', (e) => { e.preventDefault(); showSection('recovery'); });
+        document.getElementById('register-link').addEventListener('click', (e) => { e.preventDefault(); showSection('choice'); });
+
+        // Botões de voltar ao Login (existem vários)
+        document.querySelectorAll('.back-login-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => { e.preventDefault(); showSection('login'); });
+        });
+
+        // Escolha de Perfil -> Formulários
+        document.getElementById('btn-choice-farmer').addEventListener('click', () => { showSection('farmer'); });
+        document.getElementById('btn-choice-visitor').addEventListener('click', () => { showSection('visitor'); });
+
+        // Voltar dos formulários para a tela de escolha
+        document.getElementById('back-choice-from-farmer').addEventListener('click', (e) => { e.preventDefault(); showSection('choice'); });
+        document.getElementById('back-choice-from-visitor').addEventListener('click', (e) => { e.preventDefault(); showSection('choice'); });
+    </script>
+</body>
+</html>
