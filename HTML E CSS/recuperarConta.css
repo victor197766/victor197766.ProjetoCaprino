@@ -1,4 +1,4 @@
-/* Definição das Cores do Projeto (Tema Campo/Agro) */
+/* Paleta de Cores e Variáveis (Tema Campo/Agro) */
 :root {
     --primary-color: #2e7d32; 
     --primary-dark: #1b5e20;
@@ -37,21 +37,37 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Cabeçalho */
+/* Cabeçalho Ajustado para a Logo em Imagem */
 .app-header {
     text-align: center;
     margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.app-header h1 {
-    color: var(--primary-color);
-    font-size: 1.8rem;
-    margin-bottom: 0.25rem;
+.logo-wrapper {
+    width: 100%;
+    max-width: 250px; /* Limita a largura máxima no desktop */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.logo-img {
+    width: 100%; /* Ocupa todo o contêiner */
+    height: auto; /* Mantém a proporção */
+    object-fit: contain; /* Não distorce */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); /* Adiciona uma sombra para destacar */
 }
 
 .app-header p {
     color: var(--text-muted);
     font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
 }
 
 /* Seções de Formulário */

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CapriGest - Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🐐</span>
+                    <span class="logo-text">ControlCabra</span>
+                </div>
+                <button class="close-menu" id="close-menu">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <span class="nav-label">MENU PRINCIPAL</span>
+                <a href="#" class="nav-item active">📊 Dashboard</a>
+                <a href="#" class="nav-item">📋 Monitoramento de Lotes</a>
+                <a href="#" class="nav-item">🏥 Saúde & Cuidados</a>
+                <a href="#" class="nav-item">⚖️ Produção</a>
+                <a href="#" class="nav-item">💰 Financeiro</a>
+
+                <span class="nav-label mt-2">ADMINISTRAÇÃO</span>
+                <a href="#" class="nav-item">👥 Equipe & Acessos</a>
+                <a href="#" class="nav-item">⚙️ Configurações</a>
+                <a href="#" class="nav-item">🎧 Suporte</a>
+            </nav>
+
+            <div class="user-profile">
+                <img src="https://i.pravatar.cc/150?img=11" alt="João Silva" class="avatar">
+                <div class="user-info">
+                    <strong>João Silva</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="overlay" id="overlay"></div>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menu-toggle">☰</button>
+                    <div class="search-bar">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Buscar lotes, animais ou registros (Ctrl+K)...">
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-icon">🔔</button>
+                    <button class="btn-primary">+ Novo Registro</button>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                
+                <div class="page-header">
+                    <div>
+                        <h1>Visão Geral da Fazenda</h1>
+                        <p>Acompanhe os indicadores principais do seu rebanho.</p>
+                    </div>
+                    <button class="btn-outline">📅 Últimos 30 dias ⌄</button>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Total do Rebanho</span>
+                            <span class="icon-box blue">🔢</span>
+                        </div>
+                        <div class="kpi-value">1,248</div>
+                        <div class="kpi-trend positive">↑ 12% <span class="text-muted">vs mês anterior</span></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Nascimentos (Mês)</span>
+                            <span class="icon-box green">🌱</span>
+                        </div>
+                        <div class="kpi-value">42</div>
+                        <div class="kpi-trend positive">↑ 5% <span class="text-muted">vs mês anterior</span></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Mortalidade</span>
+                            <span class="icon-box red">⚠️</span>
+                        </div>
+                        <div class="kpi-value">3</div>
+                        <div class="kpi-trend positive">↓ 2% <span class="text-muted">vs mês anterior</span></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Receita Prevista</span>
+                            <span class="icon-box purple">R$</span>
+                        </div>
+                        <div class="kpi-value">R$ 45k</div>
+                        <div class="kpi-trend positive">↑ 8.4% <span class="text-muted">vs mês anterior</span></div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card line-chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h3>Evolução do Rebanho</h3>
+                                <p>Nascimentos vs Mortalidade (Últimos 12 meses)</p>
+                            </div>
+                            <button class="btn-icon">⋯</button>
+                        </div>
+                        <div class="chart-body fake-line-chart">
+                            <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="svg-line">
+                                <path d="M0,100 C50,90 100,120 150,40 C200,-10 250,50 300,80 C350,110 400,20 450,10 C500,0 500,80 500,80" fill="none" stroke="#4f46e5" stroke-width="3"/>
+                                <path d="M0,140 C100,135 200,145 300,130 C400,140 500,135 500,135" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
+                            </svg>
+                        </div>
+                        <div class="chart-legend">
+                            <span><span class="dot blue-dot"></span> Nascimentos</span>
+                            <span><span class="dot red-dot"></span> Mortalidade</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-card donut-chart-card">
+                        <div class="chart-header">
+                            <h3>Composição por Tipo</h3>
+                            <button class="btn-outline small">Atual ⌄</button>
+                        </div>
+                        <div class="chart-body donut-container">
+                            <div class="donut-chart"></div>
+                        </div>
+                        <div class="chart-legend center">
+                            <div class="legend-item">
+                                <span><span class="dot blue-dot"></span> Caprinos</span>
+                                <strong>65%</strong>
+                            </div>
+                            <div class="legend-item">
+                                <span><span class="dot light-blue-dot"></span> Ovinos</span>
+                                <strong>35%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <div>
+                            <h3>Monitoramento de Lotes</h3>
+                            <p>Status atual dos principais lotes em manejo.</p>
+                        </div>
+                        <div class="table-actions">
+                            <div class="search-bar small">
+                                <span>🔍</span>
+                                <input type="text" placeholder="Buscar lote...">
+                            </div>
+                            <button class="btn-outline">🔻 Filtros</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>IDENTIFICAÇÃO DO LOTE</th>
+                                    <th>TIPO</th>
+                                    <th>QUANTIDADE</th>
+                                    <th>STATUS DE SAÚDE</th>
+                                    <th>ÚLTIMA AVALIAÇÃO</th>
+                                    <th>AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="lote-info">
+                                            <span class="lote-avatar">L1A</span>
+                                            <div>
+                                                <strong>Lote Reprodutores Alpha</strong>
+                                                <span class="text-muted">Pasto Central 01</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge blue">Caprinos</span></td>
+                                    <td><strong>45 cabeças</strong></td>
+                                    <td><span class="status-dot green"></span> Excelente</td>
+                                    <td class="text-muted">12 Mai 2024</td>
+                                    <td><button class="btn-icon">✏️</button></td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeMenu = document.getElementById('close-menu');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        closeMenu.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+    </script>
+</body>
+</html>
