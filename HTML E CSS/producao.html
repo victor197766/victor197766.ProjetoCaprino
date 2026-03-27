@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlCabra - Produção & Relatórios</title>
+    <link rel="stylesheet" href="producao.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="Logo da ControlCabra com cabra e ovelha.png" alt="Logo ControlCabra" class="sidebar-logo">
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-title">MENU PRINCIPAL</p>
+                <ul>
+                    <li><a href="dashboard.html">📊 Dashboard</a></li>
+                    <li><a href="manejo.html">🐐 Monitoramento de Lotes</a></li>
+                    <li><a href="saude.html">🩺 Saúde & Cuidados</a></li>
+                    <li class="active"><a href="#">🥛 Produção</a></li>
+                    <li><a href="#">💰 Financeiro</a></li>
+                </ul>
+
+                <p class="nav-section-title mt-4">ADMINISTRAÇÃO</p>
+                <ul>
+                    <li><a href="#">👥 Equipe & Acessos</a></li>
+                    <li><a href="#">⚙️ Configurações</a></li>
+                    <li><a href="#">🎧 Suporte</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <img src="https://i.pravatar.cc/150?img=33" alt="Foto do Usuário" class="avatar">
+                <div class="user-info">
+                    <strong>João Silva</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+                <button class="btn-icon small">›</button>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn">☰</button>
+                    <div class="breadcrumb">
+                        <span class="brand">ControlCabra</span>
+                        <span class="separator">›</span>
+                        <span class="current">Produção & Relatórios</span>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="search-bar">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Buscar relatórios... (Ctrl+K)">
+                    </div>
+                    <button class="btn-icon">🔔<span class="badge-dot"></span></button>
+                    <button class="btn-primary dark">📥 Exportar Relatório</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Central de Análise da Fazenda</h1>
+                        <p>Insights abrangentes sobre saúde, produtividade e custos do rebanho.</p>
+                    </div>
+                    <div class="view-toggles">
+                        <button class="toggle-btn active">Visão Geral</button>
+                        <button class="toggle-btn">Saúde</button>
+                        <button class="toggle-btn">Financeiro</button>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <select class="filter-select"><option>📅 Últimos 30 Dias</option></select>
+                        <select class="filter-select"><option>🗂️ Todos os Lotes</option></select>
+                        <select class="filter-select"><option>📍 Todas as Áreas</option></select>
+                    </div>
+                    <button class="btn-text">🔻 Mais Filtros</button>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <span class="kpi-title">Tamanho Total do Rebanho</span>
+                            <div class="kpi-value">452</div>
+                            <div class="kpi-trend positive">↗ +12% <span class="text-muted">vs mês ant.</span></div>
+                        </div>
+                        <div class="kpi-icon bg-light-green">🐐</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <span class="kpi-title">Incidentes de Saúde</span>
+                            <div class="kpi-value">18</div>
+                            <div class="kpi-trend negative">↗ +3 <span class="text-muted">vs mês ant.</span></div>
+                        </div>
+                        <div class="kpi-icon bg-light-red">🏥</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <span class="kpi-title">Conclusão de Tarefas</span>
+                            <div class="kpi-value">94%</div>
+                            <div class="progress-container mt-2">
+                                <div class="progress-bar bg-green" style="width: 94%;"></div>
+                            </div>
+                        </div>
+                        <div class="kpi-icon bg-light-green">✓</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <span class="kpi-title">Custos de Tratamento</span>
+                            <div class="kpi-value">R$ 1.240</div>
+                            <div class="kpi-trend positive">↘ -5% <span class="text-muted">vs mês ant.</span></div>
+                        </div>
+                        <div class="kpi-icon bg-light-green">💰</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid mt-4">
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Tendência de Crescimento (Rebanho)</h3>
+                            <button class="btn-icon small">⋮</button>
+                        </div>
+                        <div class="chart-mockup line-chart">
+                            <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+                                <polyline fill="none" stroke="#044e4d" stroke-width="4" points="0,120 100,110 200,105 300,95 400,85 500,80"/>
+                                <circle cx="0" cy="120" r="5" fill="#044e4d"/><circle cx="100" cy="110" r="5" fill="#044e4d"/><circle cx="200" cy="105" r="5" fill="#044e4d"/><circle cx="300" cy="95" r="5" fill="#044e4d"/><circle cx="400" cy="85" r="5" fill="#044e4d"/><circle cx="500" cy="80" r="5" fill="#044e4d"/>
+                            </svg>
+                            <div class="chart-labels x-axis">
+                                <span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span><span>Mai</span><span>Jun</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Detalhamento de Saúde</h3>
+                            <button class="btn-icon small">⋮</button>
+                        </div>
+                        <div class="donut-wrapper">
+                            <div class="donut-chart">
+                                <div class="donut-inner"></div>
+                            </div>
+                            <div class="donut-legend">
+                                <span><span class="dot" style="background: #7f1d1d;"></span> Parasitas (45%)</span>
+                                <span><span class="dot" style="background: #044e4d;"></span> Cascos (25%)</span>
+                                <span><span class="dot" style="background: #ea580c;"></span> Respiratório (20%)</span>
+                                <span><span class="dot" style="background: #cbd5e1;"></span> Outros (10%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insights-section mt-4">
+                    <h3 class="section-title mb-3">💡 Insights Acionáveis</h3>
+                    <div class="insights-grid">
+                        <div class="insight-card bg-danger-light">
+                            <div class="insight-header">
+                                <span class="icon">⚠️</span>
+                                <h4>Alta Carga Parasitária</h4>
+                            </div>
+                            <p>Lote Pasto Leste apresenta aumento de 15% nos escores FAMACHA. Recomendamos vermifugação imediata.</p>
+                            <a href="#" class="action-link text-danger">Criar Tarefa →</a>
+                        </div>
+                        <div class="insight-card bg-success-light">
+                            <div class="insight-header">
+                                <span class="icon">📈</span>
+                                <h4>Sucesso Reprodutivo</h4>
+                            </div>
+                            <p>Taxa de parição na primavera está em 185%, superando a meta. O plano nutricional do Galpão A é eficaz.</p>
+                            <a href="#" class="action-link text-success">Ver Detalhes →</a>
+                        </div>
+                        <div class="insight-card bg-gray-light">
+                            <div class="insight-header">
+                                <span class="icon">⏱️</span>
+                                <h4>Eficiência de Tarefas</h4>
+                            </div>
+                            <p>O casqueamento está levando 45 mins a mais que o previsto. Considere ajustar as estimativas de tempo.</p>
+                            <a href="#" class="action-link">Revisar Tarefas →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid mt-4">
+                    
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Ganho de Peso Médio Diário (GMD)</h3>
+                            <select class="filter-select small"><option>Últimos 6 Meses</option></select>
+                        </div>
+                        <div class="bar-chart-container">
+                            <div class="bar-group">
+                                <div class="bar dark" style="height: 90%;"></div>
+                                <div class="bar light" style="height: 80%;"></div>
+                                <span class="bar-label">Crias (0-3m)</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar dark" style="height: 70%;"></div>
+                                <div class="bar light" style="height: 65%;"></div>
+                                <span class="bar-label">Desmamados</span>
+                            </div>
+                            <div class="bar-group">
+                                <div class="bar dark" style="height: 40%;"></div>
+                                <div class="bar light" style="height: 38%;"></div>
+                                <span class="bar-label">Anozes</span>
+                            </div>
+                        </div>
+                        <div class="chart-legend-center">
+                            <span><span class="dot dark"></span> Período Atual</span>
+                            <span><span class="dot light"></span> Período Anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Resultados Reprodutivos</h3>
+                        </div>
+                        <div class="progress-list">
+                            <div class="progress-item">
+                                <div class="prog-info"><span>Taxa de Concepção</span><strong>92%</strong></div>
+                                <div class="progress-container"><div class="progress-bar bg-green" style="width: 92%;"></div></div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="prog-info"><span>Taxa de Parição</span><strong>185%</strong></div>
+                                <div class="progress-container"><div class="progress-bar bg-green" style="width: 100%;"></div></div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="prog-info"><span>Taxa de Desmame</span><strong class="text-warning">88%</strong></div>
+                                <div class="progress-container"><div class="progress-bar bg-warning" style="width: 88%;"></div></div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="prog-info"><span>Mortalidade (Crias)</span><strong class="text-danger">4.2%</strong></div>
+                                <div class="progress-container"><div class="progress-bar bg-danger" style="width: 25%;"></div></div>
+                                <span class="prog-target">Meta: &lt; 5%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-panel mt-4 mb-4">
+                    <div class="panel-header">
+                        <h3>Relatório de Animais de Alto Risco</h3>
+                        <div class="header-actions">
+                            <button class="btn-outline small">📄 CSV</button>
+                            <button class="btn-outline small">📄 PDF</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID / BRINCO</th>
+                                    <th>LOTE</th>
+                                    <th>FATOR DE RISCO</th>
+                                    <th>ÚLTIMO TRATAMENTO</th>
+                                    <th>CUSTO EST.</th>
+                                    <th>AÇÃO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong class="text-primary">#CC-4092</strong></td>
+                                    <td>Matrizes Reprodução</td>
+                                    <td><span class="badge badge-danger">Alta Carga Parasitária</span></td>
+                                    <td>2 dias atrás</td>
+                                    <td>R$ 45,00</td>
+                                    <td><button class="btn-icon">→</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-primary">#CC-5103</strong></td>
+                                    <td>Anozes</td>
+                                    <td><span class="badge badge-warning">Perda de Peso</span></td>
+                                    <td>1 semana atrás</td>
+                                    <td>R$ 12,50</td>
+                                    <td><button class="btn-icon">→</button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-primary">#CC-3881</strong></td>
+                                    <td>Reprodutores</td>
+                                    <td><span class="badge badge-orange">Podridão do Casco</span></td>
+                                    <td>5 dias atrás</td>
+                                    <td>R$ 28,00</td>
+                                    <td><button class="btn-icon">→</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer flex-between">
+                        <span class="text-muted text-small">Mostrando 3 de 12 animais em risco</span>
+                        <div class="pagination">
+                            <button class="btn-outline small">Anterior</button>
+                            <button class="btn-outline small">Próximo</button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.display = sidebar.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>

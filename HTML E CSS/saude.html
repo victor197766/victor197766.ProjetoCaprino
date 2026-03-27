@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlCabra - Saúde & Cuidados</title>
+    <link rel="stylesheet" href="saude.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="Logo da ControlCabra com cabra e ovelha.png" alt="Logo ControlCabra" class="sidebar-logo">
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-title">MENU PRINCIPAL</p>
+                <ul>
+                    <li><a href="dashboard.html">📊 Dashboard</a></li>
+                    <li><a href="manejo.html">🐐 Monitoramento de Lotes</a></li>
+                    <li class="active"><a href="#">🩺 Saúde & Cuidados</a></li>
+                    <li><a href="producao.html">🥛 Produção</a></li>
+                    <li><a href="#">💰 Financeiro</a></li>
+                </ul>
+
+                <p class="nav-section-title mt-4">ADMINISTRAÇÃO</p>
+                <ul>
+                    <li><a href="#">👥 Equipe & Acessos</a></li>
+                    <li><a href="#">⚙️ Configurações</a></li>
+                    <li><a href="#">🎧 Suporte</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <img src="https://i.pravatar.cc/150?img=33" alt="Foto do Usuário" class="avatar">
+                <div class="user-info">
+                    <strong>João Silva</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+                <button class="btn-icon small">›</button>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn">☰</button>
+                    <div class="breadcrumb">
+                        <span class="brand">ControlCabra</span>
+                        <span class="separator">›</span>
+                        <span class="current">Saúde & Cuidados</span>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="search-bar">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Buscar animal por brinco/chip...">
+                    </div>
+                    <button class="btn-icon">🔔<span class="badge-dot"></span></button>
+                    <button class="btn-primary">+ Novo Registro Clínico</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Saúde & Cuidados (Enfermaria)</h1>
+                        <p>Acompanhe o bem-estar do rebanho, calendário sanitário e tratamentos ativos.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-outline">Imprimir Ficha 🖨️</button>
+                    </div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Em Tratamento</span>
+                            <span class="icon-box red">🏥</span>
+                        </div>
+                        <div class="kpi-value">12 <span class="kpi-sub">animais</span></div>
+                        <div class="kpi-trend negative">↑ 2 <span class="text-muted">novos hoje</span></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Vacinas Pendentes</span>
+                            <span class="icon-box blue">💉</span>
+                        </div>
+                        <div class="kpi-value">3 <span class="kpi-sub">lotes</span></div>
+                        <div class="kpi-trend warning">Vencem em 7 dias</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Última Vermifugação</span>
+                            <span class="icon-box purple">🐛</span>
+                        </div>
+                        <div class="kpi-value">45 <span class="kpi-sub">dias atrás</span></div>
+                        <div class="kpi-trend positive">Status Adequado</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Mortalidade (Mês)</span>
+                            <span class="icon-box gray">⚠️</span>
+                        </div>
+                        <div class="kpi-value">0.8%</div>
+                        <div class="kpi-trend positive">↓ 0.2% <span class="text-muted">vs mês anterior</span></div>
+                    </div>
+                </div>
+
+                <div class="health-grid">
+                    
+                    <div class="health-panel table-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Animais em Tratamento</h2>
+                                <p class="text-muted text-small">Controle de medicamentos e período de carência.</p>
+                            </div>
+                            <button class="btn-outline small">Filtrar</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ANIMAL (BRINCO)</th>
+                                        <th>DIAGNÓSTICO</th>
+                                        <th>TRATAMENTO</th>
+                                        <th>STATUS</th>
+                                        <th>PREVISÃO DE ALTA</th>
+                                        <th>AÇÕES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="animal-info">
+                                                <span class="animal-avatar">🐐</span>
+                                                <div>
+                                                    <strong>Fêmea 045 (Estrela)</strong>
+                                                    <span class="text-muted">Lote Matrizes A</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><strong>Mastite Clínica</strong></td>
+                                        <td>Antibiótico (Cefalexina)</td>
+                                        <td><span class="badge badge-warning">Em Andamento</span></td>
+                                        <td><span class="text-danger">Hoje</span></td>
+                                        <td><button class="btn-icon">✏️</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="animal-info">
+                                                <span class="animal-avatar">🐑</span>
+                                                <div>
+                                                    <strong>Macho 112 (Trovão)</strong>
+                                                    <span class="text-muted">Lote Reprodutores</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><strong>Papeira (Vermelhões)</strong></td>
+                                        <td>Vermífugo + Vitamina B12</td>
+                                        <td><span class="badge badge-warning">Em Andamento</span></td>
+                                        <td>15 Nov 2023</td>
+                                        <td><button class="btn-icon">✏️</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="animal-info">
+                                                <span class="animal-avatar">🐐</span>
+                                                <div>
+                                                    <strong>Cria 089</strong>
+                                                    <span class="text-muted">Maternidade 02</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><strong>Pneumonia Leve</strong></td>
+                                        <td>Antibiótico (Oxitetraciclina)</td>
+                                        <td><span class="badge badge-success">Recuperado</span></td>
+                                        <td>--</td>
+                                        <td><button class="btn-icon">✏️</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="panel-footer">
+                            <a href="#">Ver Histórico Clínico Completo →</a>
+                        </div>
+                    </div>
+
+                    <div class="health-panel schedule-panel">
+                        <div class="panel-header">
+                            <h2>Calendário Sanitário</h2>
+                            <button class="btn-icon small">⋯</button>
+                        </div>
+                        <div class="schedule-list">
+                            <div class="schedule-item overdue">
+                                <div class="schedule-date">
+                                    <span class="day">10</span>
+                                    <span class="month">NOV</span>
+                                </div>
+                                <div class="schedule-content">
+                                    <h4>Vacina Clostridiose (Reforço)</h4>
+                                    <p class="text-muted text-small">Alvo: Borregos (Lote C)</p>
+                                </div>
+                                <span class="badge badge-danger">Atrasado</span>
+                            </div>
+                            
+                            <div class="schedule-item pending">
+                                <div class="schedule-date">
+                                    <span class="day">14</span>
+                                    <span class="month">NOV</span>
+                                </div>
+                                <div class="schedule-content">
+                                    <h4>Exame de Brucelose</h4>
+                                    <p class="text-muted text-small">Alvo: Todas as Matrizes</p>
+                                </div>
+                                <span class="badge badge-warning">Esta Semana</span>
+                            </div>
+
+                            <div class="schedule-item">
+                                <div class="schedule-date default">
+                                    <span class="day">28</span>
+                                    <span class="month">NOV</span>
+                                </div>
+                                <div class="schedule-content">
+                                    <h4>Vermifugação Estratégica</h4>
+                                    <p class="text-muted text-small">Alvo: Rebanho Geral</p>
+                                </div>
+                                <span class="badge badge-gray">Agendado</span>
+                            </div>
+                        </div>
+                        <button class="btn-outline full-width mt-3">+ Agendar Evento Sanitário</button>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.display = sidebar.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>

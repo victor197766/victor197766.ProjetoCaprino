@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlCabra - Gestão de Manejo</title>
+    <link rel="stylesheet" href="manejo.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="Logo da ControlCabra com cabra e ovelha.png" alt="Logo ControlCabra" class="sidebar-logo">
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-title">MENU PRINCIPAL</p>
+                <ul>
+                    <li><a href="dashboard.html">📊 Dashboard</a></li>
+                    <li class="active"><a href="#">🐐 Monitoramento de Lotes</a></li>
+                    <li><a href="saude.html">🩺 Saúde & Cuidados</a></li>
+                    <li><a href="producao.html">🥛 Produção</a></li>
+                    <li><a href="#">💰 Financeiro</a></li>
+                </ul>
+
+                <p class="nav-section-title mt-4">ADMINISTRAÇÃO</p>
+                <ul>
+                    <li><a href="#">👥 Equipe & Acessos</a></li>
+                    <li><a href="#">⚙️ Configurações</a></li>
+                    <li><a href="#">🎧 Suporte</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <img src="https://i.pravatar.cc/150?img=33" alt="Foto do Usuário" class="avatar">
+                <div class="user-info">
+                    <strong>João Silva</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+                <button class="btn-icon small">›</button>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon mobile-menu-btn" id="mobile-menu-btn">☰</button>
+                    <div class="breadcrumb">
+                        <span class="brand">ControlCabra</span>
+                        <span class="separator">›</span>
+                        <span class="current">Gestão de Manejo</span>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="search-bar">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Buscar lotes, animais... (Ctrl+K)">
+                    </div>
+                    <button class="btn-icon">🔔<span class="badge-dot"></span></button>
+                    <button class="btn-primary">+ Nova Tarefa</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                
+                <div class="page-header">
+                    <div class="page-title">
+                        <h1>Monitoramento de Lotes (Manejo)</h1>
+                        <p>Planeje, atribua e acompanhe as operações diárias da fazenda.</p>
+                    </div>
+                    <div class="view-toggles">
+                        <button class="toggle-btn active">📄 Lista</button>
+                        <button class="toggle-btn">📅 Calendário</button>
+                        <button class="toggle-btn">🗂️ Quadro</button>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filters-left">
+                        <button class="btn-outline">🔻 Filtros</button>
+                        <span class="filter-tag">Responsável: <strong>Todos</strong> ✕</span>
+                        <span class="filter-tag">Status: <strong>Ativo</strong> ✕</span>
+                    </div>
+                    <div class="filters-right">
+                        <select class="sort-select">
+                            <option>Ordenar por: Data</option>
+                            <option>Ordenar por: Prioridade</option>
+                        </select>
+                        <button class="btn-icon outline">⋮</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    
+                    <div class="tasks-column">
+                        <section class="task-section">
+                            <h2 class="section-title">🚨 Alta Prioridade & Atrasadas</h2>
+                            <div class="priority-cards">
+                                <div class="task-card overdue">
+                                    <div class="card-badges">
+                                        <span class="badge badge-red">ATRASADO</span>
+                                        <span class="badge badge-gray">SAÚDE</span>
+                                    </div>
+                                    <h3>Aplicar Vacina Clostridiose</h3>
+                                    <p>Aplicar reforço da vacina no lote de fêmeas em gestação. 15 animais (Lote B).</p>
+                                    <div class="card-footer">
+                                        <span class="date red">📅 Ontem</span>
+                                        <div class="assignee">
+                                            <span>Dr. Carlos</span>
+                                            <img src="https://i.pravatar.cc/150?img=11" alt="Carlos" class="avatar">
+                                        </div>
+                                    </div>
+                                    <button class="check-btn">✓</button>
+                                </div>
+
+                                <div class="task-card high-priority">
+                                    <div class="card-badges">
+                                        <span class="badge badge-orange">ALTA PRIORIDADE</span>
+                                        <span class="badge badge-gray">INFRAESTRUTURA</span>
+                                    </div>
+                                    <h3>Consertar Cerca Pasto Leste</h3>
+                                    <p>Arame rompido perto do riacho. Consertar antes de mover o lote de reprodutores.</p>
+                                    <div class="card-footer">
+                                        <span class="date">🕒 Hoje, 14:00</span>
+                                        <div class="assignee">
+                                            <img src="https://i.pravatar.cc/150?img=33" alt="João" class="avatar">
+                                        </div>
+                                    </div>
+                                    <button class="check-btn">✓</button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="task-section mt-4">
+                            <h2 class="section-title">📅 Próximas Tarefas</h2>
+                            <div class="table-card">
+                                <div class="table-responsive">
+                                    <table class="tasks-table">
+                                        <thead>
+                                            <tr>
+                                                <th>TAREFA</th>
+                                                <th>CATEGORIA</th>
+                                                <th>DATA LIMITE</th>
+                                                <th>RESPONSÁVEL</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="task-row-info">
+                                                        <input type="radio" class="radio-check">
+                                                        <div>
+                                                            <strong>Alimentação Manhã - Baias A e B</strong>
+                                                            <span class="subtext">🔁 Diário recorrente</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge badge-blue">Nutrição</span></td>
+                                                <td>Amanhã, 06:00</td>
+                                                <td>
+                                                    <div class="assignee">
+                                                        <img src="https://i.pravatar.cc/150?img=12" class="avatar small"> João F.
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="completed-row">
+                                                <td>
+                                                    <div class="task-row-info">
+                                                        <div class="checked-icon">✅</div>
+                                                        <div>
+                                                            <strong class="strikethrough">Limpeza Maternidade</strong>
+                                                            <span class="subtext">Concluído hoje às 10:30</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge badge-gray">Instalações</span></td>
+                                                <td>Hoje</td>
+                                                <td>
+                                                    <div class="assignee">
+                                                        <img src="https://i.pravatar.cc/150?img=33" class="avatar small">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="view-all">
+                                    <a href="#">Ver Todas as Tarefas</a>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="widgets-column">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <h3>Histórico de Atividades</h3>
+                                <button class="btn-icon small">⋯</button>
+                            </div>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-icon green">✓</div>
+                                    <div class="timeline-content">
+                                        <div class="time-flex">
+                                            <strong>Tarefa Concluída</strong>
+                                            <span class="text-muted text-small">10:30 AM</span>
+                                        </div>
+                                        <p>João F. concluiu "Limpeza Maternidade"</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-icon blue">+</div>
+                                    <div class="timeline-content box">
+                                        <div class="time-flex">
+                                            <strong>Nova Tarefa Criada</strong>
+                                            <span class="text-muted text-small">Ontem</span>
+                                        </div>
+                                        <p>Maria S. criou "Consertar Cerca Pasto Leste"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.display = sidebar.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>
