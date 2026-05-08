@@ -92,32 +92,84 @@ body {
 .navbar {
     display: flex;
     gap: 30px;
+    align-items: center; /* Centraliza verticalmente todos os itens do menu */
+    height: 100%; /* Garante que todos ocupem a mesma base de altura */
 }
 
+/* --- Estilo e Animação dos Links do Menu --- */
 .nav-link {
     text-decoration: none;
     color: var(--text-dark);
     font-weight: 500;
     font-size: 0.95rem;
+    position: relative; /* Necessário para posicionar a linha da animação */
+    padding: 5px 0;
     transition: color 0.3s;
+    display: flex; /* Transforma o link em flex */
+    align-items: center; /* Centraliza o texto do link */
 }
 
-.nav-link:hover, .nav-link.active {
+/* Criando a linha que aparece embaixo ao passar o mouse */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease; /* Tempo da animação */
+}
+
+.nav-link:hover {
     color: var(--primary-color);
 }
 
+.nav-link:hover::after {
+    width: 100%; /* A linha cresce até preencher todo o texto */
+}
+
+/* Ajuste para o link 'Active' (Home) */
 .nav-link.active {
     background-color: var(--light-green);
     padding: 5px 12px;
     border-radius: 4px;
+    color: var(--primary-color);
 }
 
-/* --- Seção Hero --- */
+/* Remove a linha do botão que já está destacado */
+.nav-link.active::after {
+    display: none; 
+}
+
+/* --- Botões de Autenticação (Topo) --- */
+.auth-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.login-link {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.login-link:hover {
+    color: var(--primary-color);
+}
+
+
+/* --- Seção Hero com Imagem de Fundo Atualizada --- */
 .hero {
     position: relative;
     height: 80vh;
     min-height: 600px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1484557052118-f32bd25b45b5?auto=format&fit=crop&q=80&w=1920');
+    /* Imagem de fundo atualizada para usar image_7.png */
+    /* Mantive o gradiente para legibilidade do texto branco */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('image_7.png');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -280,11 +332,16 @@ body {
         gap: 15px;
         padding: 20px 5%;
     }
-    
+   
     .navbar {
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
+    }
+
+    .auth-container {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .hero h1 {
