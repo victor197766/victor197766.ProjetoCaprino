@@ -1,0 +1,240 @@
+:root {
+    --primary: #125534;
+    --primary-light: #e8f5e9;
+    --primary-dark: #0b3821;
+    --bg-main: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-muted: #666666;
+    --border-color: #e0e0e0;
+    --success: #4caf50;
+    --success-light: #e8f5e9;
+    --warning: #ff9800;
+    --warning-light: #fff3e0;
+    --danger: #f44336;
+    --danger-light: #ffebee;
+    --info: #2196f3;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-dark); font-size: 14px; }
+
+/* --- Base e Estrutura Mobile --- */
+.app-container { display: flex; flex-direction: column; min-height: 100vh; }
+.mobile-header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+.mini-logo { width: 30px; height: 30px; border-radius: 50%; background: white; padding: 2px;}
+.icon-btn { background: transparent; border: none; color: white; cursor: pointer; }
+.main-content { padding: 15px; flex: 1; }
+
+/* Esconde a sidebar no mobile por padrão */
+.sidebar { 
+    display: none; 
+    position: fixed; 
+    width: 260px; 
+    height: 100%; 
+    background: var(--primary); 
+    z-index: 200; 
+    flex-direction: column; 
+    color: white;
+}
+
+/* --- Top Header (Main Content) --- */
+.page-header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+.page-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--primary); }
+.page-subtitle { color: var(--text-muted); font-size: 0.9rem;}
+.header-actions { display: flex; gap: 10px; }
+.notification-btn { position: relative; }
+.badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold;}
+
+/* --- Botões --- */
+.btn { padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; border: none; transition: 0.2s;}
+.btn-primary { background: var(--primary); color: white; }
+.btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
+.btn-outline:hover { background: #f9f9f9; }
+.btn-icon { padding: 8px; background: white; border: 1px solid var(--border-color); border-radius: 50%; color: var(--text-dark); }
+.btn-block { width: 100%; }
+.mt-3 { margin-top: 15px; }
+.mt-4 { margin-top: 25px; }
+.mt-auto { margin-top: auto; }
+
+/* --- Grid e Cards --- */
+.dashboard-grid { display: flex; flex-direction: column; gap: 15px; }
+.card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column;}
+.card-header { margin-bottom: 15px; }
+.card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+.card-subtitle { font-size: 0.85rem; color: var(--text-muted); }
+
+/* --- Conhecer Doenças --- */
+.doencas-slider { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin: 0 -5px;}
+.doenca-card { min-width: 200px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.doenca-img { height: 100px; border-radius: 6px; background-color: #e0e0e0; }
+.doenca-card h4 { font-size: 0.95rem; }
+.doenca-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; flex: 1;}
+.link-action { color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+
+/* --- Avaliação Animais --- */
+.status-overview { display: flex; gap: 10px; margin-bottom: 20px; }
+.status-box { flex: 1; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 5px; position: relative;}
+.status-box.success { background: var(--success-light); color: var(--success); }
+.status-box.warning { background: var(--warning-light); color: var(--warning); }
+.status-box.danger { background: var(--danger-light); color: var(--danger); }
+.status-info span { font-size: 0.75rem; font-weight: 600; display: block; color: var(--text-dark);}
+.status-info strong { font-size: 1.2rem; color: var(--text-dark);}
+.percent { position: absolute; right: 10px; bottom: 10px; font-size: 0.75rem; font-weight: bold; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+.dot-success { background: var(--success); }
+.dot-warning { background: var(--warning); }
+.dot-danger { background: var(--danger); }
+.dot-info { background: var(--info); }
+
+.table-responsive { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+.data-table th { color: var(--text-muted); font-weight: 500; padding: 8px 5px; border-bottom: 1px solid var(--border-color); }
+.data-table td { padding: 10px 5px; border-bottom: 1px solid var(--border-color); }
+
+/* --- Ações Row (5 Cards) --- */
+.actions-row { display: flex; flex-direction: column; gap: 15px; }
+.action-card { padding: 15px; }
+.action-icon-header { width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+.action-card h4 { font-size: 0.95rem; margin-bottom: 5px; }
+.action-card p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; min-height: 35px;}
+.action-card ul { list-style: none; padding-left: 0; margin-bottom: 15px; }
+.action-card li { font-size: 0.8rem; padding: 4px 0; color: var(--text-dark); position: relative; padding-left: 15px;}
+.action-card li::before { content: "•"; color: var(--primary); position: absolute; left: 0; font-weight: bold;}
+
+/* --- Gestantes e Alimentação --- */
+.gestantes-content { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.gestante-icon { width: 60px; height: 60px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;}
+.card-gestantes ul { list-style: none; }
+.card-gestantes li { font-size: 0.85rem; padding: 3px 0; color: var(--text-dark); }
+
+.alimentacao-wrapper { display: flex; flex-direction: column; gap: 20px; }
+.chart-container { display: flex; align-items: center; gap: 20px; }
+.pie-chart {
+    width: 100px; height: 100px; border-radius: 50%; flex-shrink: 0;
+    background: conic-gradient( var(--success) 0% 45%, var(--info) 45% 70%, var(--warning) 70% 85%, var(--danger) 85% 95%, #9e9e9e 95% 100% );
+}
+.chart-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
+.dicas-box { background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
+.dicas-box h4 { font-size: 0.95rem; margin-bottom: 10px; color: var(--text-dark); }
+.dicas-box ul { list-style: none; }
+.dicas-box li { font-size: 0.8rem; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; color: var(--text-muted);}
+.dicas-box li svg { color: var(--success); flex-shrink: 0;}
+
+.info-footer { flex-direction: row; align-items: center; gap: 10px; padding: 15px 20px; background-color: #f0f7f2; border-color: #cce3d4; color: var(--primary); }
+
+/* =========================================
+   CORREÇÃO E ADAPTAÇÃO DESKTOP
+========================================= */
+@media (min-width: 1024px) {
+    .app-container { 
+        flex-direction: row; 
+        align-items: stretch; /* Garante que as colunas estiquem */
+    }
+    
+    .mobile-header { display: none; }
+    
+    /* Configuração da Barra Lateral FIXA no desktop */
+    .sidebar { 
+        display: flex; 
+        position: sticky; /* Fica fixo na tela enquanto o usuário rola o painel direito */
+        top: 0;
+        width: 260px; 
+        height: 100vh; /* Altura 100% da tela */
+        background-color: var(--primary-dark); /* Verde mais escuro do menu */
+        border-right: 1px solid rgba(0,0,0,0.1);
+        overflow-y: auto; /* Adiciona scroll apenas no menu se a tela for pequena */
+    }
+    
+    .sidebar-brand { 
+        padding: 30px 20px 20px 20px; 
+        text-align: center; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .sidebar-logo { 
+        width: 60px; 
+        height: 60px; 
+        background: white; 
+        border-radius: 50%; 
+        padding: 5px; 
+        margin-bottom: 10px;
+    }
+
+    .brand-text h2 { font-size: 1.1rem; color: white;}
+    .brand-text p { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+    
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px 0;
+    }
+
+    /* Ícones e botões do menu com espaçamento correto */
+    .nav-item { 
+        display: flex; 
+        align-items: center;
+        gap: 12px;
+        padding: 12px 25px; 
+        color: rgba(255,255,255,0.7); 
+        text-decoration: none; 
+        font-weight: 500; 
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        border-left: 4px solid transparent;
+    }
+    
+    .nav-item:hover {
+        background-color: rgba(255,255,255,0.05);
+        color: white;
+    }
+
+    .nav-item.active { 
+        background-color: rgba(255,255,255,0.1); 
+        color: white; 
+        border-left-color: var(--success); 
+    }
+
+    /* Empurra o perfil do usuário para o final da tela */
+    .user-profile { 
+        margin-top: auto; 
+        padding: 20px; 
+        background-color: rgba(0,0,0,0.15); /* Fundo sutil para destacar */
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+    }
+    
+    .user-avatar { 
+        width: 35px; 
+        height: 35px; 
+        background: rgba(255,255,255,0.2); 
+        border-radius: 50%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-weight: bold;
+        color: white;
+    }
+    
+    .user-info strong { display: block; font-size: 0.9rem; color: white;}
+    .user-info span { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+
+    .main-content { padding: 30px 40px; }
+    .page-header { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    
+    /* Layout Grid */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .span-col-2 { grid-column: span 2; }
+    .span-col-full { grid-column: span 3; }
+    
+    .doencas-slider { grid-template-columns: repeat(3, 1fr); display: grid; overflow: visible;}
+    .actions-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+    .alimentacao-wrapper { flex-direction: row; }
+    .alimentacao-main { flex: 1.5; }
+    .dicas-box { flex: 1; }
+    .pie-chart { width: 140px; height: 140px; }
+}

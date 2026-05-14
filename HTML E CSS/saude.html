@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ControlCabra - Cuidados e Saúde</title>
+    <link rel="stylesheet" href="saude.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="mobile-header">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mini-logo">
+            <span>Saúde e Cuidados</span>
+            <button id="menuToggle" class="icon-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </header>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="sidebar-logo">
+                <div class="brand-text">
+                    <h2>Capri & Ovino</h2>
+                    <p>Gestão Inteligente</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Lotes
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 10s-1.5-2-3.5-2S10 10 10 10"></path><path d="M14 6v4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+                    Animais
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    Reprodução
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Produção
+                </a>
+                <a href="#" class="nav-item active">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    Saúde
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    Estatísticas
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Relatórios
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Configurações
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">AD</div>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <div class="header-titles">
+                    <h1 class="page-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                        Cuidados, Higiene e Monitoramento de Saúde
+                    </h1>
+                    <p class="page-subtitle">Acompanhe e cuide do bem-estar do seu rebanho</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-icon notification-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        Ajuda
+                    </button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <section class="card card-doencas span-col-2">
+                    <div class="card-header">
+                        <h3 class="card-title">Conhecer as doenças</h3>
+                        <p class="card-subtitle">Informações sobre as principais doenças que podem afetar ovinos e caprinos.</p>
+                    </div>
+                    <div class="doencas-slider">
+                        <div class="doenca-card">
+                            <div class="doenca-img bg-gray" style="background-image: url('https://images.unsplash.com/photo-1511216113906-8f56bb201c10?q=80&w=200&auto=format&fit=crop'); background-size: cover;"></div>
+                            <h4>Clostridiose</h4>
+                            <p>Doença bacteriana grave que causa morte súbita. Afeta principalmente animais jovens.</p>
+                            <a href="#" class="link-action">Saiba mais &rarr;</a>
+                        </div>
+                        <div class="doenca-card">
+                            <div class="doenca-img bg-gray" style="background-image: url('https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=200&auto=format&fit=crop'); background-size: cover;"></div>
+                            <h4>Verminoses</h4>
+                            <p>Infestações por vermes gastrointestinais que causam anemia e perda de peso.</p>
+                            <a href="#" class="link-action">Saiba mais &rarr;</a>
+                        </div>
+                        <div class="doenca-card">
+                            <div class="doenca-img bg-gray" style="background-image: url('https://images.unsplash.com/photo-1542834759-4fa973b185fa?q=80&w=200&auto=format&fit=crop'); background-size: cover;"></div>
+                            <h4>Ectima Contagioso</h4>
+                            <p>Infecção viral que causa lesões na boca e ao redor das narinas.</p>
+                            <a href="#" class="link-action">Saiba mais &rarr;</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-3">Ver todas as doenças</button>
+                </section>
+
+                <section class="card card-avaliacao">
+                    <div class="card-header">
+                        <h3 class="card-title">Avaliação dos animais</h3>
+                        <p class="card-subtitle">Avalie o estado de saúde e informações básicas.</p>
+                    </div>
+                    <div class="status-overview">
+                        <div class="status-box success">
+                            <div class="status-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                            <div class="status-info">
+                                <span>Saudáveis</span>
+                                <strong>128</strong>
+                            </div>
+                            <span class="percent">82%</span>
+                        </div>
+                        <div class="status-box warning">
+                            <div class="status-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+                            <div class="status-info">
+                                <span>Atenção</span>
+                                <strong>18</strong>
+                            </div>
+                            <span class="percent">12%</span>
+                        </div>
+                        <div class="status-box danger">
+                            <div class="status-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                            <div class="status-info">
+                                <span>Doentes</span>
+                                <strong>9</strong>
+                            </div>
+                            <span class="percent">6%</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Animal</th>
+                                    <th>Espécie</th>
+                                    <th>Idade</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Bela</td>
+                                    <td>Caprino</td>
+                                    <td>2 anos</td>
+                                    <td><span class="dot dot-success"></span> Saudável</td>
+                                </tr>
+                                <tr>
+                                    <td>Thor</td>
+                                    <td>Ovinos</td>
+                                    <td>1 ano e 6m</td>
+                                    <td><span class="dot dot-success"></span> Saudável</td>
+                                </tr>
+                                <tr>
+                                    <td>Luna</td>
+                                    <td>Caprino</td>
+                                    <td>3 anos</td>
+                                    <td><span class="dot dot-warning"></span> Atenção</td>
+                                </tr>
+                                <tr>
+                                    <td>Rex</td>
+                                    <td>Ovinos</td>
+                                    <td>5 meses</td>
+                                    <td><span class="dot dot-danger"></span> Doente</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-outline btn-block mt-3">Ver todos os animais</button>
+                </section>
+
+                <div class="actions-row span-col-full">
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                        <h4>Organize o programa sanitário</h4>
+                        <p>Planeje e acompanhe vacinas e manejos.</p>
+                        <ul>
+                            <li>Calendário sanitário</li>
+                            <li>Vacinações</li>
+                            <li>Vermifugações</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Gerenciar</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+                        <h4>Higiene nas instalações</h4>
+                        <p>Mantenha instalações limpas e adequadas.</p>
+                        <ul>
+                            <li>Limpeza de currais</li>
+                            <li>Desinfecção</li>
+                            <li>Manejo de cama</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Ver orientações</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+                        <h4>Controle de doenças e infecções</h4>
+                        <p>Monitore e previna ocorrências.</p>
+                        <ul>
+                            <li>Identificação precoce</li>
+                            <li>Isolamento</li>
+                            <li>Biossegurança</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Acompanhar</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></div>
+                        <h4>Controle de tratamentos</h4>
+                        <p>Registre tratamentos do rebanho.</p>
+                        <ul>
+                            <li>Tratamentos ativos</li>
+                            <li>Histórico</li>
+                            <li>Período de carência</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Ver tratamentos</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg></div>
+                        <h4>Controle de reprodução</h4>
+                        <p>Acompanhe ciclo e registre partos.</p>
+                        <ul>
+                            <li>Coberturas</li>
+                            <li>Prenhez e Partos</li>
+                            <li>Taxa de parição</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Gerenciar</button>
+                    </div>
+                </div>
+
+                <section class="card card-gestantes">
+                    <div class="card-header">
+                        <h3 class="card-title">Avaliação em gestantes</h3>
+                        <p class="card-subtitle">Acompanhe a gestação e garanta o bem-estar.</p>
+                    </div>
+                    <div class="gestantes-content">
+                        <div class="gestante-icon">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path><path d="M12 8v4l3 3"></path></svg>
+                        </div>
+                        <ul>
+                            <li>Diagnóstico de gestação</li>
+                            <li>Acompanhamento</li>
+                            <li>Nutrição adequada</li>
+                            <li>Preparação para o parto</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline btn-block mt-3">Acompanhar gestantes</button>
+                </section>
+
+                <section class="card card-alimentacao span-col-2">
+                    <div class="alimentacao-wrapper">
+                        <div class="alimentacao-main">
+                            <div class="card-header">
+                                <h3 class="card-title">Controle de alimentação apropriada</h3>
+                                <p class="card-subtitle">Garanta uma alimentação balanceada.</p>
+                            </div>
+                            <div class="chart-container">
+                                <div class="pie-chart"></div>
+                                <div class="chart-legend">
+                                    <div class="legend-item"><span class="dot dot-success"></span> Forragem (45%)</div>
+                                    <div class="legend-item"><span class="dot dot-info"></span> Concentrado (25%)</div>
+                                    <div class="legend-item"><span class="dot dot-warning"></span> Proteína (15%)</div>
+                                    <div class="legend-item"><span class="dot dot-danger"></span> Minerais (10%)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dicas-box">
+                            <h4>Dicas importantes</h4>
+                            <ul>
+                                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Forneça água limpa e fresca sempre</li>
+                                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Ajuste a dieta conforme a fase do animal</li>
+                                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Monitore o escore corporal</li>
+                            </ul>
+                            <button class="btn btn-outline btn-block mt-3">Ver plano alimentar</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="card info-footer mt-4">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <p>A prevenção é o melhor cuidado. Mantenha o monitoramento constante do seu rebanho.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="saude.js"></script>
+</body>
+</html>
