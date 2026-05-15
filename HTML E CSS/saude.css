@@ -1,7 +1,6 @@
 :root {
     --primary: #125534;
     --primary-light: #e8f5e9;
-    --primary-dark: #0b3821;
     --bg-main: #f4f7f6;
     --card-bg: #ffffff;
     --text-dark: #1a1a1a;
@@ -14,29 +13,127 @@
     --danger: #f44336;
     --danger-light: #ffebee;
     --info: #2196f3;
+    /* Novas variáveis para corrigir o header e manter a sidebar sempre no tom correto */
+    --header-bg: #125534;
+    --sidebar-bg: #0b4027;
+}
+
+[data-theme="escuro"] {
+    --sidebar-bg: #062114;
+    --header-bg: #062114; /* Mantém o cabeçalho escuro no mobile */
+    --sidebar-hover: #0b4027;
+    --bg-main: #121212;
+    --card-bg: #1e1e1e;
+    --text-dark: #f5f5f5;
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    --primary: #4caf50; /* Continua sendo verde claro para harmonia dos botões */
+    --primary-light: #1b5e20;
+    --danger-light: #4a1919;
+    --warning-light: #4d3113;
+}
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card, .page-title, .page-subtitle, .form-group label, .date-picker {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.form-control {
+    background-color: var(--card-bg);
+    color: var(--text-dark);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="escuro"] .form-control {
+    background-color: #2a2a2a;
+}
+
+[data-theme="escuro"] .btn-primary:hover {
+    background-color: #388e3c;
+}
+
+/* Se a sua tela de saúde tiver tabelas de tratamentos/vacinas */
+.data-table th {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="escuro"] .data-table th {
+    background-color: #2a2a2a;
+}
+
+[data-theme="escuro"] .total-row,
+[data-theme="escuro"] .info-footer {
+    background-color: #1b5e20 !important;
+    color: white;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-dark); font-size: 14px; }
 
-/* --- Base e Estrutura Mobile --- */
-.app-container { display: flex; flex-direction: column; min-height: 100vh; }
-.mobile-header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+/* --- Base e Estrutura Mobile (Mobile First) --- */
+.app-container { display: flex; flex-direction: column; min-height: 100vh; position: relative; overflow-x: hidden; }
+
+/* CORREÇÃO: Agora usa a variável --header-bg em vez de --primary */
+.mobile-header { background: var(--header-bg); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; transition: background-color 0.3s ease; }
+
 .mini-logo { width: 30px; height: 30px; border-radius: 50%; background: white; padding: 2px;}
 .icon-btn { background: transparent; border: none; color: white; cursor: pointer; }
 .main-content { padding: 15px; flex: 1; }
 
-/* Esconde a sidebar no mobile por padrão */
+/* Overlay escuro nativo do Mobile */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.sidebar-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Sidebar Off-Canvas para Mobile */
+/* CORREÇÃO: Agora usa var(--sidebar-bg) para respeitar o tema */
 .sidebar { 
-    display: none; 
     position: fixed; 
+    top: 0;
+    left: -260px;
     width: 260px; 
-    height: 100%; 
-    background: var(--primary); 
+    height: 100vh; 
+    background: var(--sidebar-bg); 
     z-index: 200; 
+    display: flex;
     flex-direction: column; 
     color: white;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    overflow-y: auto;
 }
+.sidebar.open {
+    transform: translateX(260px); 
+}
+
+/* Sidebar Estilos Internos */
+.sidebar-brand { padding: 30px 20px; text-align: center; }
+.sidebar-logo { width: 60px; margin-bottom: 10px; }
+.sidebar-nav { flex: 1; }
+.nav-item { padding: 15px 25px; color: white; text-decoration: none; display: block; opacity: 0.8; border-left: 4px solid transparent; transition: background-color 0.3s ease, opacity 0.3s ease; }
+.nav-item:hover, .nav-item.active { background-color: rgba(255, 255, 255, 0.1); opacity: 1; } /* Ajustado hover genérico para dark/light mode */
+.nav-item.active { border-left: 4px solid #4caf50; }
+
+.user-profile { padding: 20px; display: flex; align-items: center; gap: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: auto; }
+.avatar { background: rgba(255, 255, 255, 0.2); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+.user-info { display: flex; flex-direction: column; }
+.user-info strong { font-size: 0.9rem; font-weight: 600; }
+.user-info span { font-size: 0.75rem; opacity: 0.7; }
 
 /* --- Top Header (Main Content) --- */
 .page-header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
@@ -50,30 +147,36 @@ body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color
 .btn { padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; border: none; transition: 0.2s;}
 .btn-primary { background: var(--primary); color: white; }
 .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
-.btn-outline:hover { background: #f9f9f9; }
-.btn-icon { padding: 8px; background: white; border: 1px solid var(--border-color); border-radius: 50%; color: var(--text-dark); }
+.btn-outline:hover { background: var(--bg-main); }
+.btn-icon { padding: 8px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 50%; color: var(--text-dark); }
 .btn-block { width: 100%; }
 .mt-3 { margin-top: 15px; }
 .mt-4 { margin-top: 25px; }
 .mt-auto { margin-top: auto; }
 
-/* --- Grid e Cards --- */
+/* --- Grid e Cards (Padrão Mobile - Flex Column) --- */
 .dashboard-grid { display: flex; flex-direction: column; gap: 15px; }
 .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column;}
 .card-header { margin-bottom: 15px; }
 .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
 .card-subtitle { font-size: 0.85rem; color: var(--text-muted); }
 
-/* --- Conhecer Doenças --- */
-.doencas-slider { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin: 0 -5px;}
-.doenca-card { min-width: 200px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+/* --- Conhecer Doenças (Rolagem Horizontal para Mobile) --- */
+.doencas-slider { 
+    display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin: 0 -5px;
+    scroll-snap-type: x mandatory; 
+}
+.doenca-card { 
+    min-width: 220px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; 
+    scroll-snap-align: start;
+}
 .doenca-img { height: 100px; border-radius: 6px; background-color: #e0e0e0; }
 .doenca-card h4 { font-size: 0.95rem; }
 .doenca-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; flex: 1;}
 .link-action { color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
 
 /* --- Avaliação Animais --- */
-.status-overview { display: flex; gap: 10px; margin-bottom: 20px; }
+.status-overview { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; } 
 .status-box { flex: 1; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 5px; position: relative;}
 .status-box.success { background: var(--success-light); color: var(--success); }
 .status-box.warning { background: var(--warning-light); color: var(--warning); }
@@ -88,11 +191,11 @@ body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color
 .dot-info { background: var(--info); }
 
 .table-responsive { overflow-x: auto; }
-.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; min-width: 400px; }
 .data-table th { color: var(--text-muted); font-weight: 500; padding: 8px 5px; border-bottom: 1px solid var(--border-color); }
 .data-table td { padding: 10px 5px; border-bottom: 1px solid var(--border-color); }
 
-/* --- Ações Row (5 Cards) --- */
+/* --- Ações Row --- */
 .actions-row { display: flex; flex-direction: column; gap: 15px; }
 .action-card { padding: 15px; }
 .action-icon-header { width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
@@ -109,130 +212,60 @@ body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color
 .card-gestantes li { font-size: 0.85rem; padding: 3px 0; color: var(--text-dark); }
 
 .alimentacao-wrapper { display: flex; flex-direction: column; gap: 20px; }
-.chart-container { display: flex; align-items: center; gap: 20px; }
+.chart-container { display: flex; flex-direction: column; align-items: center; gap: 20px; } 
 .pie-chart {
-    width: 100px; height: 100px; border-radius: 50%; flex-shrink: 0;
+    width: 120px; height: 120px; border-radius: 50%; flex-shrink: 0;
     background: conic-gradient( var(--success) 0% 45%, var(--info) 45% 70%, var(--warning) 70% 85%, var(--danger) 85% 95%, #9e9e9e 95% 100% );
 }
-.chart-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
-.dicas-box { background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
+.chart-legend { width: 100%; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
+.dicas-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; }
 .dicas-box h4 { font-size: 0.95rem; margin-bottom: 10px; color: var(--text-dark); }
 .dicas-box ul { list-style: none; }
 .dicas-box li { font-size: 0.8rem; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; color: var(--text-muted);}
 .dicas-box li svg { color: var(--success); flex-shrink: 0;}
 
-.info-footer { flex-direction: row; align-items: center; gap: 10px; padding: 15px 20px; background-color: #f0f7f2; border-color: #cce3d4; color: var(--primary); }
+.info-footer { display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 15px 20px; background-color: var(--success-light); border-color: var(--border-color); color: var(--primary); }
+
 
 /* =========================================
-   CORREÇÃO E ADAPTAÇÃO DESKTOP
+   ADAPTAÇÃO DESKTOP (Grid Inteligente)
 ========================================= */
+@media (min-width: 768px) {
+    .status-overview { flex-direction: row; }
+    .chart-container { flex-direction: row; justify-content: flex-start; }
+}
+
 @media (min-width: 1024px) {
     .app-container { 
         flex-direction: row; 
-        align-items: stretch; /* Garante que as colunas estiquem */
+        align-items: stretch;
     }
     
     .mobile-header { display: none; }
     
-    /* Configuração da Barra Lateral FIXA no desktop */
+    /* Configura o Sidebar permanentemente colado no canto */
     .sidebar { 
-        display: flex; 
-        position: sticky; /* Fica fixo na tela enquanto o usuário rola o painel direito */
+        position: sticky; 
         top: 0;
-        width: 260px; 
-        height: 100vh; /* Altura 100% da tela */
-        background-color: var(--primary-dark); /* Verde mais escuro do menu */
-        border-right: 1px solid rgba(0,0,0,0.1);
-        overflow-y: auto; /* Adiciona scroll apenas no menu se a tela for pequena */
+        left: 0;
+        transform: none; 
     }
     
-    .sidebar-brand { 
-        padding: 30px 20px 20px 20px; 
-        text-align: center; 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .sidebar-logo { 
-        width: 60px; 
-        height: 60px; 
-        background: white; 
-        border-radius: 50%; 
-        padding: 5px; 
-        margin-bottom: 10px;
-    }
-
-    .brand-text h2 { font-size: 1.1rem; color: white;}
-    .brand-text p { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
-    
-    .sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        padding: 10px 0;
-    }
-
-    /* Ícones e botões do menu com espaçamento correto */
-    .nav-item { 
-        display: flex; 
-        align-items: center;
-        gap: 12px;
-        padding: 12px 25px; 
-        color: rgba(255,255,255,0.7); 
-        text-decoration: none; 
-        font-weight: 500; 
-        font-size: 0.95rem;
-        transition: all 0.2s ease;
-        border-left: 4px solid transparent;
-    }
-    
-    .nav-item:hover {
-        background-color: rgba(255,255,255,0.05);
-        color: white;
-    }
-
-    .nav-item.active { 
-        background-color: rgba(255,255,255,0.1); 
-        color: white; 
-        border-left-color: var(--success); 
-    }
-
-    /* Empurra o perfil do usuário para o final da tela */
-    .user-profile { 
-        margin-top: auto; 
-        padding: 20px; 
-        background-color: rgba(0,0,0,0.15); /* Fundo sutil para destacar */
-        display: flex; 
-        align-items: center; 
-        gap: 12px; 
-    }
-    
-    .user-avatar { 
-        width: 35px; 
-        height: 35px; 
-        background: rgba(255,255,255,0.2); 
-        border-radius: 50%; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        font-weight: bold;
-        color: white;
-    }
-    
-    .user-info strong { display: block; font-size: 0.9rem; color: white;}
-    .user-info span { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+    .sidebar-overlay { display: none !important; } 
 
     .main-content { padding: 30px 40px; }
     .page-header { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     
-    /* Layout Grid */
+    /* Grid de Layout Principal */
     .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .span-col-2 { grid-column: span 2; }
     .span-col-full { grid-column: span 3; }
     
-    .doencas-slider { grid-template-columns: repeat(3, 1fr); display: grid; overflow: visible;}
+    .doencas-slider { grid-template-columns: repeat(3, 1fr); display: grid; overflow: visible; scroll-snap-type: none; }
+    .doenca-card { min-width: auto; } 
+    
     .actions-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+    
     .alimentacao-wrapper { flex-direction: row; }
     .alimentacao-main { flex: 1.5; }
     .dicas-box { flex: 1; }

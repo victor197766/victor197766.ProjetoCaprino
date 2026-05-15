@@ -14,6 +14,21 @@
     --warning-light: #fff3e0;
 }
 
+/* --- Variáveis do Tema Escuro --- */
+[data-theme="escuro"] {
+    --sidebar-bg: #062114;
+    --sidebar-hover: #0b4027;
+    --bg-main: #121212;
+    --card-bg: #1e1e1e;
+    --text-dark: #f5f5f5;
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    --primary: #4caf50;
+    --primary-light: #1b5e20;
+    --danger-light: #4a1919;
+    --warning-light: #4d3113;
+}
+
 /* --- Reset e Tipografia --- */
 * {
     margin: 0;
@@ -26,7 +41,12 @@ body {
     background-color: var(--bg-main);
     color: var(--text-dark);
     font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Escondido por padrão no Desktop */
+.mobile-header { display: none; }
+.sidebar-overlay { display: none; }
 
 /* --- Layout Principal --- */
 .app-container {
@@ -35,7 +55,7 @@ body {
     overflow: hidden;
 }
 
-/* --- Sidebar --- */
+/* --- Sidebar Desktop --- */
 .sidebar {
     width: 260px;
     background-color: var(--sidebar-bg);
@@ -43,6 +63,8 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    transition: background-color 0.3s ease;
+    z-index: 100;
 }
 
 .sidebar-brand {
@@ -116,15 +138,8 @@ body {
     justify-content: center;
 }
 
-.user-info strong {
-    display: block;
-    font-size: 0.95rem;
-}
-
-.user-info span {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.7);
-}
+.user-info strong { display: block; font-size: 0.95rem; }
+.user-info span { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
 
 /* --- Main Content --- */
 .main-content {
@@ -147,11 +162,14 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 
 .page-subtitle {
     color: var(--text-muted);
     margin-top: 5px;
+    transition: color 0.3s ease;
 }
 
 .header-actions {
@@ -170,6 +188,7 @@ body {
     gap: 10px;
     color: var(--text-muted);
     font-weight: 500;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* --- Cards Gerais --- */
@@ -180,6 +199,7 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     margin-bottom: 25px;
     border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .card-title {
@@ -187,6 +207,7 @@ body {
     font-weight: 600;
     margin-bottom: 20px;
     color: var(--text-dark);
+    transition: color 0.3s ease;
 }
 
 /* --- Formulários e Botões --- */
@@ -200,6 +221,7 @@ body {
     font-weight: 500;
     color: var(--text-dark);
     font-size: 0.9rem;
+    transition: color 0.3s ease;
 }
 
 .form-control {
@@ -208,13 +230,17 @@ body {
     border-radius: 6px;
     font-family: inherit;
     font-size: 0.95rem;
-    background-color: #fcfcfc;
+    background-color: var(--card-bg);
+    color: var(--text-dark);
     outline: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .form-control:focus {
     border-color: var(--primary);
 }
+
+[data-theme="escuro"] .form-control { background-color: #2a2a2a; }
 
 .btn {
     padding: 10px 20px;
@@ -230,12 +256,9 @@ body {
     transition: all 0.2s;
 }
 
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
-}
-
+.btn-primary { background-color: var(--primary); color: white; }
 .btn-primary:hover { background-color: #0d4026; }
+[data-theme="escuro"] .btn-primary:hover { background-color: #388e3c; }
 
 .btn-outline {
     background-color: transparent;
@@ -243,8 +266,7 @@ body {
     color: var(--text-dark);
 }
 
-.btn-outline:hover { background-color: #f0f0f0; }
-
+.btn-outline:hover { background-color: var(--primary-light); }
 .btn-block { width: 100%; }
 
 /* --- Seção de Filtros --- */
@@ -271,6 +293,7 @@ body {
     align-items: center;
     gap: 15px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .icon-box {
@@ -306,10 +329,7 @@ body {
     color: var(--text-muted);
 }
 
-.summary-info .desc {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
+.summary-info .desc { font-size: 0.8rem; color: var(--text-muted); }
 
 /* --- Seção de Produção --- */
 .production-content {
@@ -320,24 +340,13 @@ body {
 }
 
 /* Gráfico Donut Simulado */
-.chart-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+.chart-container { display: flex; flex-direction: column; align-items: center; }
 
 .donut-chart {
     width: 220px;
     height: 220px;
     border-radius: 50%;
-    /* Gradiente simulando as fatias do gráfico */
-    background: conic-gradient(
-        #4caf50 0% 20%, 
-        #2196f3 20% 33%, 
-        #ffc107 33% 75%, 
-        #9c27b0 75% 98%, 
-        #f44336 98% 100%
-    );
+    background: conic-gradient( #4caf50 0% 20%, #2196f3 20% 33%, #ffc107 33% 75%, #9c27b0 75% 98%, #f44336 98% 100% );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,22 +356,21 @@ body {
 .donut-inner {
     width: 150px;
     height: 150px;
-    background-color: white;
+    background-color: var(--card-bg);
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 .donut-title { font-size: 0.9rem; color: var(--text-muted); }
 .donut-value { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin: 5px 0;}
 .donut-unit { font-size: 0.8rem; color: var(--text-muted); }
 
-.chart-legend {
-    width: 100%;
-}
+.chart-legend { width: 100%; }
 
 .legend-item {
     display: flex;
@@ -379,20 +387,12 @@ body {
     margin-right: 10px;
 }
 
-.legend-item span:last-child {
-    margin-left: auto;
-    font-weight: 600;
-}
+.legend-item span:last-child { margin-left: auto; font-weight: 600; }
 
 /* Tabela */
-.table-container {
-    overflow-x: auto;
-}
+.table-container { overflow-x: auto; }
 
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+.data-table { width: 100%; border-collapse: collapse; }
 
 .data-table th, .data-table td {
     padding: 12px 15px;
@@ -401,21 +401,22 @@ body {
 }
 
 .data-table th {
-    background-color: #f9fbf9;
+    background-color: var(--bg-main);
     color: var(--primary);
     font-weight: 600;
     font-size: 0.9rem;
 }
 
-.data-table tbody tr:hover {
-    background-color: #f5f5f5;
-}
+.data-table tbody tr:hover { background-color: var(--bg-main); }
 
 .total-row {
     font-weight: 700;
-    background-color: #f0f7f2 !important;
+    background-color: var(--primary-light) !important;
     color: var(--primary);
 }
+
+[data-theme="escuro"] .data-table th { background-color: #2a2a2a; }
+[data-theme="escuro"] .total-row { background-color: #1b5e20 !important; color: white;}
 
 .mt-3 { margin-top: 15px; }
 .small { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;}
@@ -426,7 +427,112 @@ body {
     align-items: center;
     gap: 10px;
     padding: 15px 20px;
-    background-color: #f0f7f2;
-    border-color: #cce3d4;
+    background-color: var(--primary-light);
+    border-color: var(--border-color);
     color: var(--primary);
+}
+
+
+/* ========================================================
+   --- RESPONSIVIDADE MOBILE (IDÊNTICO AO PADRÃO EXIGIDO) --- 
+   ======================================================== */
+@media (max-width: 768px) {
+    /* Exibe a barra superior fixa */
+    .mobile-header {
+        display: flex;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        padding: 0 15px;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .mobile-header-left { display: flex; align-items: center; }
+    .mobile-logo { width: 35px; height: 35px; background-color: white; border-radius: 50%; padding: 4px; object-fit: contain; }
+    .mobile-header-center { flex: 1; text-align: center; }
+    .mobile-page-title { font-size: 1.1rem; font-weight: 600; color: white; }
+    .mobile-header-right { display: flex; align-items: center; }
+    
+    .menu-toggle {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+    }
+
+    /* Modifica o container para o topo fixo */
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        padding-top: 60px;
+        overflow-y: auto;
+    }
+
+    /* Sidebar se transforma em uma Gaveta (Drawer) */
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 280px;
+        height: calc(100vh - 60px);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 999;
+    }
+
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-brand { display: none; }
+    .nav-item { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-item.active { border-left: 4px solid #4caf50; border-bottom: none; }
+
+    /* Overlay escuro de fundo */
+    .sidebar-overlay {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 60px);
+        background-color: rgba(0,0,0,0.5);
+        z-index: 998;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Ajustes de Layout na Tela de Estatísticas para Mobile */
+    .main-content {
+        padding: 20px 15px;
+        overflow-y: visible;
+    }
+
+    .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-actions { flex-direction: column; width: 100%; align-items: stretch; }
+    .date-picker { justify-content: center; }
+    
+    /* Grid de Filtros empilhados */
+    .filters-grid { grid-template-columns: 1fr; gap: 15px; }
+    
+    /* Grid de Resumo (Cards) empilhados */
+    .summary-grid { grid-template-columns: 1fr; gap: 15px; }
+    
+    /* Seção de Produção (Gráfico em cima, tabela embaixo) */
+    .production-content { grid-template-columns: 1fr; gap: 30px; }
+    .chart-container { width: 100%; }
 }

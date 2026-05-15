@@ -1,65 +1,74 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- LÓGICA DE TEMA (Claro, Escuro, Sistema) ---
-    const preferemTemaEscuro = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    function aplicarTema(escolha) {
-        if (escolha === 'sistema') {
-            // Se for sistema, checa a preferência da máquina
-            const eEscuro = preferemTemaEscuro.matches;
-            document.documentElement.setAttribute('data-theme', eEscuro ? 'escuro' : 'claro');
-        } else {
-            // Se for 'claro' ou 'escuro', aplica diretamente
-            document.documentElement.setAttribute('data-theme', escolha);
-        }
+    // --- LÓGICA DO MENU HAMBÚRGUER (IGUAL AO SEU MENU DE SAÚDE) ---
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (menuToggle && sidebar && sidebarOverlay) {
+        // Abre ou fecha o menu ao clicar no botão hambúrguer ☰
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        });
+
+        // Fecha o menu se o usuário clicar no fundo escuro escurecido
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        });
     }
 
-    // Puxa o tema salvo ou usa 'sistema' como padrão no primeiro acesso
-    const temaSalvo = localStorage.getItem('tema-escolhido') || 'sistema';
-    aplicarTema(temaSalvo);
 
-    // Se o usuário mudar o tema do Windows/Mac, e estiver na opção 'sistema', atualiza na hora
-    preferemTemaEscuro.addEventListener('change', () => {
-        if (localStorage.getItem('tema-escolhido') === 'sistema') {
-            aplicarTema('sistema');
-        }
-    });
-
-    // --- FUNCIONALIDADE DOS BOTÕES DE OPÇÃO ---
-    const optionButtons = document.querySelectorAll('.option-btn');
+    // --- FUNCIONALIDADE: ALTERAÇÃO DE TEMA DO SISTEMA ---
+    const themeButtons = document.querySelectorAll('[data-group="theme"]');
     
-    // Prepara os botões corretos com a classe "active" baseado no cache do navegador
-    optionButtons.forEach(btn => {
-        if (btn.getAttribute('data-group') === 'theme') {
-            if (btn.getAttribute('data-tema') === temaSalvo) {
+    function aplicarTema(tema) {
+        if (tema === 'sistema') {
+            const modoEscuroSistema = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', modoEscuroSistema ? 'escuro' : 'claro');
+        } else {
+            document.documentElement.setAttribute('data-theme', tema);
+        }
+        
+        // Atualiza o estado visual do botão ativo
+        themeButtons.forEach(btn => {
+            if (btn.getAttribute('data-tema') === tema) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
             }
-        }
-    });
-    
-    // Quando qualquer botão for clicado
-    optionButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const groupName = this.getAttribute('data-group');
-            
-            // Remove a classe 'active' de todos os botões do mesmo grupo (ex: theme ou layout)
-            const groupButtons = document.querySelectorAll(`.option-btn[data-group="${groupName}"]`);
-            groupButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Adiciona a classe 'active' ao botão clicado
-            this.classList.add('active');
+        });
+        
+        // Mantém a escolha mesmo após dar Recarregar (F5)
+        localStorage.setItem('controlCabra-theme', tema);
+    }
 
-            // --- AÇÃO ESPECÍFICA DO TEMA ---
-            if (groupName === 'theme') {
-                const novaEscolha = this.getAttribute('data-tema');
-                // Salva no navegador e aplica
-                localStorage.setItem('tema-escolhido', novaEscolha);
-                aplicarTema(novaEscolha);
-            }
+    // Inicialização do tema salvo no cache
+    const temaSalvo = localStorage.getItem('controlCabra-theme') || 'sistema';
+    aplicarTema(temaSalvo);
+
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const temaSelecionado = button.getAttribute('data-tema');
+            aplicarTema(temaSelecionado);
         });
     });
 
-    // (A parte do JS dos color-circles foi completamente removida como solicitado)
+    // Monitora caso o sistema mude automaticamente o tema nativo
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (localStorage.getItem('controlCabra-theme') === 'sistema') {
+            aplicarTema('sistema');
+        }
+    });
+
+
+    // --- SELEÇÃO DE LAYOUT VISUAL ---
+    const layoutButtons = document.querySelectorAll('[data-group="layout"]');
+    layoutButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            layoutButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
 });

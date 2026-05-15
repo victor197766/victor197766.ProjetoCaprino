@@ -7,12 +7,26 @@
     <link rel="stylesheet" href="configuracoes.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+        </div>
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Configurações e Sistema</span>
+        </div>
+        <div class="mobile-header-right">
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
     <div class="app-container">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="sidebar-logo">
                 <div class="brand-text">
@@ -22,7 +36,6 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="producao.html" class="nav-item">Dashboard</a>
                 <a href="saude.html" class="nav-item">Saúde</a>
                 <a href="estatisticas.html" class="nav-item">Estatísticas</a>
                 <a href="#" class="nav-item active">Configurações</a>
@@ -38,6 +51,8 @@
                 </div>
             </div>
         </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <main class="main-content">
             <header class="page-header">

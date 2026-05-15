@@ -7,20 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (menuToggle && sidebar && sidebarOverlay) {
         menuToggle.addEventListener('click', () => {
-            // CORREÇÃO: No CSS as classes se chamam '.open', não '.active'
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('open');
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
         });
 
-        // Fecha o menu se o usuário clicar no fundo escuro
         sidebarOverlay.addEventListener('click', () => {
-            // CORREÇÃO: Removendo 'open' em vez de 'active'
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('open');
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
         });
     }
 
-    // --- LEITURA DO TEMA SALVO (Sincronizado com as configurações gerais) ---
+    // --- LEITURA DO TEMA SALVO (Sincronizado com configurações) ---
     const temaSalvo = localStorage.getItem('controlCabra-theme') || 'sistema';
     
     function aplicarTema(tema) {
@@ -35,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Aplica na inicialização da página
     aplicarTema(temaSalvo);
 
-    // Monitora alterações caso o tema do sistema operacional do usuário mude
+    // Monitora alterações de tema nativo do sistema do usuário
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (localStorage.getItem('controlCabra-theme') === 'sistema') {
             aplicarTema('sistema');

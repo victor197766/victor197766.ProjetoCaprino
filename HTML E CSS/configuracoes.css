@@ -1,4 +1,4 @@
-/* --- Variáveis Globais (Mantendo a identidade do ControlCabra) --- */
+/* --- Variáveis Globais --- */
 :root {
     --sidebar-bg: #0b4027; 
     --sidebar-hover: #165c3b;
@@ -18,16 +18,16 @@
 
 /* --- Variáveis do Tema Escuro --- */
 [data-theme="escuro"] {
-    --sidebar-bg: #062114; /* Fica um pouco mais escuro no modo dark */
+    --sidebar-bg: #062114; 
     --sidebar-hover: #0b4027;
     --bg-main: #121212; 
     --card-bg: #1e1e1e;
-    --text-dark: #f5f5f5; /* Textos viram claros */
+    --text-dark: #f5f5f5; 
     --text-muted: #aaaaaa;
     --border-color: #333333;
-    --primary: #4caf50; /* Verde mais claro para destacar no fundo escuro */
-    --primary-light: #1b5e20; /* Fundo de botão ativo mais escuro */
-    --danger-light: #4a1919; /* Adaptação dos fundos de erro/aviso */
+    --primary: #4caf50; 
+    --primary-light: #1b5e20; 
+    --danger-light: #4a1919; 
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,16 +37,19 @@ body {
     background-color: var(--bg-main);
     color: var(--text-dark);
     font-size: 14px;
-    /* Transição suave ao mudar de tema */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Escondido por padrão no Desktop */
+.mobile-header { display: none; }
+.sidebar-overlay { display: none; }
+
 .app-container { display: flex; height: 100vh; overflow: hidden; }
 
-/* --- Sidebar (Idêntica à tela de estatísticas) --- */
-.sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; transition: background-color 0.3s ease;}
+/* --- Sidebar Desktop --- */
+.sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; transition: background-color 0.3s ease; z-index: 100; }
 .sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.sidebar-logo { width: 45px; height: 45px; background-color: white; border-radius: 50%; padding: 5px; }
+.sidebar-logo { width: 45px; height: 45px; background-color: white; border-radius: 50%; padding: 5px; object-fit: contain; }
 .brand-text h2 { font-size: 1.2rem; font-weight: 700; }
 .brand-text p { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
 .sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
@@ -60,7 +63,6 @@ body {
 
 /* --- Main Content --- */
 .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .page-title { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); transition: color 0.3s ease;}
 .page-subtitle { color: var(--text-muted); margin-top: 5px; transition: color 0.3s ease;}
@@ -82,12 +84,7 @@ body {
 .tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
 
 /* --- Layout em Grid --- */
-.settings-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    align-items: start;
-}
+.settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
 
 /* --- Cards --- */
 .card { background-color: var(--card-bg); border-radius: 10px; padding: 25px; border: 1px solid var(--border-color); transition: background-color 0.3s ease, border-color 0.3s ease;}
@@ -98,10 +95,9 @@ body {
 .mt-3 { margin-top: 20px; }
 .mt-4 { margin-top: 30px; }
 
-/* --- Configurações de Aparência (Coluna 1) --- */
+/* --- Configurações de Aparência --- */
 .setting-group { margin-bottom: 25px; }
 .setting-label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-dark); transition: color 0.3s ease;}
-
 .options-row { display: flex; gap: 10px; }
 .option-btn { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: transparent; color: var(--text-muted); font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
 .option-btn:hover { border-color: var(--text-muted); }
@@ -128,7 +124,6 @@ body {
 .toggle-info strong { display: block; font-size: 0.95rem; margin-bottom: 2px; color: var(--text-dark); transition: color 0.3s ease;}
 .toggle-info span { font-size: 0.8rem; color: var(--text-muted); transition: color 0.3s ease;}
 
-/* Custom Switch CSS */
 .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0;}
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 24px; }
@@ -136,7 +131,7 @@ body {
 input:checked + .slider { background-color: var(--primary); }
 input:checked + .slider:before { transform: translateX(20px); }
 
-/* --- Listas de Links (Atendimento e Conta) --- */
+/* --- Listas de Links --- */
 .action-list { display: flex; flex-direction: column; gap: 10px; }
 .action-list-item { display: flex; align-items: center; gap: 15px; padding: 12px; border: 1px solid transparent; border-radius: 8px; text-decoration: none; color: var(--text-dark); transition: all 0.2s; }
 .action-list-item:hover { background-color: var(--bg-main); border-color: var(--border-color); }
@@ -146,7 +141,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 .action-text span { font-size: 0.8rem; color: var(--text-muted); }
 .action-list-item > svg:last-child { color: var(--text-muted); }
 
-/* --- Danger Zones (Ações da conta) --- */
+/* --- Danger Zones --- */
 .danger-zone { display: flex; flex-direction: column; gap: 15px; }
 .danger-item { border: 1px solid; border-radius: 8px; padding: 15px; background: transparent;}
 .danger-item.warning { border-color: var(--warning); background-color: var(--warning-light); }
@@ -163,55 +158,100 @@ input:checked + .slider:before { transform: translateX(20px); }
 .bg-danger-light { background-color: var(--danger-light); }
 .border-danger { border-color: var(--danger); }
 .text-danger { color: var(--danger); }
-
-/* --- Footer Note --- */
 .info-footer { display: flex; align-items: center; gap: 10px; padding: 15px 20px; background-color: var(--primary-light); border-color: var(--border-color); color: var(--primary); margin-bottom: 0;}
 .info-footer p { margin: 0; font-size: 0.9rem;}
 
-/* =========================================
-   --- RESPONSIVIDADE (MOBILE FIRST) --- 
-   ========================================= */
+
+/* ========================================================
+   --- RESPONSIVIDADE CORRIGIDA (IGUAL AO MENU DE SAÚDE) --- 
+   ======================================================== */
 @media (max-width: 768px) {
+    /* Exibe a barra superior exatamente igual ao print do menu de saúde */
+    .mobile-header {
+        display: flex;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        padding: 0 15px;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .mobile-header-left { display: flex; align-items: center; }
+    .mobile-logo { width: 35px; height: 35px; background-color: white; border-radius: 50%; padding: 4px; object-fit: contain; }
+    .mobile-header-center { flex: 1; text-align: center; }
+    .mobile-page-title { font-size: 1.1rem; font-weight: 600; color: white; }
+    .mobile-header-right { display: flex; align-items: center; }
+    
+    .menu-toggle {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+    }
+
+    /* Modifica o container para o topo fixo */
     .app-container {
         flex-direction: column;
+        height: auto;
+        padding-top: 60px; /* Evita que o conteúdo suma abaixo do cabeçalho fixo */
         overflow-y: auto;
     }
 
+    /* Sidebar agora se transforma em uma GAVETA OMINIPRESENTE (Drawer) */
     .sidebar {
-        width: 100%;
-        height: auto;
-    }
-    
-    .sidebar-brand {
-        justify-content: center;
-        padding: 15px;
-    }
-
-    .sidebar-nav {
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 10px;
-        white-space: nowrap;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 280px;
+        height: calc(100vh - 60px);
+        transform: translateX(-100%); /* Escondido para a esquerda */
+        transition: transform 0.3s ease;
+        z-index: 999;
     }
 
-    .nav-item {
-        padding: 8px 15px;
-        border-left: none;
-        border-bottom: 4px solid transparent;
+    /* Quando clicado no hambúrguer, adiciona esta classe para abrir */
+    .sidebar.active {
+        transform: translateX(0);
     }
 
-    .nav-item.active {
-        border-left: none;
-        border-bottom: 4px solid #4caf50;
+    /* Modificações internas da Sidebar no mobile */
+    .sidebar-brand { display: none; } /* Oculta a logo repetida dentro do menu */
+    .nav-item { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-item.active { border-left: 4px solid #4caf50; border-bottom: none; }
+
+    /* Overlay escuro de fundo */
+    .sidebar-overlay {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 60px);
+        background-color: rgba(0,0,0,0.5);
+        z-index: 998;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
     }
 
-    .user-profile {
-        display: none;
-    }
-
+    /* Conteúdo Principal */
     .main-content {
-        padding: 15px;
+        padding: 20px 15px;
         overflow-y: visible;
     }
 
@@ -221,13 +261,8 @@ input:checked + .slider:before { transform: translateX(20px); }
         gap: 15px;
     }
     
-    .header-actions {
-        width: 100%;
-    }
-    
-    .header-actions .btn {
-        width: 100%;
-    }
+    .header-actions { width: 100%; }
+    .header-actions .btn { width: 100%; }
 
     .tabs {
         overflow-x: auto;
@@ -250,9 +285,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     .info-footer {
         flex-direction: column;
         align-items: flex-start;
-        text-align: left;
     }
-    
     .info-footer span {
         margin-left: 0;
         margin-top: 10px;
