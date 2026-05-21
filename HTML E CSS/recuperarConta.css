@@ -247,3 +247,12 @@ body {
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 }
+
+#Entrar {
+    text-decoration: none; /* Remove o sublinhado (a linha branca) */
+    text-align: center; /* Centraliza o texto horizontalmente */
+    display: flex; /* Facilita a centralização em botões */
+    justify-content: center; /* Centraliza o texto no eixo X */
+    align-items: center; /* Centraliza o texto no eixo Y (se tiver altura definida) */
+    width: 100%; /* Garante que o botão ocupe toda a largura disponível */
+}
