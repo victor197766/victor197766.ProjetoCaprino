@@ -44,22 +44,22 @@
 
         <section id="register-farmer-section" class="form-section hidden">
             <h2>Cadastro de Produtor</h2>
-            <form id="register-farmer-form">
+            <form id="register-farmer-form" method="POST" action="registerService.php">
                 <div class="input-group">
                     <label for="farm-name">Nome Completo</label>
-                    <input type="text" id="farm-name" placeholder="Ex: João da Silva" required>
+                    <input type="text" name="farm-name" id="farm-name" placeholder="Ex: João da Silva" required>
                 </div>
                 <div class="input-group">
                     <label for="farm-property">Nome da Propriedade</label>
-                    <input type="text" id="farm-property" placeholder="Ex: Sítio das Cabras" required>
+                    <input type="text" name="farm-property" id="farm-property" placeholder="Ex: Sítio das Cabras" required>
                 </div>
                 <div class="input-group">
                     <label for="farm-email">E-mail</label>
-                    <input type="email" id="farm-email" placeholder="produtor@email.com" required>
+                    <input type="email" name="farm-email" id="farm-email" placeholder="produtor@email.com" required>
                 </div>
                 <div class="input-group">
                     <label for="farm-password">Senha</label>
-                    <input type="password" id="farm-password" placeholder="Crie uma senha forte" required>
+                    <input type="password" name="farm-password" id="farm-password" placeholder="Crie uma senha forte" required>
                 </div>
                 <div class="actions">
                     <button type="submit" class="btn primary">Criar Conta de Produtor</button>
@@ -70,18 +70,18 @@
 
         <section id="register-visitor-section" class="form-section hidden">
             <h2>Cadastro de Visitante</h2>
-            <form id="register-visitor-form">
+            <form id="register-visitor-form" method="POST" action="registerService.php">
                 <div class="input-group">
                     <label for="vis-name">Nome Completo</label>
-                    <input type="text" id="vis-name" placeholder="Ex: Maria Souza" required>
+                    <input type="text" name="vis-name" id="vis-name" placeholder="Ex: Maria Souza" required>
                 </div>
                 <div class="input-group">
                     <label for="vis-email">E-mail</label>
-                    <input type="email" id="vis-email" placeholder="visitante@email.com" required>
+                    <input type="email" name="vis-email" id="vis-email" placeholder="visitante@email.com" required>
                 </div>
                 <div class="input-group">
                     <label for="vis-password">Senha</label>
-                    <input type="password" id="vis-password" placeholder="Crie uma senha" required>
+                    <input type="password" name="vis-password" id="vis-password" placeholder="Crie uma senha" required>
                 </div>
                 <div class="actions">
                     <button type="submit" class="btn primary">Criar Conta de Visitante</button>
