@@ -210,23 +210,30 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`lote`
+-- Table `mydb`.`lote` (CORRIGIDA)
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`lote` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `user_id` INT(11) NOT NULL,
+  `user_id` INT(11) NOT NULL, -- O lote agora aponta para o criador (Usuário)
   `nome` VARCHAR(45) NOT NULL,
   `tipo` VARCHAR(32) NOT NULL,
-  `data_criacao` DATETIME NOT NULL,
+  `data_criacao` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `financeiro_id` INT(11) NOT NULL,
   `financeiro_user_id` INT(11) NOT NULL,
   `financeiro_lote_id` INT(11) NOT NULL,
   `animal_id` INT(11) NOT NULL,
   `producao_ID` INT(11) NOT NULL,
   PRIMARY KEY (`id`, `user_id`),
+  INDEX `fk_lote_usuario1_idx` (`user_id` ASC),
   INDEX `fk_lote_financeiro1_idx` (`financeiro_id` ASC, `financeiro_user_id` ASC, `financeiro_lote_id` ASC),
   INDEX `fk_lote_animal1_idx` (`animal_id` ASC),
   INDEX `fk_lote_producao1_idx` (`producao_ID` ASC),
+  -- CHAVE ESTRANGEIRA CORRETA: O Lote depende do Usuário existir primeiro
+  CONSTRAINT `fk_lote_usuario1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `mydb`.`usuario` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_lote_animal1`
     FOREIGN KEY (`animal_id`)
     REFERENCES `mydb`.`animal` (`id`)
@@ -241,52 +248,25 @@ CREATE TABLE IF NOT EXISTS `mydb`.`lote` (
     FOREIGN KEY (`producao_ID`)
     REFERENCES `mydb`.`producao` (`ID`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`usuario`
+-- Table `mydb`.`usuario` (CORRIGIDA)
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`usuario` (
-  `username` VARCHAR(16) NOT NULL,
-  `email` VARCHAR(255) NULL DEFAULT NULL,
-  `senha` VARCHAR(32) NOT NULL,
-  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP(),
-  `num_telefone` VARCHAR(10) NOT NULL,
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `CPF` VARCHAR(11) NULL DEFAULT NULL,
-  `CPNJ` VARCHAR(14) NOT NULL,
-  `lote_id` INT(11) NOT NULL,
-  `lote_user_id` INT(11) NOT NULL,
-  PRIMARY KEY (`user_id`, `lote_id`, `lote_user_id`),
-  INDEX `fk_usuario_lote1_idx` (`lote_id` ASC, `lote_user_id` ASC),
-  CONSTRAINT `fk_usuario_lote1`
-    FOREIGN KEY (`lote_id` , `lote_user_id`)
-    REFERENCES `mydb`.`lote` (`id` , `user_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`usuario_copy1`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`usuario_copy1` (
   `username` VARCHAR(16) NOT NULL,
-  `email` VARCHAR(255) NULL DEFAULT NULL,
-  `senha` VARCHAR(32) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `senha` VARCHAR(255) NOT NULL, -- Aumentado para não cortar o hash do password_hash()
   `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP(),
-  `num_telefone` VARCHAR(10) NOT NULL,
-  `user_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `num_telefone` VARCHAR(15) NULL DEFAULT NULL, -- Mudado para NULL (opcional)
   `CPF` VARCHAR(11) NULL DEFAULT NULL,
-  `CPNJ` VARCHAR(14) NOT NULL,
-  PRIMARY KEY (`user_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
+  `CNPJ` VARCHAR(14) NULL DEFAULT NULL, -- Corrigido o erro de digitação 'CPNJ' e mudado para NULL
+  PRIMARY KEY (`user_id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
