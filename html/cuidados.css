@@ -1,0 +1,230 @@
+/* --- Variáveis Globais --- */
+:root {
+    --sidebar-bg: #0b4027; 
+    --sidebar-hover: #165c3b;
+    --sidebar-text: #ffffff;
+    --bg-main: #f4f7f6; 
+    --card-bg: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-muted: #666666;
+    --border-color: #e0e0e0;
+    --primary: #125534; 
+    --primary-light: #e8f5e9;
+    --danger: #d32f2f;
+    --danger-light: #ffebee;
+    --warning: #f57c00;
+    --warning-light: #fff3e0;
+    --success: #2e7d32;
+    --success-light: #e8f5e9;
+}
+
+/* --- Variáveis do Tema Escuro --- */
+[data-theme="escuro"] {
+    --sidebar-bg: #062114; 
+    --sidebar-hover: #0b4027;
+    --bg-main: #121212; 
+    --card-bg: #1e1e1e;
+    --text-dark: #f5f5f5; 
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    --primary: #4caf50; 
+    --primary-light: #1b5e20; 
+    --danger-light: #4a1919; 
+    --warning-light: #4d2e00;
+    --success-light: #0d3310;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Base Layout */
+.mobile-header { display: none; }
+.sidebar-overlay { display: none; }
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* Sidebar Desktop */
+.sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; transition: background-color 0.3s ease; z-index: 100; }
+.sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo { width: 45px; height: 45px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.brand-text h2 { font-size: 1.2rem; font-weight: 700; }
+.brand-text p { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
+.sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
+.nav-item { display: flex; align-items: center; padding: 12px 25px; color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; transition: all 0.3s; }
+.nav-item:hover { background-color: var(--sidebar-hover); color: white; }
+.nav-item.active { background-color: var(--sidebar-hover); color: white; border-left: 4px solid #4caf50; }
+
+/* Main Content & Botões */
+.main-content { flex: 1; padding: 30px; overflow-y: auto; }
+.page-header { margin-bottom: 25px; }
+.header-health { display: flex; justify-content: space-between; align-items: flex-start; }
+.page-title { font-size: 1.6rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; transition: color 0.3s ease;}
+.page-subtitle { color: var(--text-muted); margin-top: 5px; font-size: 0.95rem; transition: color 0.3s ease;}
+
+.header-tools { display: flex; gap: 15px; align-items: center; }
+.icon-btn { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dark); font-size: 1.2rem; transition: all 0.2s;}
+.icon-btn:hover { background: var(--bg-main); }
+.badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+.btn { padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; border: none; transition: all 0.2s; font-size: 0.95rem;}
+.btn-primary { background-color: var(--primary); color: white; }
+.btn-primary:hover { background-color: #0d4026; }
+[data-theme="escuro"] .btn-primary:hover { background-color: #388e3c; }
+.btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
+.btn-block { width: 100%; }
+.mb-3 { margin-bottom: 20px; }
+.mt-3 { margin-top: 20px; }
+
+/* Cards Base */
+.card { background-color: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color); transition: all 0.3s ease;}
+.card-header { margin-bottom: 20px; }
+.card-title { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
+.card-subtitle { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;}
+
+/* =========================================
+   NOVO: Ações Rápidas (Os 4 Botões do Menu)
+   ========================================= */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+.action-card {
+    background-color: var(--sidebar-bg); /* Verde escuro do sistema */
+    color: white;
+    padding: 20px 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.action-card i { font-size: 32px; color: #4caf50; } /* Ícone verde claro */
+.action-card span { font-weight: 600; font-size: 0.95rem; line-height: 1.3;}
+.action-card:hover { background-color: var(--sidebar-hover); transform: translateY(-3px); }
+
+/* Adaptação para o Modo Escuro */
+[data-theme="escuro"] .action-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+}
+[data-theme="escuro"] .action-card:hover {
+    border-color: var(--primary);
+}
+
+
+/* =========================================
+   NOVO: Doenças (Scroll Horizontal)
+   ========================================= */
+.disease-scroll {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+.disease-scroll::-webkit-scrollbar { height: 6px; }
+.disease-scroll::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+
+.disease-card {
+    min-width: 240px;
+    max-width: 240px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    background: transparent;
+}
+.disease-img {
+    width: 100%;
+    height: 130px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-bottom: 12px;
+}
+.placeholder-img { background-color: #dcdcdc; }
+[data-theme="escuro"] .placeholder-img { background-color: #333; }
+.disease-card h3 { font-size: 1.05rem; color: var(--text-dark); margin-bottom: 8px; }
+.disease-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; }
+.saiba-mais { color: var(--primary); font-weight: 600; text-decoration: none; font-size: 0.9rem; }
+.saiba-mais:hover { text-decoration: underline; }
+
+/* =========================================
+   NOVO: Avaliação dos Animais (Status)
+   ========================================= */
+.stats-list { display: flex; flex-direction: column; gap: 12px; }
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid;
+}
+.stat-item.success { background-color: var(--success-light); border-color: rgba(46, 125, 50, 0.2); }
+.stat-item.warning { background-color: var(--warning-light); border-color: rgba(245, 124, 0, 0.2); }
+
+.stat-header { display: flex; flex-direction: column; gap: 5px; }
+.stat-item.success .stat-header { color: var(--success); }
+.stat-item.warning .stat-header { color: var(--warning); }
+.stat-header i { font-size: 20px; }
+.stat-header span { font-weight: 600; font-size: 1rem; color: var(--text-dark); }
+
+.stat-values { text-align: right; }
+.stat-values strong { display: block; font-size: 1.8rem; color: var(--text-dark); line-height: 1; margin-bottom: 5px;}
+.stat-item.success .percent { color: var(--success); font-weight: 600; }
+.stat-item.warning .percent { color: var(--warning); font-weight: 600; }
+
+
+/* ========================================================
+   RESPONSIVIDADE (MOBILE)
+   ======================================================== */
+@media (max-width: 768px) {
+    .mobile-header {
+        display: flex;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        padding: 0 15px;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 60px;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .mobile-logo { width: 35px; height: 35px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .mobile-header-center { flex: 1; text-align: center; }
+    .mobile-page-title { font-size: 1.1rem; font-weight: 600; color: white; }
+    .menu-toggle { background: none; border: none; color: white; cursor: pointer; display: flex; padding: 5px; }
+
+    .app-container { flex-direction: column; height: auto; padding-top: 60px; overflow-y: auto; }
+    
+    .sidebar { position: fixed; top: 60px; left: 0; width: 280px; height: calc(100vh - 60px); transform: translateX(-100%); transition: transform 0.3s ease; z-index: 999; }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-brand { display: none; }
+    .nav-item { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-item.active { border-left: 4px solid #4caf50; border-bottom: none; }
+
+    .sidebar-overlay { position: fixed; top: 60px; left: 0; width: 100vw; height: calc(100vh - 60px); background-color: rgba(0,0,0,0.5); z-index: 998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .sidebar-overlay.active { display: block; opacity: 1; pointer-events: auto; }
+
+    .main-content { padding: 20px 15px; }
+    
+    .header-health { flex-direction: column; gap: 15px; }
+    .header-tools { width: 100%; justify-content: space-between; }
+    
+    .quick-actions-grid { grid-template-columns: 1fr; } /* No mobile muito pequeno, os botões ficam em coluna. Se quiser 2 colunas no celular, troque 1fr por repeat(2, 1fr) */
+}
