@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Animal - ControlCabra</title>
+    <link rel="stylesheet" href="busca_codigo.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+        </div>
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Pesquisar Código</span>
+        </div>
+        <div class="mobile-header-right">
+            <button class="menu-toggle" id="menuToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-text">
+                    <h2>Capri & Ovino</h2>
+                    <p>Gestão Inteligente</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="estatisticas.html" class="nav-item">Estatísticas</a>
+                <a href="saude.html" class="nav-item">Saúde</a>
+                <a href="cuidados.html" class="nav-item active">Cuidados</a>
+                <a href="configuracoes.html" class="nav-item">Configurações</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            
+            <section class="search-section">
+                <div class="search-card">
+                    <div class="search-icon-wrapper">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-bottom: 15px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <h2 class="search-title">Localizar Cadastro</h2>
+                    <p class="search-subtitle">Digite o código para visualizar ou editar os dados do animal.</p>
+
+                    <form id="searchForm" class="search-form">
+                        <div class="form-group">
+                            <input type="text" id="codigoInput" class="form-control text-center" placeholder="Numero identificador da Matriz e do Reprodutor" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-blue btn-block">PROCURAR</button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="busca_codigo.js"></script>
+</body>
+</html>

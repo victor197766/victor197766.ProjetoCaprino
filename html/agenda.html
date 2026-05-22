@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda - ControlCabra</title>
+    <link rel="stylesheet" href="agenda.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+        </div>
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Agenda</span>
+        </div>
+        <div class="mobile-header-right">
+            <button class="menu-toggle" id="menuToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-text">
+                    <h2>Capri & Ovino</h2>
+                    <p>Gestão Inteligente</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="estatisticas.html" class="nav-item">Estatísticas</a>
+                <a href="saude.html" class="nav-item">Saúde</a>
+                <a href="cuidados.html" class="nav-item active">Cuidados</a>
+                <a href="configuracoes.html" class="nav-item">Configurações</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            
+            <section class="calendar-card">
+                <div class="calendar-header">
+                    <h2 id="monthYearDisplay" class="month-year-title">Novembro 2026</h2>
+                    <div class="calendar-nav">
+                        <button id="prevMonth" class="nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button id="nextMonth" class="nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <span>Seg</span>
+                    <span>Ter</span>
+                    <span>Qua</span>
+                    <span>Qui</span>
+                    <span>Sex</span>
+                    <span>Sáb</span>
+                    <span>Dom</span>
+                </div>
+
+                <div class="calendar-days" id="calendarDays">
+                    </div>
+            </section>
+
+            <section class="agenda-list">
+                <div class="agenda-header">
+                    <h3>Eventos do dia selecionado</h3>
+                    <button class="add-event-btn">+ Novo</button>
+                </div>
+
+                <div class="events-container" id="eventsContainer">
+                    <div class="agenda-item">
+                        <div class="event-time">08:30</div>
+                        <div class="event-details">
+                            <h4 class="event-title">Avaliação geral do lote 1</h4>
+                            <p class="event-desc">Pesagem e conferência de saúde.</p>
+                        </div>
+                    </div>
+
+                    <div class="agenda-item">
+                        <div class="event-time">14:00</div>
+                        <div class="event-details">
+                            <h4 class="event-title">Vacinação dos ovinos</h4>
+                            <p class="event-desc">Aplicação de clostridiose nos filhotes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="agenda.js"></script>
+</body>
+</html>
