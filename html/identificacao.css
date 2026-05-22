@@ -1,0 +1,124 @@
+/* --- Variáveis Globais --- */
+:root {
+    --sidebar-bg: #0b4027; 
+    --sidebar-hover: #165c3b;
+    --sidebar-text: #ffffff;
+    --bg-main: #f4f7f6; 
+    --card-bg: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-muted: #666666;
+    --border-color: #e0e0e0;
+    --primary: #125534; 
+    --primary-light: #e8f5e9;
+    --danger: #d32f2f;
+    --warning: #f57c00;
+}
+
+/* --- Variáveis do Tema Escuro --- */
+[data-theme="escuro"] {
+    --sidebar-bg: #062114; 
+    --sidebar-hover: #0b4027;
+    --bg-main: #121212; 
+    --card-bg: #1e1e1e;
+    --text-dark: #f5f5f5; 
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    --primary: #4caf50; 
+    --primary-light: #1b5e20; 
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* --- Mobile Header --- */
+.mobile-header { display: none; }
+
+@media (max-width: 768px) {
+    .mobile-header {
+        display: flex;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        padding: 0 15px;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 60px;
+        z-index: 1000;
+    }
+    .mobile-logo { width: 35px; height: 35px; background-color: white; border-radius: 50%; padding: 4px; }
+    .mobile-page-title { font-size: 1.1rem; font-weight: 600; }
+    .menu-toggle { background: none; border: none; color: white; cursor: pointer; }
+    .app-container { padding-top: 60px; flex-direction: column; height: auto; overflow-y: auto; }
+}
+
+/* --- Sidebar --- */
+.sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.3s ease; z-index: 100; }
+.sidebar-brand { padding: 30px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.brand-text h2 { font-size: 1.2rem; font-weight: 700; }
+.brand-text p { font-size: 0.8rem; opacity: 0.7; }
+.sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
+.nav-item { display: flex; align-items: center; padding: 12px 25px; color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; transition: all 0.3s; }
+.nav-item:hover { background-color: var(--sidebar-hover); color: white; }
+.nav-item.active { background-color: var(--sidebar-hover); color: white; border-left: 4px solid #4caf50; }
+.user-profile { padding: 20px; display: flex; align-items: center; gap: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+.user-avatar { width: 40px; height: 40px; background-color: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+@media (max-width: 768px) {
+    .sidebar { position: fixed; top: 60px; left: 0; height: calc(100vh - 60px); width: 280px; transform: translateX(-100%); z-index: 999; }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-overlay { display: none; position: fixed; top: 60px; left: 0; width: 100vw; height: calc(100vh - 60px); background: rgba(0,0,0,0.5); z-index: 998; }
+    .sidebar-overlay.active { display: block; }
+}
+
+/* --- Main Content --- */
+.main-content { flex: 1; padding: 30px; overflow-y: auto; }
+.page-header { margin-bottom: 25px; }
+.page-title { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); }
+.page-subtitle { color: var(--text-muted); margin-top: 5px; }
+
+/* --- Form Styles --- */
+.form-card { padding: 25px; border-radius: 12px; background-color: var(--card-bg); border: 1px solid var(--border-color); }
+.form-section { margin-bottom: 25px; }
+.section-title { font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+@media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
+.form-control { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--bg-main); color: var(--text-dark); font-family: inherit; font-size: 0.95rem; }
+[data-theme="escuro"] .form-control { background-color: #2a2a2a; }
+
+/* --- Options Row (Caprino/Ovino) --- */
+.setting-label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 0.9rem; }
+.options-row { display: flex; gap: 10px; margin-bottom: 15px; }
+.option-btn { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: transparent; color: var(--text-muted); font-weight: 600; cursor: pointer; transition: 0.2s; }
+.option-btn.active { border-color: var(--primary); color: white; background-color: var(--primary); }
+
+/* --- Checkbox Custom --- */
+.checkbox-container { display: block; position: relative; padding-left: 35px; margin-bottom: 12px; cursor: pointer; font-size: 0.95rem; font-weight: 500; user-select: none; }
+.checkbox-container input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+.checkmark { position: absolute; top: 0; left: 0; height: 22px; width: 22px; background-color: var(--border-color); border-radius: 6px; transition: 0.3s; }
+.checkbox-container:hover input ~ .checkmark { background-color: #ccc; }
+.checkbox-container input:checked ~ .checkmark { background-color: var(--primary); }
+.checkmark:after { content: ""; position: absolute; display: none; }
+.checkbox-container input:checked ~ .checkmark:after { display: block; }
+.checkbox-container .checkmark:after { left: 8px; top: 4px; width: 5px; height: 10px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+
+/* --- Buttons --- */
+.btn { padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; font-size: 0.95rem; margin-bottom: 10px; }
+.btn-primary { background-color: var(--primary); color: white; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
+.btn-block { width: 100%; }
+
+.form-actions { margin-top: 30px; }

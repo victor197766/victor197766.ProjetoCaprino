@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Animais - ControlCabra</title>
+    <link rel="stylesheet" href="identificacao.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+        </div>
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Identificação</span>
+        </div>
+        <div class="mobile-header-right">
+            <button class="menu-toggle" id="menuToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-text">
+                    <h2>Capri & Ovino</h2>
+                    <p>Gestão Inteligente</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="producao.html" class="nav-item">Dashboard</a>
+                <a href="saude.html" class="nav-item">Saúde</a>
+                <a href="estatisticas.html" class="nav-item">Estatísticas</a>
+                <a href="configuracoes.html" class="nav-item">Configurações</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Identificar Novo Animal</h1>
+                    <p class="page-subtitle">Preencha os dados abaixo para registrar o caprino ou ovino</p>
+                </div>
+            </header>
+
+            <section class="card form-card">
+                <form id="registroAnimalForm">
+                    
+                    <div class="form-section">
+                        <h3 class="section-title">Origem e Saúde</h3>
+                        
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="nasceu_fazenda">
+                            <span class="checkmark"></span>
+                            Nasceu em sua fazenda?
+                        </label>
+
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="vacinado">
+                            <span class="checkmark"></span>
+                            Previamente vacinado e medicado?
+                        </label>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="setting-label">É Ovino ou Caprino?</label>
+                        <div class="options-row">
+                            <button type="button" class="option-btn active" data-group="especie" data-value="caprino">Caprino</button>
+                            <button type="button" class="option-btn" data-group="especie" data-value="ovino">Ovino</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <label class="setting-label">É Macho ou Fêmea?</label>
+                        <div class="options-row">
+                            <button type="button" class="option-btn active" data-group="sexo" data-value="macho">Macho</button>
+                            <button type="button" class="option-btn" data-group="sexo" data-value="femea">Fêmea</button>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Peso (Kg)</label>
+                            <input type="number" class="form-control" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Idade</label>
+                            <input type="text" class="form-control" placeholder="Ex: 2 anos">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Está em tratamento? (Se sim, qual?)</label>
+                        <input type="text" class="form-control" placeholder="Descreva o tratamento ou deixe vazio">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Está prenha? (Se sim, quanto tempo?)</label>
+                        <input type="text" class="form-control" placeholder="Ex: Sim, 2 meses">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número do brinco, tatuagem ou microchip</label>
+                        <input type="text" class="form-control" placeholder="Identificador único">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Raça</label>
+                        <input type="text" class="form-control" placeholder="Ex: Boer, Santa Inês...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Está em qual lote?</label>
+                        <select class="form-control">
+                            <option value="">Selecione o lote</option>
+                            <option value="lote1">Lote 01 - Reprodução</option>
+                            <option value="lote2">Lote 02 - Engorda</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número Identificador da Matriz e do Reprodutor</label>
+                        <input type="text" class="form-control" placeholder="Pai e Mãe">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Informações extras / Observações</label>
+                        <textarea class="form-control" rows="4" placeholder="Algum detalhe relevante..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">Salvar Identificação</button>
+                        <button type="reset" class="btn btn-outline btn-block">Limpar Campos</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="identificacao.js"></script>
+</body>
+</html>
