@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Animais - ControlCabra</title>
+    <link rel="stylesheet" href="lista_animais.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+        </div>
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Lista de Animais</span>
+        </div>
+        <div class="mobile-header-right">
+            <button class="menu-toggle" id="menuToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-text">
+                    <h2>Capri & Ovino</h2>
+                    <p>Gestão Inteligente</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="producao.html" class="nav-item">Dashboard</a>
+                <a href="saude.html" class="nav-item">Saúde</a>
+                <a href="estatisticas.html" class="nav-item">Estatísticas</a>
+                <a href="lista_animais.html" class="nav-item active">Lista de Animais</a>
+                <a href="configuracoes.html" class="nav-item">Configurações</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            
+            <section class="summary-section">
+                <div class="metric-card main-metric">
+                    <span class="metric-value success-text">Rs 1.234,00</span>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">Gastos</span>
+                        <span class="metric-value danger-text">Rs 769,00</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Nascimentos</span>
+                        <span class="metric-value success-text">60</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Mortes</span>
+                        <span class="metric-value danger-text">17</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Produção Total</span>
+                        <span class="metric-value highlight-text">150 Kg</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="animal-list-section">
+                <div class="section-header">
+                    <h2 class="card-title">Seu Rebanho</h2>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Buscar animal...">
+                    </div>
+                </div>
+
+                <div class="animal-list">
+                    <div class="animal-item">
+                        <div class="animal-info">
+                            <div class="animal-avatar">
+                                <img src="https://images.unsplash.com/photo-1524024973431-2ad916746881?q=80&w=100&auto=format&fit=crop" alt="Cabra">
+                            </div>
+                            <span class="animal-name">Cabra1-C</span>
+                        </div>
+                        <button class="action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        </button>
+                    </div>
+
+                    <div class="animal-item">
+                        <div class="animal-info">
+                            <div class="animal-avatar">
+                                <img src="https://images.unsplash.com/photo-1511216113906-8f56bb201c10?q=80&w=100&auto=format&fit=crop" alt="Cabra">
+                            </div>
+                            <span class="animal-name">Cabra2-C</span>
+                        </div>
+                        <button class="action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        </button>
+                    </div>
+
+                    <div class="animal-item">
+                        <div class="animal-info">
+                            <div class="animal-avatar">
+                                <img src="https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=100&auto=format&fit=crop" alt="Cabra">
+                            </div>
+                            <span class="animal-name">Cabra3-C</span>
+                        </div>
+                        <button class="action-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        </button>
+                    </div>
+
+                    </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="lista_animais.js"></script>
+</body>
+</html>

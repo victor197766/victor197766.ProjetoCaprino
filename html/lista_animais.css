@@ -1,0 +1,107 @@
+/* --- Variáveis Globais --- */
+:root {
+    --sidebar-bg: #0b4027; 
+    --sidebar-hover: #165c3b;
+    --sidebar-text: #ffffff;
+    --bg-main: #f4f7f6; 
+    --card-bg: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-muted: #666666;
+    --border-color: #e0e0e0;
+    --primary: #125534; 
+    --success: #2e7d32;
+    --danger: #d32f2f;
+    --highlight: #d4a017;
+}
+
+/* --- Tema Escuro --- */
+[data-theme="escuro"] {
+    --sidebar-bg: #062114; 
+    --bg-main: #121212; 
+    --card-bg: #1e1e1e;
+    --text-dark: #f5f5f5; 
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    --primary: #4caf50; 
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-dark); font-size: 14px; transition: background 0.3s; }
+
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* --- Mobile Header --- */
+.mobile-header { display: none; }
+@media (max-width: 768px) {
+    .mobile-header {
+        display: flex; background: var(--sidebar-bg); color: white; padding: 0 15px;
+        align-items: center; justify-content: space-between; position: fixed;
+        top: 0; left: 0; width: 100%; height: 60px; z-index: 1000;
+    }
+    .mobile-logo { width: 35px; height: 35px; background: white; border-radius: 50%; padding: 4px; }
+    .app-container { padding-top: 60px; flex-direction: column; height: auto; overflow-y: auto; }
+}
+
+/* --- Sidebar (Sem Ícones) --- */
+.sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; transition: transform 0.3s; z-index: 100; }
+.sidebar-brand { padding: 30px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.brand-text h2 { font-size: 1.2rem; font-weight: 700; }
+.sidebar-nav { flex: 1; padding: 20px 0; }
+.nav-item { padding: 12px 25px; color: rgba(255,255,255,0.8); text-decoration: none; display: block; font-weight: 500; transition: 0.3s; }
+.nav-item:hover, .nav-item.active { background: var(--sidebar-hover); color: white; }
+.nav-item.active { border-left: 4px solid var(--primary); }
+.user-profile { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 35px; height: 35px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+@media (max-width: 768px) {
+    .sidebar { position: fixed; top: 60px; left: 0; height: calc(100vh - 60px); width: 280px; transform: translateX(-100%); z-index: 999; }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-overlay { display: none; position: fixed; top: 60px; left: 0; width: 100vw; height: calc(100vh - 60px); background: rgba(0,0,0,0.5); z-index: 998; }
+    .sidebar-overlay.active { display: block; }
+}
+
+/* --- Content --- */
+.main-content { flex: 1; padding: 20px; overflow-y: auto; }
+
+/* --- Resumo (Estilo da Foto) --- */
+.summary-section { margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px; }
+.metric-card {
+    background: var(--card-bg); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border-color); text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 5px;
+}
+.main-metric { padding: 30px; }
+.metrics-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+@media (min-width: 480px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.metric-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+.metric-value { font-size: 1.5rem; font-weight: 700; }
+.success-text { color: var(--success); }
+.danger-text { color: var(--danger); }
+.highlight-text { color: var(--highlight); }
+
+/* --- Lista de Animais --- */
+.animal-list-section { background: var(--card-bg); border-radius: 15px; border: 1px solid var(--border-color); overflow: hidden; }
+.section-header { padding: 20px; border-bottom: 1px solid var(--border-color); }
+.search-bar input {
+    width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color);
+    background: var(--bg-main); color: var(--text-dark); margin-top: 10px;
+}
+
+.animal-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 20px; border-bottom: 1px solid var(--border-color); transition: 0.2s;
+}
+.animal-item:last-child { border-bottom: none; }
+.animal-item:hover { background: rgba(0,0,0,0.02); }
+
+.animal-info { display: flex; align-items: center; gap: 15px; }
+.animal-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); }
+.animal-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.animal-name { font-weight: 600; font-size: 1rem; }
+
+.action-btn {
+    background: var(--bg-main); border: 1px solid var(--border-color);
+    color: var(--text-dark); width: 35px; height: 35px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
