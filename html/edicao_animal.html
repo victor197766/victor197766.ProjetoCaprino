@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Animal - ControlCabra</title>
+    <link rel="stylesheet" href="edicao_animal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+        </div>
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Editar Caprino</span>
+        </div>
+        <div class="mobile-header-right">
+            <button class="menu-toggle" id="menuToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-text">
+                    <h2>Capri & Ovino</h2>
+                    <p>Gestão Inteligente</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="producao.html" class="nav-item">Dashboard</a>
+                <a href="saude.html" class="nav-item">Saúde</a>
+                <a href="estatisticas.html" class="nav-item">Estatísticas</a>
+                <a href="lista_animais.html" class="nav-item">Lista de Animais</a>
+                <a href="configuracoes.html" class="nav-item">Configurações</a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="user-info">
+                    <strong>Administrador</strong>
+                    <span>Fazenda Boa Vista</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            
+            <section class="edit-profile-header">
+                <div class="animal-photo-wrapper">
+                    <img src="https://images.unsplash.com/photo-1524024973431-2ad916746881?q=80&w=200&auto=format&fit=crop" alt="Foto do Caprino" class="animal-photo">
+                </div>
+                <h2 class="animal-display-name">Cabra1-C</h2>
+            </section>
+
+            <section class="card form-card">
+                <form id="edicaoAnimalForm">
+                    
+                    <div class="form-group">
+                        <input type="number" class="form-control" placeholder="Peso (Kg)" value="45.5">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Idade" value="2 anos e 3 meses">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Está prenha? Se sim quanto tempo de gestação" value="Não">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Número do brinco, tatuagem ou microchip" value="BR-8492">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Raça" value="Boer">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Está em qual lote" value="Lote 01 - Reprodução">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Número identificador da Matriz e do Reprodutor" value="M-02 / P-15">
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" placeholder="Informações extras aqui.">Animal com excelente ganho de peso na última pesagem.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Doenças ou infecções identificadas" value="Nenhuma">
+                    </div>
+
+                    <div class="form-group">
+                        <select class="form-control">
+                            <option value="ativo">Estado atual: Ativo no rebanho</option>
+                            <option value="morto">Estado atual: Morto</option>
+                            <option value="vendido">Estado atual: Vendido</option>
+                            <option value="transferido">Estado atual: Transferido</option>
+                            <option value="abate">Estado atual: Abate</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">Salvar Alterações</button>
+                        <a href="lista_animais.html" class="btn btn-outline btn-block text-center">Cancelar</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="edicao_animal.js"></script>
+</body>
+</html>
