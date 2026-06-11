@@ -7,10 +7,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
@@ -38,6 +34,44 @@ CREATE TABLE IF NOT EXISTS `mydb`.`morte` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`usuario` (MOVIDA PARA CIMA)
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`usuario` (
+  `user_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(16) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `senha` VARCHAR(255) NOT NULL,
+  `tipo` ENUM('produtor', 'visitante') NOT NULL,
+  `nome_propriedade` VARCHAR(150) NULL,
+  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP(),
+  `num_telefone` VARCHAR(15) NULL DEFAULT NULL,
+  `CPF` VARCHAR(11) NULL DEFAULT NULL,
+  `CNPJ` VARCHAR(14) NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`lote` (CORRIGIDA: Apenas ID e vínculos com Usuário)
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`lote` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `nome` VARCHAR(45) NOT NULL,
+  `tipo` VARCHAR(32) NOT NULL,
+  `data_criacao` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (`id`, `user_id`),
+  INDEX `fk_lote_usuario1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_lote_usuario1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `mydb`.`usuario` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -111,15 +145,16 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`animal`
+-- Table `mydb`.`animal` (CORRIGIDA: Adicionada a coluna lote_id)
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`animal` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `lote_id` INT(11) NULL DEFAULT NULL, -- COLUNA ADICIONADA PARA RESOLVER O ERRO PHP
   `matriz_id` INT(11) NULL DEFAULT NULL,
   `reprodutor_id` VARCHAR(45) NOT NULL,
   `nome` VARCHAR(45) NOT NULL,
-  `especie` ENUM('') NOT NULL,
-  `sexo` ENUM('') NOT NULL,
+  `especie` ENUM('Caprino', 'Ovino') NOT NULL, -- Enum ajustado (estava vazio)
+  `sexo` ENUM('Macho', 'Fêmea') NOT NULL, -- Enum ajustado (estava vazio)
   `peso_kg` FLOAT NOT NULL,
   `idade` INT(11) NOT NULL,
   `raca` VARCHAR(45) NOT NULL,
@@ -138,10 +173,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`animal` (
   `VACINACAO_ID` INT(11) NOT NULL,
   `MORTE_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`, `MORTE_id`),
+  INDEX `fk_animal_lote1_idx` (`lote_id` ASC),
   INDEX `fk_animal_NASCIMENTO1_idx` (`NASCIMENTO_id` ASC, `NASCIMENTO_animal_id` ASC, `NASCIMENTO_lote_id` ASC),
   INDEX `fk_animal_cuidado1_idx` (`cuidado_ID` ASC),
   INDEX `fk_animal_VACINACAO1_idx` (`VACINACAO_ID` ASC),
   INDEX `fk_animal_MORTE1_idx` (`MORTE_id` ASC),
+  CONSTRAINT `fk_animal_lote1`
+    FOREIGN KEY (`lote_id`)
+    REFERENCES `mydb`.`lote` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_animal_MORTE1`
     FOREIGN KEY (`MORTE_id`)
     REFERENCES `mydb`.`morte` (`id`)
@@ -173,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`financeiro` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `lote_id` INT(11) NOT NULL,
-  `tipo` ENUM('') NOT NULL,
+  `tipo` ENUM('Receita', 'Despesa') NOT NULL, -- Enum ajustado (estava vazio)
   `valor` DECIMAL(10,0) NULL DEFAULT NULL,
   `descrição` VARCHAR(45) NULL DEFAULT NULL,
   `data` DATE NULL DEFAULT NULL,
@@ -190,83 +231,23 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`producao`
+-- Table `mydb`.`producao` (CORRIGIDA: Removido MORTE_id, adicionado lote_id)
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`producao` (
   `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `lote_id` INT(11) NOT NULL, -- COLUNA ADICIONADA PARA O PHP LER
   `QUANTIDADE_KG` FLOAT NULL DEFAULT NULL,
   `TIPO` VARCHAR(45) NULL DEFAULT NULL,
   `DATA_REGISTRO` DATE NULL DEFAULT NULL,
-  `MORTE_id` INT(11) NOT NULL,
-  PRIMARY KEY (`ID`, `MORTE_id`),
-  INDEX `fk_producao_MORTE1_idx` (`MORTE_id` ASC),
-  CONSTRAINT `fk_producao_MORTE1`
-    FOREIGN KEY (`MORTE_id`)
-    REFERENCES `mydb`.`morte` (`id`)
-    ON DELETE NO ACTION
+  PRIMARY KEY (`ID`),
+  INDEX `fk_producao_lote1_idx` (`lote_id` ASC),
+  CONSTRAINT `fk_producao_lote1`
+    FOREIGN KEY (`lote_id`)
+    REFERENCES `mydb`.`lote` (`id`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`lote` (CORRIGIDA)
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`lote` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `user_id` INT(11) NOT NULL, -- O lote agora aponta para o criador (Usuário)
-  `nome` VARCHAR(45) NOT NULL,
-  `tipo` VARCHAR(32) NOT NULL,
-  `data_criacao` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `financeiro_id` INT(11) NOT NULL,
-  `financeiro_user_id` INT(11) NOT NULL,
-  `financeiro_lote_id` INT(11) NOT NULL,
-  `animal_id` INT(11) NOT NULL,
-  `producao_ID` INT(11) NOT NULL,
-  PRIMARY KEY (`id`, `user_id`),
-  INDEX `fk_lote_usuario1_idx` (`user_id` ASC),
-  INDEX `fk_lote_financeiro1_idx` (`financeiro_id` ASC, `financeiro_user_id` ASC, `financeiro_lote_id` ASC),
-  INDEX `fk_lote_animal1_idx` (`animal_id` ASC),
-  INDEX `fk_lote_producao1_idx` (`producao_ID` ASC),
-  -- CHAVE ESTRANGEIRA CORRETA: O Lote depende do Usuário existir primeiro
-  CONSTRAINT `fk_lote_usuario1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `mydb`.`usuario` (`user_id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lote_animal1`
-    FOREIGN KEY (`animal_id`)
-    REFERENCES `mydb`.`animal` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lote_financeiro1`
-    FOREIGN KEY (`financeiro_id` , `financeiro_user_id` , `financeiro_lote_id`)
-    REFERENCES `mydb`.`financeiro` (`id` , `user_id` , `lote_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lote_producao1`
-    FOREIGN KEY (`producao_ID`)
-    REFERENCES `mydb`.`producao` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`usuario` (CORRIGIDA)
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`usuario` (
-  `user_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(16) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `senha` VARCHAR(255) NOT NULL, -- Aumentado para não cortar o hash do password_hash()
-  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP(),
-  `num_telefone` VARCHAR(15) NULL DEFAULT NULL, -- Mudado para NULL (opcional)
-  `CPF` VARCHAR(11) NULL DEFAULT NULL,
-  `CNPJ` VARCHAR(14) NULL DEFAULT NULL, -- Corrigido o erro de digitação 'CPNJ' e mudado para NULL
-  PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC)
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

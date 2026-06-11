@@ -390,13 +390,15 @@ body {
 .legend-item span:last-child { margin-left: auto; font-weight: 600; }
 
 /* Tabela */
-.table-container { overflow-x: auto; }
+.table-container { overflow-x: visible; }
 
-.data-table { width: 100%; border-collapse: collapse; }
+.data-table { width: 100%; border-collapse: collapse; table-layout: auto;}
 
 .data-table th, .data-table td {
-    padding: 12px 15px;
-    text-align: left;
+    padding: 10px 6px;
+    font-size: 13px;
+    white-space: normal;
+    text-align: center;
     border-bottom: 1px solid var(--border-color);
 }
 

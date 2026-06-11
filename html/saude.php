@@ -1,3 +1,17 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: recuperarConta.html');
+    exit();
+}
+$nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);
+$emailUsuario = htmlspecialchars($_SESSION['usuario_email']);
+$partes = explode(' ', $nomeUsuario);
+$iniciais = strtoupper(substr($partes[0], 0, 1));
+if (count($partes) > 1) {
+    $iniciais .= strtoupper(substr(end($partes), 0, 1));
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,7 +27,7 @@
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <header class="mobile-header">
-            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mini-logo">
+            <img src="logoControlCabra.png" alt="Logo" class="mini-logo">
             <span>Saúde e Cuidados</span>
             <button id="menuToggle" class="icon-btn">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -24,23 +38,23 @@
             <div class="sidebar-brand">
                 <img src="logoControlCabra.png" alt="Logo" class="sidebar-logo">
                 <div class="brand-text">
-                    <h2>Capri & Ovino</h2>
+                    <h2>ControlCabra</h2>
                     <p>Gestão Inteligente</p>
                 </div>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="estatisticas.php" class="nav-item">Estatísticas</a>
-                <a href="saude.html" class="nav-item active">Saúde</a>
-                <a href="cuidados.html" class="nav-item">Cuidados</a>
-                <a href="configuracoes.html" class="nav-item">Configurações</a>
+                <a href="saude.php" class="nav-item active">Saúde</a>
+                <a href="cuidados.php" class="nav-item">Cuidados</a>
+                <a href="configuracoes.php" class="nav-item">Configurações</a>
             </nav>
 
             <div class="user-profile">
-                <div class="avatar">AD</div>
+                <div class="avatar"><?php echo $iniciais; ?></div>
                 <div class="user-info">
-                    <strong>Administrador</strong>
-                    <span>Fazenda Boa Vista</span>
+                    <strong><?php echo $nomeUsuario; ?></strong>
+                    <span><?php echo $emailUsuario; ?></span>
                 </div>
             </div>
         </aside>
