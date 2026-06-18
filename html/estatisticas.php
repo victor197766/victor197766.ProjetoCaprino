@@ -110,6 +110,7 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                 <a href="#" class="nav-item active">Estatísticas</a>
                 <a href="saude.html" class="nav-item">Saúde</a> <a href="cuidados.html" class="nav-item">Cuidados</a>
                 <a href="configuracoes.html" class="nav-item">Configurações</a>
+                <a href="administracao.php" class="nav-item">Administração</a>
             </nav>
 
             <div class="user-profile">
