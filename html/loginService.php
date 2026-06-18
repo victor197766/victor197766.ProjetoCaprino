@@ -15,6 +15,14 @@ if (mysqli_num_rows($result) == 1) {
     $user = mysqli_fetch_assoc($result);
 
     if (password_verify($password, $user['senha'])) {
+        // Verificar se a conta está suspensa
+        if (isset($user['suspenso']) && $user['suspenso'] == 1) {
+            echo 'Sua conta está suspensa. Entre em contato com o suporte para reativá-la.';
+            mysqli_stmt_close($stmt);
+            mysqli_close($conexao);
+            exit();
+        }
+
         $_SESSION['usuario_id']     = $user['user_id'];
         $_SESSION['usuario_nome']   = $user['username'];
         $_SESSION['usuario_email']  = $user['email'];
