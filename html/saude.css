@@ -69,7 +69,18 @@ body {
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-dark); font-size: 14px; }
+
+html, body {
+    min-height: 100%;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    font-size: 14px;
+    min-height: 100vh;
+}
 
 /* --- Base e Estrutura Mobile --- */
 .app-container { display: flex; flex-direction: column; min-height: 100vh; position: relative; overflow-x: hidden; }
@@ -171,7 +182,10 @@ body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color
 /* --- Tabela e Status --- */
 .status-overview { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; } 
 .status-box { flex: 1; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 5px; position: relative;}
-.status-box.success { background: var(--success-light); color: var(--success); }
+.status-box.success { 
+    background: MidnightBlue; 
+    color: var(--success); 
+}
 .status-box.warning { background: var(--warning-light); color: var(--warning); }
 .status-box.danger { background: var(--danger-light); color: var(--danger); }
 .status-info span { font-size: 0.75rem; font-weight: 600; display: block; color: var(--text-dark);}
@@ -188,62 +202,258 @@ body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color
 .data-table th { color: var(--text-muted); font-weight: 500; padding: 8px 5px; border-bottom: 1px solid var(--border-color); }
 .data-table td { padding: 10px 5px; border-bottom: 1px solid var(--border-color); }
 
-/* --- Gestantes e Alimentação --- */
-.gestantes-content { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-.gestante-icon { width: 60px; height: 60px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;}
-.card-gestantes ul { list-style: none; }
-.card-gestantes li { font-size: 0.85rem; padding: 3px 0; color: var(--text-dark); }
+.gestantes-content { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+    margin-bottom: 15px; 
+}
 
-.alimentacao-wrapper { display: flex; flex-direction: column; gap: 20px; }
-.chart-container { display: flex; flex-direction: column; align-items: center; gap: 20px; } 
+.gestante-icon { 
+    width: 60px; 
+    height: 60px; 
+    background: var(--primary-light); 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0;
+}
+
+.card-gestantes ul { 
+    list-style: none; 
+}
+
+.card-gestantes li { 
+    font-size: 0.85rem; 
+    padding: 3px 0; 
+    color: var(--text-dark); 
+}
+
+.gestantes-extra {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+.gestante-info-box {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    background: rgba(76, 175, 80, 0.08);
+}
+
+.gestante-info-box span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.gestante-info-box strong {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.gestantes-alerta {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 5px;
+}
+
+.gestantes-alerta strong {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+}
+
+.gestantes-alerta p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.alimentacao-wrapper { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.alimentacao-main {
+    width: 100%;
+}
+
+.alimentacao-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chart-container { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 20px; 
+} 
 .pie-chart {
     width: 120px; height: 120px; border-radius: 50%; flex-shrink: 0;
     background: conic-gradient( var(--success) 0% 45%, var(--info) 45% 70%, var(--warning) 70% 85%, var(--danger) 85% 95%, #9e9e9e 95% 100% );
 }
-.chart-legend { width: 100%; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
 
-/* =========================================
-   ADAPTAÇÃO DESKTOP
-========================================= */
-@media (min-width: 768px) {
-    .status-overview { flex-direction: row; }
+.chart-legend { 
+    width: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    font-size: 0.85rem; 
+}
+
+.lotes-alimentacao {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.lote-card {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px;
+    background: rgba(76, 175, 80, 0.08);
+}
+
+.lote-title {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.lote-card strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.lote-card small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.3;
 }
 
 @media (min-width: 1024px) {
     .app-container { 
         flex-direction: row; 
         align-items: stretch;
+        min-height: 100vh;
     }
     
-    .mobile-header { display: none; }
+    .mobile-header { 
+        display: none; 
+    }
     
-    /* CORREÇÃO 1: Sidebar preenche altura total 100vh cravado e fica grudada no topo */
     .sidebar { 
         position: sticky; 
         top: 0;
         left: 0;
         transform: none; 
-        height: 100vh;
+        height: auto;
+        min-height: 100vh;
+        align-self: stretch;
+        flex: 0 0 260px;
         overflow-y: auto;
     }
     
-    .sidebar-overlay { display: none !important; } 
+    .sidebar-overlay { 
+        display: none !important; 
+    } 
 
-    .main-content { padding: 30px 40px; }
-    .page-header { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .main-content { 
+        padding: 30px 40px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .page-header { 
+        flex-direction: row; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 30px; 
+    }
     
-    /* Grid de Layout Principal */
-    .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .span-col-2 { grid-column: span 2; }
-    .span-col-full { grid-column: span 3; }
+    .dashboard-grid { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 20px; 
+    }
+
+    .span-col-2 { 
+        grid-column: span 2; 
+    }
+
+    .span-col-full { 
+        grid-column: span 3; 
+    }
     
-    .doencas-slider { grid-template-columns: repeat(3, 1fr); display: grid; overflow: visible; scroll-snap-type: none; }
-    .doenca-card { min-width: auto; } 
+    .doencas-slider { 
+        grid-template-columns: repeat(3, 1fr); 
+        display: grid; 
+        overflow: visible; 
+        scroll-snap-type: none; 
+    }
+
+    .doenca-card { 
+        min-width: auto; 
+    } 
     
-    /* CORREÇÃO 2: Configuração para Alimentação que agora é FULL (sem dicas) */
-    .alimentacao-wrapper { display: flex; flex-direction: row; align-items: center; justify-content: center; }
-    .alimentacao-main { flex: 1; max-width: 600px; margin: 0 auto; text-align: center;}
-    .chart-container { flex-direction: row; justify-content: center; gap: 40px; }
-    .pie-chart { width: 140px; height: 140px; }
-    .chart-legend { text-align: left; }
+    .alimentacao-wrapper { 
+        display: flex; 
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: flex-start; 
+    }
+    
+    .alimentacao-main { 
+        flex: 1; 
+        max-width: none; 
+        margin: 0; 
+        text-align: center;
+    }
+    
+    .alimentacao-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 35px;
+    }
+    
+    .chart-container { 
+        flex-direction: row; 
+        justify-content: flex-start; 
+        align-items: center;
+        gap: 35px;
+        min-width: 360px;
+    }
+    
+    .pie-chart { 
+        width: 140px; 
+        height: 140px; 
+    }
+    
+    .chart-legend { 
+        width: auto;
+        text-align: left; 
+    }
+    
+    .lotes-alimentacao {
+        flex: 1;
+        grid-template-columns: repeat(4, minmax(120px, 1fr));
+        gap: 12px;
+    }
 }
