@@ -11,14 +11,14 @@ if (isset($_GET['id'])) {
     mysqli_stmt_bind_param($stmt, "i", $user_id);
 
     if (mysqli_stmt_execute($stmt)) {
-        header('Location: listUser.php?msg=deletado');
+        header('Location: administracao.php?msg=deletado');
         exit();
     } else {
         echo "Erro ao deletar usuário: " . mysqli_error($conexao);
     }
     mysqli_stmt_close($stmt);
 } else {
-    header('Location: listUser.php');
+    header('Location: administracao.php');
     exit();
 }
 

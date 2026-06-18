@@ -48,6 +48,7 @@ if (count($partes) > 1) {
                 <a href="saude.php" class="nav-item active">Saúde</a>
                 <a href="cuidados.php" class="nav-item">Cuidados</a>
                 <a href="configuracoes.php" class="nav-item">Configurações</a>
+                <a href="administracao.php" class="nav-item">Administração</a>
             </nav>
 
             <div class="user-profile">
