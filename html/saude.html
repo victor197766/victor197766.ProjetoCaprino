@@ -54,16 +54,6 @@
                     </h1>
                     <p class="page-subtitle">Acompanhe e cuide do bem-estar do seu rebanho</p>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-icon notification-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                        <span class="badge">3</span>
-                    </button>
-                    <button class="btn btn-outline">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        Ajuda
-                    </button>
-                </div>
             </header>
 
             <div class="dashboard-grid">
@@ -101,10 +91,15 @@
                         <h3 class="card-title">Avaliação em gestantes</h3>
                         <p class="card-subtitle">Acompanhe a gestação e garanta o bem-estar.</p>
                     </div>
+                
                     <div class="gestantes-content">
                         <div class="gestante-icon">
-                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path><path d="M12 8v4l3 3"></path></svg>
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5">
+                                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path>
+                                <path d="M12 8v4l3 3"></path>
+                            </svg>
                         </div>
+                
                         <ul>
                             <li>Diagnóstico de gestação</li>
                             <li>Acompanhamento</li>
@@ -112,9 +107,74 @@
                             <li>Preparação para o parto</li>
                         </ul>
                     </div>
+                
+                    <div class="gestantes-extra">
+                        <div class="gestante-info-box">
+                            <span>Gestantes monitoradas</span>
+                            <strong>24</strong>
+                        </div>
+                
+                        <div class="gestante-info-box">
+                            <span>Próximos partos</span>
+                            <strong>6</strong>
+                        </div>
+                    </div>
+                
+                    <div class="gestantes-alerta">
+                        <strong>Cuidados importantes</strong>
+                        <p>Verifique alimentação, hidratação, vacinação e sinais de desconforto durante toda a gestação.</p>
+                    </div>
+                
                     <button class="btn btn-outline btn-block mt-3">Acompanhar gestantes</button>
                 </section>
-
+                <section class="card card-alimentacao span-col-full">
+                    <div class="alimentacao-wrapper">
+                        <div class="alimentacao-main">
+                            <div class="card-header">
+                                <h3 class="card-title">Controle de alimentação apropriada</h3>
+                                <p class="card-subtitle">Garanta uma alimentação balanceada.</p>
+                            </div>
+                
+                            <div class="alimentacao-content">
+                                <div class="chart-container">
+                                    <div class="pie-chart"></div>
+                                    <div class="chart-legend">
+                                        <div class="legend-item"><span class="dot dot-success"></span> Forragem (45%)</div>
+                                        <div class="legend-item"><span class="dot dot-info"></span> Concentrado (25%)</div>
+                                        <div class="legend-item"><span class="dot dot-warning"></span> Proteína (15%)</div>
+                                        <div class="legend-item"><span class="dot dot-danger"></span> Minerais (10%)</div>
+                                    </div>
+                                </div>
+                
+                                <div class="lotes-alimentacao">
+                                    <div class="lote-card">
+                                        <span class="lote-title">Lote 1</span>
+                                        <strong><span class="dot dot-success"></span> Forragem</strong>
+                                        <small>Alimentação mais utilizada</small>
+                                    </div>
+                
+                                    <div class="lote-card">
+                                        <span class="lote-title">Lote 2</span>
+                                        <strong><span class="dot dot-info"></span> Concentrado</strong>
+                                        <small>Alimentação mais utilizada</small>
+                                    </div>
+                
+                                    <div class="lote-card">
+                                        <span class="lote-title">Lote 3</span>
+                                        <strong><span class="dot dot-warning"></span> Proteína</strong>
+                                        <small>Alimentação mais utilizada</small>
+                                    </div>
+                
+                                    <div class="lote-card">
+                                        <span class="lote-title">Lote 4</span>
+                                        <strong><span class="dot dot-danger"></span> Minerais</strong>
+                                        <small>Alimentação mais utilizada</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section class="card card-avaliacao span-col-full">
                     <div class="card-header">
                         <h3 class="card-title">Avaliação dos animais</h3>
@@ -186,27 +246,6 @@
                     </div>
                     <button class="btn btn-outline btn-block mt-3">Ver todos os animais</button>
                 </section>
-
-                <section class="card card-alimentacao span-col-full">
-                    <div class="alimentacao-wrapper">
-                        <div class="alimentacao-main">
-                            <div class="card-header">
-                                <h3 class="card-title">Controle de alimentação apropriada</h3>
-                                <p class="card-subtitle">Garanta uma alimentação balanceada.</p>
-                            </div>
-                            <div class="chart-container">
-                                <div class="pie-chart"></div>
-                                <div class="chart-legend">
-                                    <div class="legend-item"><span class="dot dot-success"></span> Forragem (45%)</div>
-                                    <div class="legend-item"><span class="dot dot-info"></span> Concentrado (25%)</div>
-                                    <div class="legend-item"><span class="dot dot-warning"></span> Proteína (15%)</div>
-                                    <div class="legend-item"><span class="dot dot-danger"></span> Minerais (10%)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
             </div>
         </main>
     </div>
