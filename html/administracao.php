@@ -244,8 +244,9 @@ $resultado = mysqli_query($conexao, $sql);
             <?php endif; ?>
 
             <section class="card mt-4">
-                <div class="card-header">
-                    <h3 class="card-title">Usuários Cadastrados</h3>
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <h3 class="card-title" style="margin: 0;">Usuários Cadastrados</h3>
+                    <input type="text" id="searchInput" placeholder="Pesquise por ID, nome ou email" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-dark); font-size: 0.9rem; width: 100%; max-width: 300px;">
                 </div>
                 
                 <div class="table-container" style="width: 100%; overflow-x: auto;">
@@ -403,6 +404,26 @@ $resultado = mysqli_query($conexao, $sql);
                 fecharModal();
             }
         }
+
+        // Pesquisa na tabela
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('.data-table tbody tr');
+            
+            rows.forEach(row => {
+                if (row.children.length > 1) { // Ignora "Nenhum usuário cadastrado"
+                    let id = row.children[0].textContent.toLowerCase();
+                    let name = row.children[1].textContent.toLowerCase();
+                    let email = row.children[2].textContent.toLowerCase();
+                    
+                    if (id.includes(filter) || name.includes(filter) || email.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>

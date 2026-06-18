@@ -52,9 +52,9 @@ if (count($partes) > 1) {
 
             <nav class="sidebar-nav">
                 <a href="estatisticas.php" class="nav-item">Estatísticas</a>
-                <a href="saude.html" class="nav-item">Saúde</a>
-                <a href="cuidados.html" class="nav-item">Cuidados</a>
-                <a href="configuracoes2.php" class="nav-item active">Configurações</a>
+                <a href="saude.php" class="nav-item">Saúde</a>
+                <a href="cuidados.php" class="nav-item">Cuidados</a>
+                <a href="configuracoes.php" class="nav-item active">Configurações</a>
                 <a href="administracao.php" class="nav-item">Administração</a>
             </nav>
 
