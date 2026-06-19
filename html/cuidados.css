@@ -90,9 +90,9 @@ body {
 /* =========================================
    NOVO: Ações Rápidas (Os 4 Botões do Menu)
    ========================================= */
-.quick-actions-grid {
+   .quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin-bottom: 30px;
 }
@@ -188,6 +188,269 @@ body {
 .stat-item.success .percent { color: var(--success); font-weight: 600; }
 .stat-item.warning .percent { color: var(--warning); font-weight: 600; }
 
+/* =========================================
+   agenda de vacinação
+   ========================================= */
+   .agenda-vacinacao-card {
+    margin-top: 10px;
+}
+
+.agenda-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.agenda-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.agenda-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.agenda-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.agenda-nav-btn,
+.agenda-date-button {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    border-radius: 8px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.agenda-nav-btn {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.agenda-date-button {
+    padding: 0 16px;
+    font-weight: 700;
+    min-width: 150px;
+}
+
+.agenda-nav-btn:hover,
+.agenda-date-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.agenda-date-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.calendar-weekdays span {
+    padding: 10px 0;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 30px;
+}
+
+.calendar-day,
+.calendar-empty {
+    height: 70px;
+}
+
+.calendar-day {
+    width: 52px;
+    height: 52px;
+    border: none;
+    background-color: transparent;
+    color: var(--text-dark);
+    border-radius: 50%;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    justify-self: center;
+    align-self: center;
+}
+
+.calendar-day:hover {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.calendar-day.selected {
+    background-color: #4caf50;
+    color: white;
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.35);
+}
+
+.calendar-day.has-event::after {
+    content: "";
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.calendar-day.selected.has-event::after {
+    background-color: white;
+}
+
+.agenda-events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.agenda-events-header h3 {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+}
+
+.event-form {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: var(--bg-main);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.event-form-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+}
+
+.form-group input,
+.form-group textarea {
+    background-color: var(--card-bg);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: inherit;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+}
+
+.event-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.event-card {
+    border: 1px solid var(--border-color);
+    border-left: 5px solid #4caf50;
+    border-radius: 10px;
+    padding: 14px 16px;
+    background-color: var(--card-bg);
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.event-time {
+    display: block;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.event-card h4 {
+    color: var(--text-dark);
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.event-card p {
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.delete-event-btn {
+    background-color: transparent;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 1.2rem;
+    align-self: flex-start;
+}
+
+.empty-events {
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
 
 /* ========================================================
    RESPONSIVIDADE (MOBILE)
@@ -204,6 +467,41 @@ body {
         top: 0; left: 0; width: 100%; height: 60px;
         z-index: 1000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .agenda-top {
+            flex-direction: column;
+        }
+        
+        .agenda-controls {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .agenda-date-button {
+            flex: 1;
+        }
+        
+        .calendar-day,
+.calendar-empty {
+    height: 45px;
+}
+
+.calendar-day {
+    width: 38px;
+    height: 38px;
+}
+        
+        .event-form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .agenda-events-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+        
+        .agenda-events-header .btn {
+            width: 100%;
+        }
     }
     .mobile-logo { width: 35px; height: 35px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .mobile-header-center { flex: 1; text-align: center; }
