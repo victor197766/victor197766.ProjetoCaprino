@@ -90,9 +90,9 @@ body {
 /* =========================================
    NOVO: Ações Rápidas (Os 4 Botões do Menu)
    ========================================= */
-.quick-actions-grid {
+   .quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin-bottom: 30px;
 }
