@@ -67,6 +67,75 @@
                     <span>Ver lista de animais</span>
                 </a>
             </div>
+
+            <section class="card agenda-vacinacao-card">
+                <div class="agenda-top">
+                    <div>
+                        <h2 class="agenda-title">agenda de vacinação</h2>
+                        <p class="agenda-subtitle">clique na data para escolher dia, mês e ano do agendamento.</p>
+                    </div>
+            
+                    <div class="agenda-controls">
+                        <button class="agenda-nav-btn" id="prevMonth" type="button">
+                            <i class="ph ph-caret-left"></i>
+                        </button>
+            
+                        <button class="agenda-date-button" id="calendarDateButton" type="button">
+                            <span id="calendarTitle">junho 2026</span>
+                        </button>
+            
+                        <input type="date" id="calendarDateInput" class="agenda-date-input">
+            
+                        <button class="agenda-nav-btn" id="nextMonth" type="button">
+                            <i class="ph ph-caret-right"></i>
+                        </button>
+                    </div>
+                </div>
+            
+                <div class="calendar-weekdays">
+                    <span>seg</span>
+                    <span>ter</span>
+                    <span>qua</span>
+                    <span>qui</span>
+                    <span>sex</span>
+                    <span>sáb</span>
+                    <span>dom</span>
+                </div>
+            
+                <div class="calendar-days" id="calendarDays"></div>
+            
+                <div class="agenda-events-header">
+                    <h3 id="eventsTitle">eventos cadastrados</h3>
+                    <button class="btn btn-primary" id="openEventForm" type="button">+ novo</button>
+                </div>
+            
+                <form class="event-form hidden" id="eventForm">
+                    <div class="event-form-row">
+                        <div class="form-group">
+                            <label for="eventTime">horário</label>
+                            <input type="time" id="eventTime" required>
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="eventTitle">título</label>
+                            <input type="text" id="eventTitle" placeholder="ex: vacinação dos ovinos" required>
+                        </div>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="eventDescription">descrição</label>
+                        <textarea id="eventDescription" rows="3" placeholder="ex: aplicação de vacina e conferência dos animais"></textarea>
+                    </div>
+            
+                    <div class="event-form-actions">
+                        <button class="btn btn-outline" id="cancelEventForm" type="button">cancelar</button>
+                        <button class="btn btn-primary" type="submit">salvar evento</button>
+                    </div>
+                </form>
+            
+                <div class="events-list" id="eventsList"></div>
+            </section>
+
         </main>
     </div>
 
