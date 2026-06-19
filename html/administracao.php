@@ -7,11 +7,52 @@ if (!isset($_SESSION['usuario_id'])) {
 
 include '../db/connection.php';
 
+// ===============================
+// FUNÇÕES AUXILIARES
+// ===============================
+function somenteNumeros($valor) {
+    return preg_replace('/\D/', '', $valor ?? '');
+}
+
+function redirecionarAdmin($msg) {
+    header('Location: administracao.php?msg=' . urlencode($msg));
+    exit();
+}
+
+function colunaExiste($conexao, $tabela, $coluna) {
+    $coluna_escaped = mysqli_real_escape_string($conexao, $coluna);
+    $tabela_escaped = mysqli_real_escape_string($conexao, $tabela);
+    $sql = "SHOW COLUMNS FROM `$tabela_escaped` LIKE '$coluna_escaped'";
+    $res = mysqli_query($conexao, $sql);
+    $existe = false;
+    if ($res) {
+        $existe = mysqli_num_rows($res) > 0;
+    }
+    return $existe;
+}
+
+function valorSeguro($valor) {
+    return htmlspecialchars($valor ?? '', ENT_QUOTES, 'UTF-8');
+}
+
 // Verificação de segurança para a coluna suspenso
 $checkColumn = mysqli_query($conexao, "SHOW COLUMNS FROM usuario LIKE 'suspenso'");
 if (mysqli_num_rows($checkColumn) == 0) {
     mysqli_query($conexao, "ALTER TABLE usuario ADD COLUMN suspenso TINYINT(1) NOT NULL DEFAULT 0");
 }
+
+// Criação da tabela de avisos se não existir
+$sqlAvisosTable = "CREATE TABLE IF NOT EXISTS avisos (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    destinatario_id INT(11) NULL DEFAULT NULL,
+    lote_id INT(11) NULL DEFAULT NULL,
+    mensagem TEXT NOT NULL,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_aviso_usuario FOREIGN KEY (destinatario_id) REFERENCES usuario (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_aviso_lote FOREIGN KEY (lote_id) REFERENCES lote (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+mysqli_query($conexao, $sqlAvisosTable);
 
 $user_session_id = $_SESSION['usuario_id'];
 
@@ -24,9 +65,112 @@ $user_logged_in = mysqli_fetch_assoc($res_check);
 mysqli_stmt_close($stmt_check);
 
 if ($user_logged_in && $user_logged_in['tipo'] === 'visitante') {
-    // Visitante não pode acessar administração
     header('Location: estatisticas.php');
     exit();
+}
+
+// ===============================
+// ADICIONAR / EDITAR USUÁRIO
+// ===============================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
+    $acao = $_POST['form_action'];
+
+    if ($acao === 'adicionar_aviso') {
+        $destinatario = $_POST['destinatario'] === 'todos' ? null : intval($_POST['destinatario']);
+        $lote = (empty($_POST['lote_aviso']) || $_POST['lote_aviso'] === 'todos') ? null : intval($_POST['lote_aviso']);
+        $mensagem = trim($_POST['mensagem'] ?? '');
+
+        if ($mensagem !== '') {
+            $sql = "INSERT INTO avisos (destinatario_id, lote_id, mensagem) VALUES (?, ?, ?)";
+            $stmt = mysqli_prepare($conexao, $sql);
+            mysqli_stmt_bind_param($stmt, "iis", $destinatario, $lote, $mensagem);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            redirecionarAdmin('aviso_adicionado');
+        } else {
+            redirecionarAdmin('erro');
+        }
+    }
+
+    if ($acao === 'deletar_aviso') {
+        $aviso_id = intval($_POST['aviso_id']);
+        if ($aviso_id > 0) {
+            $sql = "DELETE FROM avisos WHERE id = ?";
+            $stmt = mysqli_prepare($conexao, $sql);
+            mysqli_stmt_bind_param($stmt, "i", $aviso_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            redirecionarAdmin('aviso_removido');
+        }
+    }
+
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $tipo = $_POST['tipo'] ?? 'produtor';
+    $propriedade_id = !empty($_POST['propriedade_id']) ? intval($_POST['propriedade_id']) : null;
+    $num_telefone = somenteNumeros($_POST['num_telefone'] ?? '');
+    $CPF = somenteNumeros($_POST['CPF'] ?? '');
+    $CNPJ = somenteNumeros($_POST['CNPJ'] ?? '');
+
+    if (!in_array($tipo, ['produtor', 'visitante'], true)) {
+        $tipo = 'produtor';
+    }
+
+    if ($acao === 'adicionar_usuario') {
+        $senha = $_POST['senha'] ?? '';
+
+        if ($username === '' || $email === '' || $senha === '') {
+            redirecionarAdmin('erro');
+        }
+
+        // Usa senha criptografada. Caso sua coluna tenha outro nome, o código tenta detectar automaticamente.
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+        $colunaSenha = null;
+        foreach (['senha', 'password', 'senha_usuario'] as $possivelColuna) {
+            if (colunaExiste($conexao, 'usuario', $possivelColuna)) {
+                $colunaSenha = $possivelColuna;
+                break;
+            }
+        }
+
+        if ($colunaSenha) {
+            $sqlInsert = "INSERT INTO usuario (username, email, `$colunaSenha`, tipo, propriedade_id, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
+            $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
+            mysqli_stmt_bind_param($stmtInsert, "ssssssss", $username, $email, $senhaHash, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ);
+        } else {
+            $sqlInsert = "INSERT INTO usuario (username, email, tipo, propriedade_id, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
+            $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
+            mysqli_stmt_bind_param($stmtInsert, "sssssss", $username, $email, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ);
+        }
+
+        if ($stmtInsert && mysqli_stmt_execute($stmtInsert)) {
+            mysqli_stmt_close($stmtInsert);
+            redirecionarAdmin('adicionado');
+        }
+
+        if ($stmtInsert) mysqli_stmt_close($stmtInsert);
+        redirecionarAdmin('erro');
+    }
+
+    if ($acao === 'editar_usuario') {
+        $user_id = intval($_POST['user_id'] ?? 0);
+
+        if ($user_id <= 0 || $username === '' || $email === '') {
+            redirecionarAdmin('erro');
+        }
+
+        $sqlUpdate = "UPDATE usuario SET username = ?, email = ?, tipo = ?, propriedade_id = ?, num_telefone = ?, CPF = ?, CNPJ = ? WHERE user_id = ?";
+        $stmtUpdate = mysqli_prepare($conexao, $sqlUpdate);
+        mysqli_stmt_bind_param($stmtUpdate, "sssssssi", $username, $email, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ, $user_id);
+
+        if ($stmtUpdate && mysqli_stmt_execute($stmtUpdate)) {
+            mysqli_stmt_close($stmtUpdate);
+            redirecionarAdmin('editado');
+        }
+
+        if ($stmtUpdate) mysqli_stmt_close($stmtUpdate);
+        redirecionarAdmin('erro');
+    }
 }
 
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);
@@ -39,8 +183,69 @@ if (count($partes) > 1) {
 }
 
 // Fetch users
-$sql = "SELECT user_id, username, email, tipo, nome_propriedade, num_telefone, CPF, CNPJ, create_time, suspenso FROM usuario ORDER BY user_id DESC";
+$sql = "SELECT user_id, username, email, tipo, propriedade_id, num_telefone, CPF, CNPJ, create_time, suspenso FROM usuario ORDER BY user_id DESC";
 $resultado = mysqli_query($conexao, $sql);
+
+// Fetch avisos
+$sqlAvisos = "SELECT a.id, a.mensagem, a.data_criacao, u.username as destinatario, l.nome as lote_nome
+              FROM avisos a
+              LEFT JOIN usuario u ON a.destinatario_id = u.user_id
+              LEFT JOIN lote l ON a.lote_id = l.id
+              ORDER BY a.id DESC";
+$resultadoAvisos = mysqli_query($conexao, $sqlAvisos);
+
+// Fetch lotes para os avisos
+$sqlLotes = "SELECT id, nome, user_id FROM lote ORDER BY nome ASC";
+$resultadoLotes = mysqli_query($conexao, $sqlLotes);
+$lotes_options = [];
+while($lote = mysqli_fetch_assoc($resultadoLotes)) {
+    $lotes_options[] = $lote;
+}
+
+// Fetch users list for avisos
+$sqlUsersList = "SELECT user_id, username FROM usuario ORDER BY username ASC";
+$resultadoUsersList = mysqli_query($conexao, $sqlUsersList);
+$users_options = [];
+while($u = mysqli_fetch_assoc($resultadoUsersList)) {
+    $users_options[] = $u;
+}
+
+// Fetch propriedades
+$sqlPropriedades = "SELECT p.id, p.nome, u.username as produtor_nome FROM propriedades p JOIN usuario u ON p.produtor_id = u.user_id ORDER BY p.nome ASC";
+$resultadoPropriedades = mysqli_query($conexao, $sqlPropriedades);
+$propriedades_options = [];
+if ($resultadoPropriedades) {
+    while($p = mysqli_fetch_assoc($resultadoPropriedades)) {
+        $propriedades_options[] = $p;
+    }
+}
+
+// Fetch stats for charts
+$query_users_type = "SELECT tipo, COUNT(*) as qtd FROM usuario GROUP BY tipo";
+$res_users_type = mysqli_query($conexao, $query_users_type);
+$users_types = ['produtor' => 0, 'empregado rural' => 0];
+while ($row = mysqli_fetch_assoc($res_users_type)) {
+    $t = $row['tipo'] ? strtolower($row['tipo']) : 'visitante';
+    if ($t === 'visitante') {
+        $users_types['empregado rural'] = ($users_types['empregado rural'] ?? 0) + $row['qtd'];
+    } else {
+        $users_types[$t] = ($users_types[$t] ?? 0) + $row['qtd'];
+    }
+}
+
+$query_lots = "SELECT tipo, COUNT(*) as qtd FROM lote GROUP BY tipo";
+$res_lots = mysqli_query($conexao, $query_lots);
+$lots_types = [];
+while ($row = mysqli_fetch_assoc($res_lots)) {
+    $lots_types[$row['tipo'] ?: 'Outro'] = $row['qtd'];
+}
+
+$query_animals = "SELECT especie, COUNT(*) as qtd FROM animal GROUP BY especie";
+$res_animals = mysqli_query($conexao, $query_animals);
+$animals_types = [];
+while ($row = mysqli_fetch_assoc($res_animals)) {
+    $animals_types[$row['especie'] ?: 'Outro'] = $row['qtd'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -52,130 +257,52 @@ $resultado = mysqli_query($conexao, $sql);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Estilos da tabela aumentados e mais compactos */
-        table.data-table td, table.data-table th {
-            padding: 8px 12px;
-            font-size: 1.05rem; /* Texto maior */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
-        
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.9rem;
-            margin-right: 8px; /* Botões levemente afastados */
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: background 0.2s;
-        }
-        
-        /* Botões preenchidos com cor - mais escuros */
-        .btn-edit {
-            background-color: #0d47a1;
-            color: #ffffff;
-            border: none;
-        }
-        .btn-edit:hover {
-            background-color: #08285e;
-        }
-        
-        .btn-warning {
-            background-color: #e65100;
-            color: #ffffff;
-            border: none;
-        }
-        .btn-warning:hover {
-            background-color: #bf360c;
-        }
-        
-        .btn-danger {
-            background-color: #b71c1c;
-            color: #ffffff;
-            border: none;
-        }
-        .btn-danger:hover {
-            background-color: #7f0000;
-        }
-        
-        /* Status com fundo mais escuro e texto claro */
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        .status-active {
-            background-color: var(--primary); /* Usa o verde escuro do tema */
-            color: #ffffff;
-        }
-        .status-suspended {
-            background-color: #7f0000; /* Vermelho bem escuro */
-            color: #ffffff;
-        }
-
-        /* Estilos do Modal (Popup) adaptados ao tema */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0,0,0,0.6); 
-        }
-        .modal-content {
-            background-color: var(--card-bg);
-            color: var(--text-dark);
-            margin: 5% auto; 
-            padding: 30px;
-            border: 1px solid var(--border-color);
-            width: 90%;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .close-modal {
-            color: var(--text-muted);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close-modal:hover, .close-modal:focus {
-            color: var(--text-dark);
-            text-decoration: none;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border-color);
+        .chart-card {
             background-color: var(--bg-main);
-            color: var(--text-dark);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-        .form-row {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            align-items: center;
         }
-        .form-row .form-group {
-            flex: 1;
+        .chart-card h4 {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
+
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <img src="logoControlCabra.png" alt="Logo ControlCabra" class="mobile-logo">
+        </div>
+
+        <div class="mobile-header-center">
+            <span class="mobile-page-title">Administração</span>
+        </div>
+
+        <div class="mobile-header-right">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
 
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
@@ -234,21 +361,49 @@ $resultado = mysqli_query($conexao, $sql);
                     </div>
                 <?php else: ?>
                     <div class="alert alert-success mt-3" style="background-color: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-bottom: 24px;">
-                        <?php 
+                        <?php
                         if ($_GET['msg'] == 'deletado') echo 'Usuário removido com sucesso!';
                         elseif ($_GET['msg'] == 'editado') echo 'Dados do usuário alterados com sucesso!';
+                        elseif ($_GET['msg'] == 'adicionado') echo 'Usuário adicionado com sucesso!';
                         elseif ($_GET['msg'] == 'status_alterado') echo 'Status do usuário atualizado com sucesso!';
+                        elseif ($_GET['msg'] == 'aviso_adicionado') echo 'Aviso enviado com sucesso!';
+                        elseif ($_GET['msg'] == 'aviso_removido') echo 'Aviso removido com sucesso!';
                         ?>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
 
             <section class="card mt-4">
-                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                    <h3 class="card-title" style="margin: 0;">Usuários Cadastrados</h3>
-                    <input type="text" id="searchInput" placeholder="Pesquise por ID, nome ou email" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-dark); font-size: 0.9rem; width: 100%; max-width: 300px;">
+                <div class="card-header admin-tools">
+                    <div class="admin-tools-left">
+                        <h3 class="card-title" style="margin: 0;">Usuários Cadastrados</h3>
+                    </div>
+
+                    <div class="admin-tools-right">
+                        <div class="search-wrapper">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="searchInput" placeholder="Pesquise por ID, nome, email ou tipo">
+                        </div>
+
+                        <select id="filterSelect" class="filter-select">
+                            <option value="id_desc">ID decrescente</option>
+                            <option value="id_asc">ID crescente</option>
+                            <option value="produtor">Somente produtores</option>
+                            <option value="visitante">Somente Empregados Rurais</option>
+                            <option value="ativo">Somente ativos</option>
+                            <option value="suspenso">Somente suspensos</option>
+                            <option value="todos">Mostrar todos</option>
+                        </select>
+
+                        <button type="button" class="btn-add" onclick="abrirModalAdicionar()">
+                            <span>+</span> Adicionar Usuário
+                        </button>
+                    </div>
                 </div>
-                
+
                 <div class="table-container" style="width: 100%; overflow-x: auto;">
                     <table class="data-table" style="width: 100%;">
                         <thead>
@@ -256,22 +411,37 @@ $resultado = mysqli_query($conexao, $sql);
                                 <th>ID</th>
                                 <th>Nome de Usuário</th>
                                 <th>E-mail</th>
+                                <th>Tipo de Conta</th>
                                 <th>Cadastro</th>
                                 <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php 
+                        <tbody id="usersTableBody">
+                            <?php
                             if (mysqli_num_rows($resultado) > 0) {
                                 while ($usuario = mysqli_fetch_assoc($resultado)) {
                                     $is_suspenso = $usuario['suspenso'] ? true : false;
-                                    echo "<tr>";
-                                    echo "<td><strong>" . $usuario['user_id'] . "</strong></td>";
-                                    echo "<td>" . htmlspecialchars($usuario['username']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($usuario['email']) . "</td>";
+                                    $tipoConta = $usuario['tipo'] ?: 'não informado';
+                                    $tipoClasse = ($tipoConta === 'visitante') ? 'type-visitante' : 'type-produtor';
+                                    $tipoLabel = ($tipoConta === 'visitante') ? 'Empregado Rural' : 'Produtor';
+
+                                    $idAttr = valorSeguro($usuario['user_id']);
+                                    $usernameAttr = valorSeguro($usuario['username']);
+                                    $emailAttr = valorSeguro($usuario['email']);
+                                    $tipoAttr = valorSeguro($usuario['tipo']);
+                                    $propriedadeAttr = valorSeguro($usuario['nome_propriedade']);
+                                    $telefoneAttr = valorSeguro($usuario['num_telefone']);
+                                    $cpfAttr = valorSeguro($usuario['CPF']);
+                                    $cnpjAttr = valorSeguro($usuario['CNPJ']);
+
+                                    echo "<tr data-id='{$idAttr}' data-tipo='{$tipoAttr}' data-status='" . ($is_suspenso ? 'suspenso' : 'ativo') . "'>";
+                                    echo "<td><strong>" . valorSeguro($usuario['user_id']) . "</strong></td>";
+                                    echo "<td>" . valorSeguro($usuario['username']) . "</td>";
+                                    echo "<td>" . valorSeguro($usuario['email']) . "</td>";
+                                    echo "<td><span class='type-badge {$tipoClasse}'>" . valorSeguro($tipoLabel) . "</span></td>";
                                     echo "<td>" . date('d/m/Y H:i', strtotime($usuario['create_time'])) . "</td>";
-                                    
+
                                     echo "<td>";
                                     if ($is_suspenso) {
                                         echo "<span class='status-badge status-suspended'>Suspenso</span>";
@@ -280,47 +450,202 @@ $resultado = mysqli_query($conexao, $sql);
                                     }
                                     echo "</td>";
 
-                                    // Passando todos os dados para o JS via atributos data-*
                                     echo "<td>
-                                            <button class='btn-sm btn-edit' 
-                                                data-id='" . $usuario['user_id'] . "'
-                                                data-username='" . htmlspecialchars($usuario['username']) . "'
-                                                data-email='" . htmlspecialchars($usuario['email']) . "'
-                                                data-tipo='" . htmlspecialchars($usuario['tipo'] ?? '') . "'
-                                                data-propriedade='" . htmlspecialchars($usuario['nome_propriedade'] ?? '') . "'
-                                                data-telefone='" . htmlspecialchars($usuario['num_telefone'] ?? '') . "'
-                                                data-cpf='" . htmlspecialchars($usuario['CPF'] ?? '') . "'
-                                                data-cnpj='" . htmlspecialchars($usuario['CNPJ'] ?? '') . "'
-                                                onclick='abrirModal(this)'>Editar
+                                            <button class='btn-sm btn-edit'
+                                                data-id='{$idAttr}'
+                                                data-username='{$usernameAttr}'
+                                                data-email='{$emailAttr}'
+                                                data-tipo='{$tipoAttr}'
+                                                data-propriedade-id='{$usuario['propriedade_id']}' data-propriedade='{$propriedadeAttr}'
+                                                data-telefone='{$telefoneAttr}'
+                                                data-cpf='{$cpfAttr}'
+                                                data-cnpj='{$cnpjAttr}'
+                                                onclick='abrirModalEdicao(this)'>Editar
                                             </button>
-                                            
-                                            <a href='toggleSuspendUser.php?id=" . $usuario['user_id'] . "' class='btn-sm btn-warning'>
+
+                                            <a href='toggleSuspendUser.php?id=" . valorSeguro($usuario['user_id']) . "' class='btn-sm btn-warning'>
                                                 " . ($is_suspenso ? 'Ativar' : 'Suspender') . "
                                             </a>
-                                            
-                                            <a href='deleteUser.php?id=" . $usuario['user_id'] . "' class='btn-sm btn-danger' onclick='return confirm(\"Tem certeza que deseja deletar este usuário?\")'>Excluir</a>
+
+                                            <a href='deleteUser.php?id=" . valorSeguro($usuario['user_id']) . "' class='btn-sm btn-danger' onclick='return confirm(\"Tem certeza que deseja deletar este usuário?\")'>Excluir</a>
                                           </td>";
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='6' style='text-align:center; padding: 20px;'>Nenhum usuário cadastrado.</td></tr>";
+                                echo "<tr class='empty-row'><td colspan='7' style='text-align:center; padding: 20px;'>Nenhum usuário cadastrado.</td></tr>";
                             }
                             ?>
                         </tbody>
                     </table>
                 </div>
             </section>
+
+            <section class="card mt-4">
+                <div class="card-header admin-tools">
+                    <div class="admin-tools-left">
+                        <h3 class="card-title" style="margin: 0;">Estatísticas Gerais</h3>
+                    </div>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h4>Usuários por Tipo</h4>
+                        <?php if (array_sum($users_types) > 0): ?>
+                            <canvas id="usersChart"></canvas>
+                        <?php else: ?>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum usuário registrado ainda.</p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Lotes por Tipo</h4>
+                        <?php if (count($lots_types) > 0): ?>
+                            <canvas id="lotsChart"></canvas>
+                        <?php else: ?>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum lote registrado ainda.</p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Animais por Espécie</h4>
+                        <?php if (count($animals_types) > 0): ?>
+                            <canvas id="animalsChart"></canvas>
+                        <?php else: ?>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum animal registrado ainda.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card mt-4">
+                <div class="card-header admin-tools">
+                    <div class="admin-tools-left">
+                        <h3 class="card-title" style="margin: 0;">Avisos do Sistema</h3>
+                    </div>
+                    <div class="admin-tools-right">
+                        <button type="button" class="btn-add" onclick="abrirModalAviso()">
+                            <span>+</span> Novo Aviso
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container" style="width: 100%; overflow-x: auto;">
+                    <table class="data-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Destinatário</th>
+                                <th>Lote</th>
+                                <th>Mensagem</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if ($resultadoAvisos && mysqli_num_rows($resultadoAvisos) > 0) {
+                                while ($aviso = mysqli_fetch_assoc($resultadoAvisos)) {
+                                    $dest = $aviso['destinatario'] ? valorSeguro($aviso['destinatario']) : 'Todos os Usuários';
+                                    $lote = $aviso['lote_nome'] ? valorSeguro($aviso['lote_nome']) : 'Todos/Geral';
+                                    echo "<tr>";
+                                    echo "<td>" . date('d/m/Y H:i', strtotime($aviso['data_criacao'])) . "</td>";
+                                    echo "<td><span class='type-badge type-produtor'>{$dest}</span></td>";
+                                    echo "<td>{$lote}</td>";
+                                    echo "<td>" . valorSeguro($aviso['mensagem']) . "</td>";
+                                    echo "<td>
+                                            <form method='POST' action='administracao.php' style='display:inline;'>
+                                                <input type='hidden' name='form_action' value='deletar_aviso'>
+                                                <input type='hidden' name='aviso_id' value='{$aviso['id']}'>
+                                                <button type='submit' class='btn-sm btn-danger' onclick='return confirm(\"Excluir este aviso?\")'>Excluir</button>
+                                            </form>
+                                          </td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr class='empty-row'><td colspan='5' style='text-align:center; padding: 20px;'>Nenhum aviso cadastrado.</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            
         </main>
+    </div>
+
+    <!-- Modal de Adição -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal('addModal')">&times;</span>
+            <h2 style="margin-top: 0; margin-bottom: 20px; color: var(--primary);">Adicionar Usuário</h2>
+            <form method="POST" action="administracao.php">
+                <input type="hidden" name="form_action" value="adicionar_usuario">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome de Usuário</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" name="senha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Conta</label>
+                        <select name="tipo" required>
+                            <option value="produtor">Produtor</option>
+                            <option value="visitante">Empregado Rural</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Vincular Propriedade</label>
+                    <select name="propriedade_id" id="add_propriedade">
+                        <option value="">Nenhuma / Criação Própria</option>
+                        <?php foreach($propriedades_options as $p): ?>
+                            <option value="<?= $p['id'] ?>"><?= valorSeguro($p['nome']) ?> (Produtor: <?= valorSeguro($p['produtor_nome']) ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="text" id="add_telefone" name="num_telefone" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="Digite apenas números">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" id="add_cpf" name="CPF" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>CNPJ</label>
+                        <input type="text" id="add_cnpj" name="CNPJ" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="00.000.000/0000-00">
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn-sm btn-danger" onclick="fecharModal('addModal')" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn-sm btn-edit">Cadastrar Usuário</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Modal de Edição -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <span class="close-modal" onclick="fecharModal('editModal')">&times;</span>
             <h2 style="margin-top: 0; margin-bottom: 20px; color: var(--primary);">Detalhes e Edição do Usuário</h2>
-            <form method="POST" action="editUser.php">
+            <form method="POST" action="administracao.php">
+                <input type="hidden" name="form_action" value="editar_usuario">
                 <input type="hidden" id="modal_user_id" name="user_id">
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nome de Usuário</label>
@@ -337,7 +662,7 @@ $resultado = mysqli_query($conexao, $sql);
                         <label>Tipo de Conta</label>
                         <select id="modal_tipo" name="tipo" required>
                             <option value="produtor">Produtor</option>
-                            <option value="visitante">Visitante</option>
+                            <option value="visitante">Empregado Rural</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -348,23 +673,65 @@ $resultado = mysqli_query($conexao, $sql);
 
                 <div class="form-group">
                     <label>Telefone</label>
-                    <input type="text" id="modal_telefone" name="num_telefone">
+                    <input type="text" id="modal_telefone" name="num_telefone" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="Digite apenas números">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>CPF</label>
-                        <input type="text" id="modal_cpf" name="CPF">
+                        <input type="text" id="modal_cpf" name="CPF" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000.000.000-00">
                     </div>
                     <div class="form-group">
                         <label>CNPJ</label>
-                        <input type="text" id="modal_cnpj" name="CNPJ">
+                        <input type="text" id="modal_cnpj" name="CNPJ" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="00.000.000/0000-00">
                     </div>
                 </div>
 
                 <div style="margin-top: 20px; text-align: right;">
-                    <button type="button" class="btn-sm btn-danger" onclick="fecharModal()" style="margin-right: 10px;">Cancelar</button>
+                    <button type="button" class="btn-sm btn-danger" onclick="fecharModal('editModal')" style="margin-right: 10px;">Cancelar</button>
                     <button type="submit" class="btn-sm btn-edit">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Aviso -->
+    <div id="avisoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal('avisoModal')">&times;</span>
+            <h2 style="margin-top: 0; margin-bottom: 20px; color: var(--primary);">Enviar Novo Aviso</h2>
+            <form method="POST" action="administracao.php">
+                <input type="hidden" name="form_action" value="adicionar_aviso">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Destinatário</label>
+                        <select name="destinatario" required>
+                            <option value="todos">Todos os Usuários</option>
+                            <?php foreach($users_options as $u): ?>
+                                <option value="<?= $u['user_id'] ?>"><?= valorSeguro($u['username']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Lote Específico (Opcional)</label>
+                        <select name="lote_aviso">
+                            <option value="todos">Todos/Geral</option>
+                            <?php foreach($lotes_options as $l): ?>
+                                <option value="<?= $l['id'] ?>"><?= valorSeguro($l['nome']) ?> (User ID: <?= $l['user_id'] ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mensagem</label>
+                    <textarea name="mensagem" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-dark); resize: vertical;" rows="4" required placeholder="Escreva o aviso aqui..."></textarea>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn-sm btn-danger" onclick="fecharModal('avisoModal')" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn-sm btn-edit">Enviar Aviso</button>
                 </div>
             </form>
         </div>
@@ -372,58 +739,244 @@ $resultado = mysqli_query($conexao, $sql);
 
     <script src="estatisticas.js"></script>
     <script>
-        // Funções do Modal
-        var modal = document.getElementById("editModal");
+        const editModal = document.getElementById('editModal');
+        const addModal = document.getElementById('addModal');
+        const avisoModal = document.getElementById('avisoModal');
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterSelect');
+        const usersTableBody = document.getElementById('usersTableBody');
 
-        function abrirModal(btn) {
-            // Preenche os dados no form do modal
-            document.getElementById('modal_user_id').value = btn.getAttribute('data-id');
-            document.getElementById('modal_username').value = btn.getAttribute('data-username');
-            document.getElementById('modal_email').value = btn.getAttribute('data-email');
-            
-            var tipo = btn.getAttribute('data-tipo');
-            if (tipo) {
-                document.getElementById('modal_tipo').value = tipo;
+        function apenasNumeros(valor, limite) {
+            return String(valor || '').replace(/\D/g, '').slice(0, limite);
+        }
+
+        function formatarCPF(valor) {
+            let numeros = apenasNumeros(valor, 11);
+            numeros = numeros.replace(/(\d{3})(\d)/, '$1.$2');
+            numeros = numeros.replace(/(\d{3})(\d)/, '$1.$2');
+            numeros = numeros.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            return numeros;
+        }
+
+        function formatarCNPJ(valor) {
+            let numeros = apenasNumeros(valor, 14);
+            numeros = numeros.replace(/^(\d{2})(\d)/, '$1.$2');
+            numeros = numeros.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            numeros = numeros.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            numeros = numeros.replace(/(\d{4})(\d)/, '$1-$2');
+            return numeros;
+        }
+
+        function formatarTelefone(valor) {
+            return apenasNumeros(valor, 15);
+        }
+
+        function aplicarMascara(input, tipo) {
+            if (!input) return;
+
+            input.addEventListener('input', function() {
+                if (tipo === 'cpf') this.value = formatarCPF(this.value);
+                if (tipo === 'cnpj') this.value = formatarCNPJ(this.value);
+                if (tipo === 'telefone') this.value = formatarTelefone(this.value);
+            });
+
+            input.addEventListener('paste', function() {
+                setTimeout(() => {
+                    if (tipo === 'cpf') this.value = formatarCPF(this.value);
+                    if (tipo === 'cnpj') this.value = formatarCNPJ(this.value);
+                    if (tipo === 'telefone') this.value = formatarTelefone(this.value);
+                }, 0);
+            });
+        }
+
+        aplicarMascara(document.getElementById('modal_telefone'), 'telefone');
+        aplicarMascara(document.getElementById('modal_cpf'), 'cpf');
+        aplicarMascara(document.getElementById('modal_cnpj'), 'cnpj');
+        aplicarMascara(document.getElementById('add_telefone'), 'telefone');
+        aplicarMascara(document.getElementById('add_cpf'), 'cpf');
+        aplicarMascara(document.getElementById('add_cnpj'), 'cnpj');
+
+        function abrirModalAdicionar() {
+            addModal.style.display = 'block';
+        }
+
+        function abrirModalAviso() {
+            avisoModal.style.display = 'block';
+        }
+
+        function abrirModalEdicao(btn) {
+            document.getElementById('modal_user_id').value = btn.getAttribute('data-id') || '';
+            document.getElementById('modal_username').value = btn.getAttribute('data-username') || '';
+            document.getElementById('modal_email').value = btn.getAttribute('data-email') || '';
+
+            const tipo = btn.getAttribute('data-tipo') || 'produtor';
+            document.getElementById('modal_tipo').value = tipo;
+
+            document.getElementById('modal_propriedade').value = btn.getAttribute('data-propriedade-id') || '';
+            document.getElementById('modal_telefone').value = formatarTelefone(btn.getAttribute('data-telefone') || '');
+            document.getElementById('modal_cpf').value = formatarCPF(btn.getAttribute('data-cpf') || '');
+            document.getElementById('modal_cnpj').value = formatarCNPJ(btn.getAttribute('data-cnpj') || '');
+
+            editModal.style.display = 'block';
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.addEventListener('click', function(event) {
+            if (event.target === editModal) fecharModal('editModal');
+            if (event.target === addModal) fecharModal('addModal');
+            if (event.target === avisoModal) fecharModal('avisoModal');
+        });
+
+        // Gráficos
+        const usersData = <?= json_encode(array_values($users_types)) ?>;
+        const usersLabels = <?= json_encode(array_keys($users_types)) ?>;
+        
+        const lotsData = <?= json_encode(array_values($lots_types)) ?>;
+        const lotsLabels = <?= json_encode(array_keys($lots_types)) ?>;
+
+        const animalsData = <?= json_encode(array_values($animals_types)) ?>;
+        const animalsLabels = <?= json_encode(array_keys($animals_types)) ?>;
+
+        const chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim() || '#333' } }
             }
-            
-            document.getElementById('modal_propriedade').value = btn.getAttribute('data-propriedade');
-            document.getElementById('modal_telefone').value = btn.getAttribute('data-telefone');
-            document.getElementById('modal_cpf').value = btn.getAttribute('data-cpf');
-            document.getElementById('modal_cnpj').value = btn.getAttribute('data-cnpj');
+        };
 
-            modal.style.display = "block";
+        if (usersLabels.length > 0) {
+            new Chart(document.getElementById('usersChart'), {
+                type: 'pie',
+                data: {
+                    labels: usersLabels.map(l => {
+                        let words = String(l).split(' ');
+                        return words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                    }),
+                    datasets: [{
+                        data: usersData,
+                        backgroundColor: ['#4caf50', '#2196f3', '#ffc107', '#f44336']
+                    }]
+                },
+                options: chartOptions
+            });
         }
 
-        function fecharModal() {
-            modal.style.display = "none";
+        if (lotsLabels.length > 0) {
+            new Chart(document.getElementById('lotsChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: lotsLabels,
+                    datasets: [{
+                        data: lotsData,
+                        backgroundColor: ['#9c27b0', '#ff9800', '#03a9f4', '#8bc34a']
+                    }]
+                },
+                options: chartOptions
+            });
         }
 
-        // Fechar ao clicar fora do modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                fecharModal();
-            }
-        }
-
-        // Pesquisa na tabela
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            let filter = this.value.toLowerCase();
-            let rows = document.querySelectorAll('.data-table tbody tr');
-            
-            rows.forEach(row => {
-                if (row.children.length > 1) { // Ignora "Nenhum usuário cadastrado"
-                    let id = row.children[0].textContent.toLowerCase();
-                    let name = row.children[1].textContent.toLowerCase();
-                    let email = row.children[2].textContent.toLowerCase();
-                    
-                    if (id.includes(filter) || name.includes(filter) || email.includes(filter)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
+        if (animalsLabels.length > 0) {
+            new Chart(document.getElementById('animalsChart'), {
+                type: 'bar',
+                data: {
+                    labels: animalsLabels,
+                    datasets: [{
+                        label: 'Quantidade',
+                        data: animalsData,
+                        backgroundColor: '#ff5722'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim() || '#333' } },
+                        x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim() || '#333' } }
                     }
                 }
             });
-        });
+        }
+
+        function aplicarPesquisaEFiltro() {
+            const termo = searchInput.value.toLowerCase().trim();
+            const filtro = filterSelect.value;
+            const rows = Array.from(usersTableBody.querySelectorAll('tr')).filter(row => !row.classList.contains('empty-row'));
+
+            rows.forEach(row => {
+                const textoLinha = row.textContent.toLowerCase();
+                const tipo = (row.dataset.tipo || '').toLowerCase();
+                const status = (row.dataset.status || '').toLowerCase();
+
+                let mostrar = textoLinha.includes(termo);
+
+                if (filtro === 'produtor') mostrar = mostrar && tipo === 'produtor';
+                if (filtro === 'visitante') mostrar = mostrar && tipo === 'visitante';
+                if (filtro === 'ativo') mostrar = mostrar && status === 'ativo';
+                if (filtro === 'suspenso') mostrar = mostrar && status === 'suspenso';
+
+                row.style.display = mostrar ? '' : 'none';
+            });
+
+            if (filtro === 'id_asc' || filtro === 'id_desc') {
+                const linhasOrdenadas = rows.sort((a, b) => {
+                    const idA = parseInt(a.dataset.id || '0', 10);
+                    const idB = parseInt(b.dataset.id || '0', 10);
+                    return filtro === 'id_asc' ? idA - idB : idB - idA;
+                });
+
+                linhasOrdenadas.forEach(row => usersTableBody.appendChild(row));
+            }
+        }
+
+        searchInput.addEventListener('keyup', aplicarPesquisaEFiltro);
+        filterSelect.addEventListener('change', aplicarPesquisaEFiltro);
+        aplicarPesquisaEFiltro();
+    </script>
+
+    <script>
+        // Menu responsivo para celular
+        (function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            function fecharMenuMobile() {
+                if (!sidebar || !sidebarOverlay || !menuToggle) return;
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            function alternarMenuMobile() {
+                if (!sidebar || !sidebarOverlay || !menuToggle) return;
+                const abriu = sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active', abriu);
+                document.body.classList.toggle('menu-open', abriu);
+                menuToggle.setAttribute('aria-expanded', abriu ? 'true' : 'false');
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', alternarMenuMobile);
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', fecharMenuMobile);
+            }
+
+            document.querySelectorAll('.sidebar-nav a').forEach(link => {
+                link.addEventListener('click', fecharMenuMobile);
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    fecharMenuMobile();
+                }
+            });
+        })();
     </script>
 </body>
 </html>

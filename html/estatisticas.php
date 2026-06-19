@@ -13,6 +13,15 @@ $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);
 $fazenda = htmlspecialchars($_SESSION['usuario_fazenda'] ?? 'Minha Fazenda');
 
 // ==========================================
+// CONSULTA PARA AVISOS DO SISTEMA
+// ==========================================
+$query_avisos = "SELECT id, mensagem, data_criacao FROM avisos WHERE destinatario_id IS NULL OR destinatario_id = ? ORDER BY data_criacao DESC LIMIT 5";
+$stmt_avisos = mysqli_prepare($conexao, $query_avisos);
+mysqli_stmt_bind_param($stmt_avisos, "i", $usuario_id);
+mysqli_stmt_execute($stmt_avisos);
+$resultado_avisos = mysqli_stmt_get_result($stmt_avisos);
+
+// ==========================================
 // CONSULTAS PARA OS CARDS DE RESUMO
 // ==========================================
 
@@ -108,7 +117,13 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
 
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active">Estatísticas</a>
-                <a href="saude.php" class="nav-item">Saúde</a> <a href="cuidados.php" class="nav-item">Cuidados</a>
+                <a href="saude.php" class="nav-item">Saúde</a>
+                <a href="cuidados.php" class="nav-item">Cuidados</a>
+
+                <?php if (!isset($_SESSION['usuario_tipo']) || strtolower($_SESSION['usuario_tipo']) !== 'visitante'): ?>
+                    <a href="propriedades.php" class="nav-item">Propriedades</a>
+                <?php endif; ?>
+
                 <a href="configuracoes.php" class="nav-item">Configurações</a>
                 <a href="administracao.php" class="nav-item">Administração</a>
             </nav>
@@ -141,6 +156,24 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                     <p class="page-subtitle">Acompanhe o desempenho dos seus lotes</p>
                 </div>
             </header>
+
+            
+            <?php if (mysqli_num_rows($resultado_avisos) > 0): ?>
+            <section class="card mt-4" style="background-color: #fff9e6; border-left: 5px solid #ffc107;">
+                <div class="card-header" style="padding: 15px; border-bottom: 1px solid #ffe082;">
+                    <h3 class="card-title" style="margin: 0; color: #b08d00;">🔔 Notificações e Avisos</h3>
+                </div>
+                <div style="padding: 15px;">
+                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        <?php while ($aviso = mysqli_fetch_assoc($resultado_avisos)): ?>
+                            <li style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ffe082;">
+                                <strong><?= date('d/m/Y H:i', strtotime($aviso['data_criacao'])) ?>:</strong> <?= htmlspecialchars($aviso['mensagem']) ?>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                </div>
+            </section>
+            <?php endif; ?>
 
             <section class="summary-grid mt-4">
                 <div class="summary-card">
