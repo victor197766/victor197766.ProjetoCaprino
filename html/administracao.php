@@ -35,24 +35,9 @@ function valorSeguro($valor) {
     return htmlspecialchars($valor ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-// Verificação de segurança para a coluna suspenso
-$checkColumn = mysqli_query($conexao, "SHOW COLUMNS FROM usuario LIKE 'suspenso'");
-if (mysqli_num_rows($checkColumn) == 0) {
-    mysqli_query($conexao, "ALTER TABLE usuario ADD COLUMN suspenso TINYINT(1) NOT NULL DEFAULT 0");
-}
-
-// Criação da tabela de avisos se não existir
-$sqlAvisosTable = "CREATE TABLE IF NOT EXISTS avisos (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    destinatario_id INT(11) NULL DEFAULT NULL,
-    lote_id INT(11) NULL DEFAULT NULL,
-    mensagem TEXT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_aviso_usuario FOREIGN KEY (destinatario_id) REFERENCES usuario (user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_aviso_lote FOREIGN KEY (lote_id) REFERENCES lote (id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-mysqli_query($conexao, $sqlAvisosTable);
+// CORREÇÃO: as verificações dinâmicas de SHOW COLUMNS e CREATE TABLE foram removidas.
+// A coluna `suspenso` e a tabela `avisos` agora fazem parte do schema oficial (sql.sql),
+// eliminando o overhead dessas queries de metadados em cada requisição.
 
 $user_session_id = $_SESSION['usuario_id'];
 
@@ -133,15 +118,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
             }
         }
 
-        if ($colunaSenha) {
-            $sqlInsert = "INSERT INTO usuario (username, email, `$colunaSenha`, tipo, propriedade_id, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
-            $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
-            mysqli_stmt_bind_param($stmtInsert, "ssssssss", $username, $email, $senhaHash, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ);
-        } else {
-            $sqlInsert = "INSERT INTO usuario (username, email, tipo, propriedade_id, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
-            $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
-            mysqli_stmt_bind_param($stmtInsert, "sssssss", $username, $email, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ);
-        }
+        // CORREÇÃO: substituído 'propriedade_id' (coluna inexistente) por 'nome_propriedade'
+        // A coluna `senha` é garantida pelo schema, dispensando a detecção dinâmica de coluna
+        $nome_prop_add = trim($_POST['nome_propriedade'] ?? '') ?: null;
+        $sqlInsert = "INSERT INTO usuario (username, email, senha, tipo, nome_propriedade, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
+        $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
+        mysqli_stmt_bind_param($stmtInsert, "ssssssss",
+            $username, $email, $senhaHash, $tipo,
+            $nome_prop_add, $num_telefone, $CPF, $CNPJ
+        );
 
         if ($stmtInsert && mysqli_stmt_execute($stmtInsert)) {
             mysqli_stmt_close($stmtInsert);
@@ -159,9 +144,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
             redirecionarAdmin('erro');
         }
 
-        $sqlUpdate = "UPDATE usuario SET username = ?, email = ?, tipo = ?, propriedade_id = ?, num_telefone = ?, CPF = ?, CNPJ = ? WHERE user_id = ?";
+        // CORREÇÃO: substituído 'propriedade_id' (coluna inexistente) por 'nome_propriedade'
+        $nome_propriedade_edit = trim($_POST['nome_propriedade'] ?? '');
+        $sqlUpdate = "UPDATE usuario SET username = ?, email = ?, tipo = ?, nome_propriedade = ?, num_telefone = ?, CPF = ?, CNPJ = ? WHERE user_id = ?";
         $stmtUpdate = mysqli_prepare($conexao, $sqlUpdate);
-        mysqli_stmt_bind_param($stmtUpdate, "sssssssi", $username, $email, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ, $user_id);
+        mysqli_stmt_bind_param($stmtUpdate, "sssssssi", $username, $email, $tipo, $nome_propriedade_edit, $num_telefone, $CPF, $CNPJ, $user_id);
 
         if ($stmtUpdate && mysqli_stmt_execute($stmtUpdate)) {
             mysqli_stmt_close($stmtUpdate);
@@ -183,7 +170,7 @@ if (count($partes) > 1) {
 }
 
 // Fetch users
-$sql = "SELECT user_id, username, email, tipo, propriedade_id, num_telefone, CPF, CNPJ, create_time, suspenso FROM usuario ORDER BY user_id DESC";
+$sql = "SELECT user_id, username, email, tipo, nome_propriedade, num_telefone, CPF, CNPJ, create_time, suspenso FROM usuario ORDER BY user_id DESC";
 $resultado = mysqli_query($conexao, $sql);
 
 // Fetch avisos
@@ -210,7 +197,7 @@ while($u = mysqli_fetch_assoc($resultadoUsersList)) {
     $users_options[] = $u;
 }
 
-// Fetch propriedades
+// Fetch propriedades (tabela agora declarada corretamente no schema sql.sql)
 $sqlPropriedades = "SELECT p.id, p.nome, u.username as produtor_nome FROM propriedades p JOIN usuario u ON p.produtor_id = u.user_id ORDER BY p.nome ASC";
 $resultadoPropriedades = mysqli_query($conexao, $sqlPropriedades);
 $propriedades_options = [];
@@ -430,7 +417,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                                     $usernameAttr = valorSeguro($usuario['username']);
                                     $emailAttr = valorSeguro($usuario['email']);
                                     $tipoAttr = valorSeguro($usuario['tipo']);
-                                    $propriedadeAttr = valorSeguro($usuario['nome_propriedade']);
+                                    $propriedadeAttr = valorSeguro($usuario['nome_propriedade']); // CORREÇÃO: era propriedade_id
                                     $telefoneAttr = valorSeguro($usuario['num_telefone']);
                                     $cpfAttr = valorSeguro($usuario['CPF']);
                                     $cnpjAttr = valorSeguro($usuario['CNPJ']);
