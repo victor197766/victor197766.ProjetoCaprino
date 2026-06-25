@@ -1,13 +1,4 @@
 <?php
-session_start();
-
-// CORREÇÃO: verificação de sessão adicionada.
-// Antes, qualquer pessoa poderia acessar a listagem de usuários sem autenticação.
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: recuperarConta.html');
-    exit();
-}
-
 ob_start();
 
 include '../db/connection.php';

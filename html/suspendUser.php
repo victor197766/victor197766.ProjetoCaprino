@@ -11,8 +11,11 @@ include '../db/connection.php';
 
 $user_id = intval($_SESSION['usuario_id']);
 
-// CORREÇÃO: verificação dinâmica de SHOW COLUMNS removida.
-// A coluna `suspenso` faz parte do schema oficial (sql.sql) e sempre existirá.
+// Primeiro, garantir que a coluna 'suspenso' exista na tabela
+$checkColumn = mysqli_query($conexao, "SHOW COLUMNS FROM usuario LIKE 'suspenso'");
+if (mysqli_num_rows($checkColumn) == 0) {
+    mysqli_query($conexao, "ALTER TABLE usuario ADD COLUMN suspenso TINYINT(1) NOT NULL DEFAULT 0");
+}
 
 // Verificar status atual
 $stmt = mysqli_prepare($conexao, "SELECT suspenso FROM usuario WHERE user_id = ?");

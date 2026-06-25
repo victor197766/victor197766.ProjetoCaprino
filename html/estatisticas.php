@@ -10,16 +10,17 @@ include '../db/connection.php';
 
 $usuario_id = $_SESSION['usuario_id'];
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);
-$fazenda = htmlspecialchars($_SESSION['usuario_fazenda'] ?? 'Minha Fazenda');
+$fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_SESSION['usuario_fazenda'] : 'Nenhuma propriedade cadastrada.');
 
 // ==========================================
 // CONSULTA PARA AVISOS DO SISTEMA
 // ==========================================
-$query_avisos = "SELECT id, mensagem, data_criacao FROM avisos WHERE destinatario_id IS NULL OR destinatario_id = ? ORDER BY data_criacao DESC LIMIT 5";
+$query_avisos = "SELECT id, titulo, mensagem, data_criacao FROM avisos WHERE destinatario_id IS NULL OR destinatario_id = ? ORDER BY data_criacao DESC LIMIT 5";
 $stmt_avisos = mysqli_prepare($conexao, $query_avisos);
 mysqli_stmt_bind_param($stmt_avisos, "i", $usuario_id);
 mysqli_stmt_execute($stmt_avisos);
-$resultado_avisos = mysqli_stmt_get_result($stmt_avisos);
+$resultadoAvisos = mysqli_stmt_get_result($stmt_avisos);
+$notificationCount = mysqli_num_rows($resultadoAvisos);
 
 // ==========================================
 // CONSULTAS PARA OS CARDS DE RESUMO
@@ -88,13 +89,20 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
 <body>
 
     <header class="mobile-header">
-        <div class="mobile-header-left">
-            <img src="logoControlCabra.png" alt="Logo" class="mobile-logo">
+        <div class="mobile-header-left" style="width:auto; flex:1; display:flex; align-items:center; gap:10px; min-width:0;">
+            <img src="logoControlCabra.png" alt="Logo" class="mobile-logo" style="flex-shrink:0;">
+            <span class="mobile-page-title" style="text-align:left;">Estatísticas</span>
         </div>
-        <div class="mobile-header-center">
-            <span class="mobile-page-title">Estatísticas</span>
-        </div>
-        <div class="mobile-header-right">
+        <div class="mobile-header-right" style="width:auto; display:flex; align-items:center; gap:6px; flex-shrink:0;">
+            <button class="notification-btn btn btn-icon" id="notificationBtn" aria-label="Notificações">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <?php if($notificationCount > 0): ?>
+<span class="badge" id="notificationCount"><?php echo $notificationCount; ?></span>
+<?php endif; ?>
+            </button>
             <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -155,25 +163,18 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                     </h1>
                     <p class="page-subtitle">Acompanhe o desempenho dos seus lotes</p>
                 </div>
+                <div class="header-actions">
+                    <button class="btn btn-icon notification-btn" id="notificationBtnDesktop" aria-label="Notificações">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <?php if($notificationCount > 0): ?>
+                        <span class="badge" id="notificationCountDesktop"><?php echo $notificationCount; ?></span>
+                        <?php endif; ?>
+                    </button>
+                </div>
             </header>
-
-            
-            <?php if (mysqli_num_rows($resultado_avisos) > 0): ?>
-            <section class="card mt-4" style="background-color: #fff9e6; border-left: 5px solid #ffc107;">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid #ffe082;">
-                    <h3 class="card-title" style="margin: 0; color: #b08d00;">🔔 Notificações e Avisos</h3>
-                </div>
-                <div style="padding: 15px;">
-                    <ul style="list-style-type: none; padding: 0; margin: 0;">
-                        <?php while ($aviso = mysqli_fetch_assoc($resultado_avisos)): ?>
-                            <li style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ffe082;">
-                                <strong><?= date('d/m/Y H:i', strtotime($aviso['data_criacao'])) ?>:</strong> <?= htmlspecialchars($aviso['mensagem']) ?>
-                            </li>
-                        <?php endwhile; ?>
-                    </ul>
-                </div>
-            </section>
-            <?php endif; ?>
 
             <section class="summary-grid mt-4">
                 <div class="summary-card">
@@ -230,9 +231,8 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
 
             <section class="card production-section mt-4">
                 <h3 class="card-title">Produção Por Lote (Fibra, Pele, Leite e Carne)</h3>
-
-                <div class="production-content">
-                    <div class="table-container" style="width: 100%;">
+                <div style="width: 100%;">
+                    <div class="table-container" style="overflow-x: auto; width: 100%;">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -249,7 +249,9 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                                 <?php
                                 $soma_fibra = $soma_pele = $soma_leite = $soma_carne = 0;
 
-                                if (mysqli_num_rows($resultado_producao) > 0):
+                                $tem_producao = mysqli_num_rows($resultado_producao) > 0;
+
+                                if ($tem_producao):
                                     while ($linha = mysqli_fetch_assoc($resultado_producao)):
                                         $soma_fibra += $linha['total_fibra'];
                                         $soma_pele  += $linha['total_pele'];
@@ -272,10 +274,11 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                                 else:
                                     ?>
                                     <tr>
-                                        <td colspan="7" style="text-align: center;">Nenhum registro de produção encontrado.</td>
+                                        <td colspan="7" style="text-align: center;">Nenhum dado de produção disponível ainda.</td>
                                     </tr>
                                 <?php endif; ?>
 
+                                <?php if ($tem_producao): ?>
                                 <tr class="total-row">
                                     <td>Total Geral</td>
                                     <td></td>
@@ -285,6 +288,7 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                                     <td><?= number_format($soma_carne, 1, ',', '.') ?></td>
                                     <td><strong><?= number_format(($soma_fibra + $soma_pele + $soma_leite + $soma_carne), 1, ',', '.') ?></strong></td>
                                 </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -293,7 +297,29 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
         </main>
     </div>
 
+    <!-- Notification Dropdown -->
+    <div class="notification-dropdown" id="notificationModal">
+        <div class="notification-dropdown-content">
+            <h3 class="notification-dropdown-title">Notificações</h3>
+            <div id="notificationList">
+                <?php if (mysqli_num_rows($resultadoAvisos) > 0): ?>
+                    <ul class="notification-ul">
+                        <?php while ($aviso = mysqli_fetch_assoc($resultadoAvisos)): ?>
+                            <li class="notification-item" data-status="unread">
+                                <strong><?php echo date('d/m/Y H:i', strtotime($aviso['data_criacao'])); ?> - <?php echo htmlspecialchars($aviso['titulo'] ?? 'Aviso'); ?>:</strong><br>
+                                <?php echo htmlspecialchars($aviso['mensagem']); ?>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p style="color: var(--text-muted); text-align: center; padding: 12px 0;">Nenhuma notificação pendente!</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
     <script src="estatisticas.js"></script>
+    <script src="notifications.js"></script>
 </body>
 
 </html>

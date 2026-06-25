@@ -44,11 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Simulação de redirecionamento ou busca
-        // Na prática, você enviaria isso para o backend ou filtraria uma lista
-        alert(`Buscando no sistema o animal com identificador: ${codigoDigitado}`);
-        
-        // Exemplo de como você poderia redirecionar para a tela de edição do animal achado:
-        // window.location.href = `edicao_animal.html?codigo=${codigoDigitado}`;
+        alert('Nenhum dado cadastrado para este código ainda.');
     });
 });

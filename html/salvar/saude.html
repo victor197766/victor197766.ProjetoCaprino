@@ -54,10 +54,19 @@
                     </h1>
                     <p class="page-subtitle">Acompanhe e cuide do bem-estar do seu rebanho</p>
                 </div>
+                <div class="header-actions">
+                    <button class="btn btn-icon notification-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        Ajuda
+                    </button>
+                </div>
             </header>
 
             <div class="dashboard-grid">
-                
                 <section class="card card-doencas span-col-2">
                     <div class="card-header">
                         <h3 class="card-title">Conhecer as doenças</h3>
@@ -86,62 +95,7 @@
                     <button class="btn btn-primary mt-3">Ver todas as doenças</button>
                 </section>
 
-                <section class="card card-gestantes">
-                    <div class="card-header">
-                        <h3 class="card-title">Avaliação em gestantes</h3>
-                        <p class="card-subtitle">Acompanhe a gestação e garanta o bem-estar.</p>
-                    </div>
-                
-                    <div class="gestantes-content">
-                        <div class="gestante-icon">
-                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5">
-                                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path>
-                                <path d="M12 8v4l3 3"></path>
-                            </svg>
-                        </div>
-                
-                        <ul>
-                            <li>Diagnóstico de gestação</li>
-                            <li>Acompanhamento</li>
-                            <li>Nutrição adequada</li>
-                            <li>Preparação para o parto</li>
-                        </ul>
-                    </div>
-                
-                    <div class="gestantes-extra">
-                        <div class="gestante-info-box">
-                            <span>Gestantes monitoradas</span>
-                            <strong>0</strong>
-                        </div>
-                
-                        <div class="gestante-info-box">
-                            <span>Próximos partos</span>
-                            <strong>0</strong>
-                        </div>
-                    </div>
-                
-                    <div class="gestantes-alerta">
-                        <strong>Cuidados importantes</strong>
-                        <p>Verifique alimentação, hidratação, vacinação e sinais de desconforto durante toda a gestação.</p>
-                    </div>
-                
-                    <button class="btn btn-outline btn-block mt-3">Acompanhar gestantes</button>
-                </section>
-                <section class="card card-alimentacao span-col-full">
-                    <div class="alimentacao-wrapper">
-                        <div class="alimentacao-main">
-                            <div class="card-header">
-                                <h3 class="card-title">Controle de alimentação apropriada</h3>
-                                <p class="card-subtitle">Garanta uma alimentação balanceada.</p>
-                            </div>
-                
-                            <div class="alimentacao-content">
-                                <div class="empty-state">Nenhum plano alimentar cadastrado ainda.<small>Os dados aparecerão aqui quando houver registros de alimentação.</small></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section class="card card-avaliacao span-col-full">
+                <section class="card card-avaliacao">
                     <div class="card-header">
                         <h3 class="card-title">Avaliação dos animais</h3>
                         <p class="card-subtitle">Avalie o estado de saúde e informações básicas.</p>
@@ -188,6 +142,101 @@
                     </div>
                     <button class="btn btn-outline btn-block mt-3">Ver todos os animais</button>
                 </section>
+
+                <div class="actions-row span-col-full">
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                        <h4>Organize o programa</h4>
+                        <p>Planeje e acompanhe vacinas e manejos.</p>
+                        <ul>
+                            <li>Calendário sanitário</li>
+                            <li>Vacinações</li>
+                            <li>Vermifugações</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Gerenciar</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+                        <h4>Higiene nas instalações</h4>
+                        <p>Mantenha instalações limpas e adequadas.</p>
+                        <ul>
+                            <li>Limpeza de currais</li>
+                            <li>Desinfecção</li>
+                            <li>Manejo de cama</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Ver orientações</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+                        <h4>Controle de doenças</h4>
+                        <p>Monitore e previna ocorrências.</p>
+                        <ul>
+                            <li>Identificação precoce</li>
+                            <li>Isolamento</li>
+                            <li>Biossegurança</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Acompanhar</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></div>
+                        <h4>Controle de tratamentos</h4>
+                        <p>Registre tratamentos do rebanho.</p>
+                        <ul>
+                            <li>Tratamentos ativos</li>
+                            <li>Histórico</li>
+                            <li>Período de carência</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Ver tratamentos</button>
+                    </div>
+
+                    <div class="card action-card">
+                        <div class="action-icon-header"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg></div>
+                        <h4>Controle de reprodução</h4>
+                        <p>Acompanhe ciclo e registre partos.</p>
+                        <ul>
+                            <li>Coberturas</li>
+                            <li>Prenhez e Partos</li>
+                            <li>Taxa de parição</li>
+                        </ul>
+                        <button class="btn btn-outline btn-block mt-auto">Gerenciar</button>
+                    </div>
+                </div>
+
+                <section class="card card-gestantes">
+                    <div class="card-header">
+                        <h3 class="card-title">Avaliação em gestantes</h3>
+                        <p class="card-subtitle">Acompanhe a gestação e garanta o bem-estar.</p>
+                    </div>
+                    <div class="gestantes-content">
+                        <div class="gestante-icon">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path><path d="M12 8v4l3 3"></path></svg>
+                        </div>
+                        <ul>
+                            <li>Diagnóstico de gestação</li>
+                            <li>Acompanhamento</li>
+                            <li>Nutrição adequada</li>
+                            <li>Preparação para o parto</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline btn-block mt-3">Acompanhar gestantes</button>
+                </section>
+
+                <section class="card card-alimentacao span-col-2">
+                    <div class="alimentacao-wrapper">
+                        <div class="alimentacao-main">
+                            <div class="card-header">
+                                <h3 class="card-title">Controle de alimentação apropriada</h3>
+                                <p class="card-subtitle">Garanta uma alimentação balanceada.</p>
+                            </div>
+                            <div class="empty-state">Nenhum plano alimentar cadastrado ainda.<small>Os dados aparecerão aqui quando houver registros de alimentação.</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>

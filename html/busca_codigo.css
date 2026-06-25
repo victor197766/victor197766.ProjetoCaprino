@@ -98,3 +98,23 @@ body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color
 .btn-blue { background: var(--btn-blue); color: white; }
 .btn-blue:hover { background: var(--btn-blue-hover); }
 .btn-block { width: 100%; display: block; }
+
+/* Estado vazio padronizado */
+.empty-state {
+    width: 100%;
+    padding: 28px 20px;
+    border: 1px dashed var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    color: var(--text-muted);
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.5;
+}
+.empty-state small {
+    display: block;
+    margin-top: 6px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+

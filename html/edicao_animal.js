@@ -30,10 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const temaSalvo = localStorage.getItem('controlCabra-theme') || 'sistema';
     aplicarTema(temaSalvo);
 
-    // --- SALVAR FORMULÁRIO (SIMULADO) ---
+    // --- SALVAR FORMULÁRIO ---
     const form = document.getElementById('edicaoAnimalForm');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Alterações de Cabra1-C salvas com sucesso!');
+        alert('Nenhum animal selecionado para edição.');
     });
 });

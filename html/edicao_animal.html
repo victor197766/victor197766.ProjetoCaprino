@@ -13,7 +13,7 @@
 
     <header class="mobile-header">
         <div class="mobile-header-left">
-            <img src="e76f6793-2da1-4c69-9a9d-0016ea564710.png" alt="Logo" class="mobile-logo">
+            <img src="logoControlCabra.png" alt="Logo" class="mobile-logo">
         </div>
         <div class="mobile-header-center">
             <span class="mobile-page-title">Editar Caprino</span>
@@ -29,7 +29,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-text">
-                    <h2>Capri & Ovino</h2>
+                    <h2>ControlCabra</h2>
                     <p>Gestão Inteligente</p>
                 </div>
             </div>
@@ -47,8 +47,8 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </div>
                 <div class="user-info">
-                    <strong>Administrador</strong>
-                    <span>Fazenda Boa Vista</span>
+                    <strong>Usuário do sistema</strong>
+                    <span>Nenhuma propriedade cadastrada.</span>
                 </div>
             </div>
         </aside>
@@ -59,57 +59,60 @@
             
             <section class="edit-profile-header">
                 <div class="animal-photo-wrapper">
-                    <img src="https://images.unsplash.com/photo-1524024973431-2ad916746881?q=80&w=200&auto=format&fit=crop" alt="Foto do Caprino" class="animal-photo">
+                    <div class="animal-photo animal-photo-placeholder" aria-hidden="true"></div>
                 </div>
-                <h2 class="animal-display-name">Cabra1-C</h2>
+                <div>
+                    <h2 class="animal-display-name">Nenhum animal selecionado</h2>
+                    <p class="empty-subtitle" style="color: var(--text-muted); margin-top: 4px;">Selecione um animal cadastrado para editar as informações.</p>
+                </div>
             </section>
 
             <section class="card form-card">
                 <form id="edicaoAnimalForm">
                     
                     <div class="form-group">
-                        <input type="number" class="form-control" placeholder="Peso (Kg)" value="45.5">
+                        <input type="number" class="form-control" placeholder="Peso (Kg)">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Idade" value="2 anos e 3 meses">
+                        <input type="text" class="form-control" placeholder="Idade">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Está prenha? Se sim quanto tempo de gestação" value="Não">
+                        <input type="text" class="form-control" placeholder="Está prenha? Se sim quanto tempo de gestação">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Número do brinco, tatuagem ou microchip" value="BR-8492">
+                        <input type="text" class="form-control" placeholder="Número do brinco, tatuagem ou microchip">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Raça" value="Boer">
+                        <input type="text" class="form-control" placeholder="Raça">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Está em qual lote" value="Lote 01 - Reprodução">
+                        <input type="text" class="form-control" placeholder="Está em qual lote">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Número identificador da Matriz e do Reprodutor" value="M-02 / P-15">
+                        <input type="text" class="form-control" placeholder="Número identificador da Matriz e do Reprodutor">
                     </div>
 
                     <div class="form-group">
-                        <textarea class="form-control" rows="3" placeholder="Informações extras aqui.">Animal com excelente ganho de peso na última pesagem.</textarea>
+                        <textarea class="form-control" rows="3" placeholder="Informações extras aqui."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Doenças ou infecções identificadas" value="Nenhuma">
+                        <input type="text" class="form-control" placeholder="Doenças ou infecções identificadas">
                     </div>
 
                     <div class="form-group">
                         <select class="form-control">
-                            <option value="ativo">Estado atual: Ativo no rebanho</option>
-                            <option value="morto">Estado atual: Morto</option>
-                            <option value="vendido">Estado atual: Vendido</option>
-                            <option value="transferido">Estado atual: Transferido</option>
-                            <option value="abate">Estado atual: Abate</option>
+                            <option>Estado atual: Ativo no rebanho</option>
+                            <option>Estado atual: Morto</option>
+                            <option>Estado atual: Vendido</option>
+                            <option>Estado atual: Transferido</option>
+                            <option>Estado atual: Abate</option>
                         </select>
                     </div>
 

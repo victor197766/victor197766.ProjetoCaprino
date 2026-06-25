@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Animal - ControlCabra</title>
-    <link rel="stylesheet" href="busca_codigo.css">
+    <title>Agenda - ControlCabra</title>
+    <link rel="stylesheet" href="agenda.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
             <img src="logoControlCabra.png" alt="Logo" class="mobile-logo">
         </div>
         <div class="mobile-header-center">
-            <span class="mobile-page-title">Pesquisar Código</span>
+            <span class="mobile-page-title">Agenda</span>
         </div>
         <div class="mobile-header-right">
             <button class="menu-toggle" id="menuToggle">
@@ -56,27 +56,47 @@
 
         <main class="main-content">
             
-            <section class="search-section">
-                <div class="search-card">
-                    <div class="search-icon-wrapper">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-bottom: 15px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <section class="calendar-card">
+                <div class="calendar-header">
+                    <h2 id="monthYearDisplay" class="month-year-title">Calendário</h2>
+                    <div class="calendar-nav">
+                        <button id="prevMonth" class="nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button id="nextMonth" class="nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
                     </div>
-                    <h2 class="search-title">Localizar Cadastro</h2>
-                    <p class="search-subtitle">Digite o código para visualizar ou editar os dados do animal.</p>
+                </div>
 
-                    <form id="searchForm" class="search-form">
-                        <div class="form-group">
-                            <input type="text" id="codigoInput" class="form-control text-center" placeholder="Digite o código identificador do animal" required>
-                        </div>
+                <div class="calendar-weekdays">
+                    <span>Seg</span>
+                    <span>Ter</span>
+                    <span>Qua</span>
+                    <span>Qui</span>
+                    <span>Sex</span>
+                    <span>Sáb</span>
+                    <span>Dom</span>
+                </div>
 
-                        <button type="submit" class="btn btn-blue btn-block">PROCURAR</button>
-                    </form>
+                <div class="calendar-days" id="calendarDays">
+                    </div>
+            </section>
+
+            <section class="agenda-list">
+                <div class="agenda-header">
+                    <h3>Eventos do dia selecionado</h3>
+                    <button class="add-event-btn">+ Novo</button>
+                </div>
+
+                <div class="events-container" id="eventsContainer">
+                    <div class="empty-state">Nenhum evento cadastrado para esta data.</div>
                 </div>
             </section>
 
         </main>
     </div>
 
-    <script src="busca_codigo.js"></script>
+    <script src="agenda.js"></script>
 </body>
 </html>

@@ -122,3 +122,23 @@ body {
 .btn-block { width: 100%; }
 
 .form-actions { margin-top: 30px; }
+
+/* Estado vazio padronizado */
+.empty-state {
+    width: 100%;
+    padding: 28px 20px;
+    border: 1px dashed var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    color: var(--text-muted);
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.5;
+}
+.empty-state small {
+    display: block;
+    margin-top: 6px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+

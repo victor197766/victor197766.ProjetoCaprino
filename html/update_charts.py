@@ -9,7 +9,7 @@ lots_canvas = '<canvas id="lotsChart"></canvas>'
 lots_php = '''<?php if (count($lots_types) > 0): ?>
                             <canvas id="lotsChart"></canvas>
                         <?php else: ?>
-                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum lote registrado ainda.</p>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum dado disponível ainda.</p>
                         <?php endif; ?>'''
 content = content.replace(lots_canvas, lots_php)
 
@@ -18,7 +18,7 @@ animals_canvas = '<canvas id="animalsChart"></canvas>'
 animals_php = '''<?php if (count($animals_types) > 0): ?>
                             <canvas id="animalsChart"></canvas>
                         <?php else: ?>
-                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum animal registrado ainda.</p>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum dado disponível ainda.</p>
                         <?php endif; ?>'''
 content = content.replace(animals_canvas, animals_php)
 
@@ -26,7 +26,7 @@ users_canvas = '<canvas id="usersChart"></canvas>'
 users_php = '''<?php if (array_sum($users_types) > 0): ?>
                             <canvas id="usersChart"></canvas>
                         <?php else: ?>
-                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum usuário registrado ainda.</p>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum dado disponível ainda.</p>
                         <?php endif; ?>'''
 content = content.replace(users_canvas, users_php)
 

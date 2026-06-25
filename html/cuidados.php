@@ -1,11 +1,21 @@
 <?php
+include '../db/connection.php';
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: recuperarConta.html');
     exit();
 }
+// Fetch notifications for the current user
+$query_avisos = "SELECT a.id, a.titulo, a.mensagem, a.data_criacao, u.username as destinatario, l.nome as lote_nome FROM avisos a LEFT JOIN usuario u ON a.destinatario_id = u.user_id LEFT JOIN lote l ON a.lote_id = l.id WHERE a.destinatario_id IS NULL OR a.destinatario_id = ? ORDER BY a.id DESC";
+$stmt_avisos = mysqli_prepare($conexao, $query_avisos);
+mysqli_stmt_bind_param($stmt_avisos, "i", $_SESSION['usuario_id']);
+mysqli_stmt_execute($stmt_avisos);
+$resultadoAvisos = mysqli_stmt_get_result($stmt_avisos);
+$notificationCount = mysqli_num_rows($resultadoAvisos);
+
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);
 $emailUsuario = htmlspecialchars($_SESSION['usuario_email']);
+$fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_SESSION['usuario_fazenda'] : 'Nenhuma propriedade cadastrada.');
 $partes = explode(' ', $nomeUsuario);
 $iniciais = strtoupper(substr($partes[0], 0, 1));
 if (count($partes) > 1) {
@@ -36,6 +46,15 @@ if (count($partes) > 1) {
             <button class="menu-toggle" id="menuToggle">
                 <i class="ph ph-list" style="font-size: 28px;"></i>
             </button>
+            <button class="notification-btn btn btn-icon" id="notificationBtn" aria-label="Notificações" style="border: none; background: transparent; padding: 6px; cursor: pointer;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <?php if($notificationCount > 0): ?>
+<span class="badge" id="notificationCount" style="position: absolute; top: -4px; right: -4px; background: #e53935; color: #fff; border-radius: 50%; font-size: 0.7rem; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;"><?php echo $notificationCount; ?></span>
+<?php endif; ?>
+            </button>
         </div>
     </header>
 
@@ -43,25 +62,36 @@ if (count($partes) > 1) {
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
+                <img src="logoControlCabra.png" alt="Logo" class="sidebar-logo">
                 <div class="brand-text">
                     <h2>ControlCabra</h2>
-                    <p>Gestão de Rebanho</p>
+                    <p>Gestão Inteligente</p>
                 </div>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <a href="estatisticas.php" class="nav-item">Estatísticas</a>
                 <a href="saude.php" class="nav-item">Saúde</a>
                 <a href="cuidados.php" class="nav-item active">Cuidados</a>
+
+                <?php if (!isset($_SESSION['usuario_tipo']) || strtolower($_SESSION['usuario_tipo']) !== 'visitante'): ?>
+                    <a href="propriedades.php" class="nav-item">Propriedades</a>
+                <?php endif; ?>
+
                 <a href="configuracoes.php" class="nav-item">Configurações</a>
                 <a href="administracao.php" class="nav-item">Administração</a>
             </nav>
 
             <div class="user-profile">
-                <div class="user-avatar"><?php echo $iniciais; ?></div>
+                <div class="user-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
                 <div class="user-info">
-                    <strong><?php echo $nomeUsuario; ?></strong>
-                    <span><?php echo $emailUsuario; ?></span>
+                    <strong><?= $nomeUsuario ?></strong>
+                    <span><?= $fazenda ?></span>
                 </div>
             </div>
         </aside>
@@ -75,11 +105,12 @@ if (count($partes) > 1) {
                 </div>
                 
                 <div class="header-tools">
-                    <button class="icon-btn notification-btn">
+                    <button class="icon-btn notification-btn" id="notificationBtnDesktop" style="border: none; background: transparent; padding: 6px; cursor: pointer; position: relative; margin-right: 15px;">
                         <i class="ph ph-bell"></i>
-                        <span class="badge">3</span>
+                        <?php if($notificationCount > 0): ?>
+<span class="badge" id="notificationCountDesktop" style="position: absolute; top: -4px; right: -4px; background: #e53935; color: #fff; border-radius: 50%; font-size: 0.7rem; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;"><?php echo $notificationCount; ?></span>
+<?php endif; ?>
                     </button>
-                    <button class="btn btn-outline"><i class="ph ph-question"></i> Ajuda</button>
                 </div>
             </div>
 
@@ -141,8 +172,8 @@ if (count($partes) > 1) {
                             <span>Saudáveis</span>
                         </div>
                         <div class="stat-values">
-                            <strong>128</strong>
-                            <span class="percent">82%</span>
+                            <strong>0</strong>
+                            <span class="percent">0%</span>
                         </div>
                     </div>
 
@@ -152,16 +183,39 @@ if (count($partes) > 1) {
                             <span>Atenção</span>
                         </div>
                         <div class="stat-values">
-                            <strong>18</strong>
-                            <span class="percent">12%</span>
+                            <strong>0</strong>
+                            <span class="percent">0%</span>
                         </div>
                     </div>
                 </div>
+
+                <div class="empty-state mt-3">Nenhum dado de avaliação cadastrado ainda.</div>
             </div>
 
         </main>
     </div>
 
+    <!-- Notification Dropdown -->
+    <div class="notification-dropdown" id="notificationModal">
+        <div class="notification-dropdown-content">
+            <h3 class="notification-dropdown-title">Notificações</h3>
+            <div id="notificationList">
+                <?php if (mysqli_num_rows($resultadoAvisos) > 0): ?>
+                    <ul class="notification-ul">
+                        <?php while ($aviso = mysqli_fetch_assoc($resultadoAvisos)): ?>
+                            <li class="notification-item" data-status="unread">
+                                <strong><?php echo date('d/m/Y H:i', strtotime($aviso['data_criacao'])); ?> - <?php echo htmlspecialchars($aviso['titulo'] ?? 'Aviso'); ?>:</strong><br>
+                                <?php echo htmlspecialchars($aviso['mensagem']); ?>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p style="color: var(--text-muted); text-align: center; padding: 12px 0;">Nenhuma notificação pendente!</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
     <script src="cuidados.js"></script>
+    <script src="notifications.js"></script>
 </body>
 </html>

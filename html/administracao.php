@@ -35,9 +35,47 @@ function valorSeguro($valor) {
     return htmlspecialchars($valor ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-// CORREÇÃO: as verificações dinâmicas de SHOW COLUMNS e CREATE TABLE foram removidas.
-// A coluna `suspenso` e a tabela `avisos` agora fazem parte do schema oficial (sql.sql),
-// eliminando o overhead dessas queries de metadados em cada requisição.
+// Verificação de segurança para a coluna suspenso
+$checkColumn = mysqli_query($conexao, "SHOW COLUMNS FROM usuario LIKE 'suspenso'");
+if (mysqli_num_rows($checkColumn) == 0) {
+    mysqli_query($conexao, "ALTER TABLE usuario ADD COLUMN suspenso TINYINT(1) NOT NULL DEFAULT 0");
+}
+
+// Criação da tabela de avisos se não existir
+$sqlAvisosTable = "CREATE TABLE IF NOT EXISTS avisos (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    destinatario_id INT(11) NULL DEFAULT NULL,
+    lote_id INT(11) NULL DEFAULT NULL,
+    titulo VARCHAR(255) NULL,
+    mensagem TEXT NOT NULL,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_aviso_usuario FOREIGN KEY (destinatario_id) REFERENCES usuario (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_aviso_lote FOREIGN KEY (lote_id) REFERENCES lote (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+mysqli_query($conexao, $sqlAvisosTable);
+
+// Ensure titulo column exists
+$checkTitulo = mysqli_query($conexao, "SHOW COLUMNS FROM avisos LIKE 'titulo'");
+if (mysqli_num_rows($checkTitulo) == 0) {
+    mysqli_query($conexao, "ALTER TABLE avisos ADD COLUMN titulo VARCHAR(255) NULL AFTER lote_id");
+}
+
+// Criação da tabela de propriedades se não existir
+$sqlPropriedadesTable = "CREATE TABLE IF NOT EXISTS propriedades (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    produtor_id INT(11) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_prop_produtor FOREIGN KEY (produtor_id) REFERENCES usuario (user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+mysqli_query($conexao, $sqlPropriedadesTable);
+
+// Verificação para a coluna propriedade_id
+$checkPropColumn = mysqli_query($conexao, "SHOW COLUMNS FROM usuario LIKE 'propriedade_id'");
+if ($checkPropColumn && mysqli_num_rows($checkPropColumn) == 0) {
+    mysqli_query($conexao, "ALTER TABLE usuario ADD COLUMN propriedade_id INT(11) NULL DEFAULT NULL");
+}
 
 $user_session_id = $_SESSION['usuario_id'];
 
@@ -63,12 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
     if ($acao === 'adicionar_aviso') {
         $destinatario = $_POST['destinatario'] === 'todos' ? null : intval($_POST['destinatario']);
         $lote = (empty($_POST['lote_aviso']) || $_POST['lote_aviso'] === 'todos') ? null : intval($_POST['lote_aviso']);
+        $titulo = trim($_POST['titulo'] ?? '');
         $mensagem = trim($_POST['mensagem'] ?? '');
 
         if ($mensagem !== '') {
-            $sql = "INSERT INTO avisos (destinatario_id, lote_id, mensagem) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO avisos (destinatario_id, lote_id, titulo, mensagem) VALUES (?, ?, ?, ?)";
             $stmt = mysqli_prepare($conexao, $sql);
-            mysqli_stmt_bind_param($stmt, "iis", $destinatario, $lote, $mensagem);
+            mysqli_stmt_bind_param($stmt, "iiss", $destinatario, $lote, $titulo, $mensagem);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
             redirecionarAdmin('aviso_adicionado');
@@ -86,6 +125,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
             redirecionarAdmin('aviso_removido');
+        }
+    }
+
+    // ===============================
+    // CRUD DE PROPRIEDADES (ADMIN)
+    // ===============================
+    if ($acao === 'adicionar_propriedade_admin') {
+        $nome_prop = trim($_POST['nome_propriedade'] ?? '');
+        $produtor_id_prop = intval($_POST['produtor_id_prop'] ?? 0);
+        if ($nome_prop !== '' && $produtor_id_prop > 0) {
+            $stmt = mysqli_prepare($conexao, "INSERT INTO propriedades (nome, produtor_id) VALUES (?, ?)");
+            mysqli_stmt_bind_param($stmt, "si", $nome_prop, $produtor_id_prop);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            redirecionarAdmin('prop_adicionada');
+        } else {
+            redirecionarAdmin('erro');
+        }
+    }
+
+    if ($acao === 'editar_propriedade_admin') {
+        $prop_id = intval($_POST['propriedade_id'] ?? 0);
+        $nome_prop = trim($_POST['nome_propriedade'] ?? '');
+        $produtor_id_prop = intval($_POST['produtor_id_prop'] ?? 0);
+        if ($prop_id > 0 && $nome_prop !== '' && $produtor_id_prop > 0) {
+            $stmt = mysqli_prepare($conexao, "UPDATE propriedades SET nome = ?, produtor_id = ? WHERE id = ?");
+            mysqli_stmt_bind_param($stmt, "sii", $nome_prop, $produtor_id_prop, $prop_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            redirecionarAdmin('prop_editada');
+        } else {
+            redirecionarAdmin('erro');
+        }
+    }
+
+    if ($acao === 'deletar_propriedade_admin') {
+        $prop_id = intval($_POST['propriedade_id'] ?? 0);
+        if ($prop_id > 0) {
+            $stmt = mysqli_prepare($conexao, "DELETE FROM propriedades WHERE id = ?");
+            mysqli_stmt_bind_param($stmt, "i", $prop_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            redirecionarAdmin('prop_removida');
         }
     }
 
@@ -118,15 +200,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
             }
         }
 
-        // CORREÇÃO: substituído 'propriedade_id' (coluna inexistente) por 'nome_propriedade'
-        // A coluna `senha` é garantida pelo schema, dispensando a detecção dinâmica de coluna
-        $nome_prop_add = trim($_POST['nome_propriedade'] ?? '') ?: null;
-        $sqlInsert = "INSERT INTO usuario (username, email, senha, tipo, nome_propriedade, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
-        $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
-        mysqli_stmt_bind_param($stmtInsert, "ssssssss",
-            $username, $email, $senhaHash, $tipo,
-            $nome_prop_add, $num_telefone, $CPF, $CNPJ
-        );
+        if ($colunaSenha) {
+            $sqlInsert = "INSERT INTO usuario (username, email, `$colunaSenha`, tipo, propriedade_id, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
+            $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
+            mysqli_stmt_bind_param($stmtInsert, "ssssssss", $username, $email, $senhaHash, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ);
+        } else {
+            $sqlInsert = "INSERT INTO usuario (username, email, tipo, propriedade_id, num_telefone, CPF, CNPJ, suspenso) VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
+            $stmtInsert = mysqli_prepare($conexao, $sqlInsert);
+            mysqli_stmt_bind_param($stmtInsert, "sssssss", $username, $email, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ);
+        }
 
         if ($stmtInsert && mysqli_stmt_execute($stmtInsert)) {
             mysqli_stmt_close($stmtInsert);
@@ -144,11 +226,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
             redirecionarAdmin('erro');
         }
 
-        // CORREÇÃO: substituído 'propriedade_id' (coluna inexistente) por 'nome_propriedade'
-        $nome_propriedade_edit = trim($_POST['nome_propriedade'] ?? '');
-        $sqlUpdate = "UPDATE usuario SET username = ?, email = ?, tipo = ?, nome_propriedade = ?, num_telefone = ?, CPF = ?, CNPJ = ? WHERE user_id = ?";
+        $sqlUpdate = "UPDATE usuario SET username = ?, email = ?, tipo = ?, propriedade_id = ?, num_telefone = ?, CPF = ?, CNPJ = ? WHERE user_id = ?";
         $stmtUpdate = mysqli_prepare($conexao, $sqlUpdate);
-        mysqli_stmt_bind_param($stmtUpdate, "sssssssi", $username, $email, $tipo, $nome_propriedade_edit, $num_telefone, $CPF, $CNPJ, $user_id);
+        mysqli_stmt_bind_param($stmtUpdate, "sssssssi", $username, $email, $tipo, $propriedade_id, $num_telefone, $CPF, $CNPJ, $user_id);
 
         if ($stmtUpdate && mysqli_stmt_execute($stmtUpdate)) {
             mysqli_stmt_close($stmtUpdate);
@@ -162,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
 
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);
 $emailUsuario = htmlspecialchars($_SESSION['usuario_email']);
-$fazenda = htmlspecialchars($_SESSION['usuario_fazenda'] ?? 'Minha Fazenda');
+$fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_SESSION['usuario_fazenda'] : 'Nenhuma propriedade cadastrada.');
 $partes = explode(' ', $nomeUsuario);
 $iniciais = strtoupper(substr($partes[0], 0, 1));
 if (count($partes) > 1) {
@@ -170,11 +250,20 @@ if (count($partes) > 1) {
 }
 
 // Fetch users
-$sql = "SELECT user_id, username, email, tipo, nome_propriedade, num_telefone, CPF, CNPJ, create_time, suspenso FROM usuario ORDER BY user_id DESC";
+$sql = "SELECT user_id, username, email, tipo, propriedade_id, num_telefone, CPF, CNPJ, create_time, suspenso FROM usuario ORDER BY user_id DESC";
 $resultado = mysqli_query($conexao, $sql);
 
+
+// Fetch notifications for the current user
+$query_my_avisos = "SELECT a.id, a.titulo, a.mensagem, a.data_criacao FROM avisos a WHERE a.destinatario_id IS NULL OR a.destinatario_id = ? ORDER BY a.id DESC";
+$stmt_my_avisos = mysqli_prepare($conexao, $query_my_avisos);
+mysqli_stmt_bind_param($stmt_my_avisos, "i", $_SESSION['usuario_id']);
+mysqli_stmt_execute($stmt_my_avisos);
+$resultadoMyAvisos = mysqli_stmt_get_result($stmt_my_avisos);
+$notificationCount = mysqli_num_rows($resultadoMyAvisos);
+
 // Fetch avisos
-$sqlAvisos = "SELECT a.id, a.mensagem, a.data_criacao, u.username as destinatario, l.nome as lote_nome
+$sqlAvisos = "SELECT a.id, a.titulo, a.mensagem, a.data_criacao, u.username as destinatario, l.nome as lote_nome
               FROM avisos a
               LEFT JOIN usuario u ON a.destinatario_id = u.user_id
               LEFT JOIN lote l ON a.lote_id = l.id
@@ -190,20 +279,49 @@ while($lote = mysqli_fetch_assoc($resultadoLotes)) {
 }
 
 // Fetch users list for avisos
-$sqlUsersList = "SELECT user_id, username FROM usuario ORDER BY username ASC";
+$sqlUsersList = "SELECT user_id, username, tipo FROM usuario ORDER BY username ASC";
 $resultadoUsersList = mysqli_query($conexao, $sqlUsersList);
 $users_options = [];
 while($u = mysqli_fetch_assoc($resultadoUsersList)) {
     $users_options[] = $u;
 }
 
-// Fetch propriedades (tabela agora declarada corretamente no schema sql.sql)
+// Fetch propriedades
 $sqlPropriedades = "SELECT p.id, p.nome, u.username as produtor_nome FROM propriedades p JOIN usuario u ON p.produtor_id = u.user_id ORDER BY p.nome ASC";
 $resultadoPropriedades = mysqli_query($conexao, $sqlPropriedades);
 $propriedades_options = [];
 if ($resultadoPropriedades) {
     while($p = mysqli_fetch_assoc($resultadoPropriedades)) {
         $propriedades_options[] = $p;
+    }
+}
+
+// Fetch ALL propriedades with producer data, linked user count, and lote count for the admin CRUD table
+$sqlAllProps = "
+    SELECT p.id, p.nome, p.produtor_id,
+           u.username  AS produtor_nome,
+           u.email     AS produtor_email,
+           (SELECT COUNT(*) FROM usuario u2 WHERE u2.propriedade_id = p.id)           AS total_usuarios,
+           (SELECT COUNT(*) FROM lote l   WHERE l.user_id = p.produtor_id)            AS total_lotes
+    FROM propriedades p
+    JOIN usuario u ON p.produtor_id = u.user_id
+    ORDER BY p.id DESC
+";
+$resultadoAllProps = mysqli_query($conexao, $sqlAllProps);
+$all_propriedades = [];
+if ($resultadoAllProps) {
+    while($p = mysqli_fetch_assoc($resultadoAllProps)) {
+        $all_propriedades[] = $p;
+    }
+}
+
+// Fetch produtores for property forms
+$sqlProdutores = "SELECT user_id, username FROM usuario WHERE tipo = 'produtor' ORDER BY username ASC";
+$resultadoProdutores = mysqli_query($conexao, $sqlProdutores);
+$produtores_list = [];
+if ($resultadoProdutores) {
+    while($pr = mysqli_fetch_assoc($resultadoProdutores)) {
+        $produtores_list[] = $pr;
     }
 }
 
@@ -233,6 +351,9 @@ $animals_types = [];
 while ($row = mysqli_fetch_assoc($res_animals)) {
     $animals_types[$row['especie'] ?: 'Outro'] = $row['qtd'];
 }
+
+$nomeUsuario = htmlspecialchars($_SESSION['usuario_nome'] ?? 'Admin');
+$fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_SESSION['usuario_fazenda'] : 'Nenhuma propriedade cadastrada.');
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -271,15 +392,21 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
 <body>
 
     <header class="mobile-header">
-        <div class="mobile-header-left">
-            <img src="logoControlCabra.png" alt="Logo ControlCabra" class="mobile-logo">
+        <div class="mobile-header-left" style="width:auto; flex:1; display:flex; align-items:center; gap:10px; min-width:0;">
+            <img src="logoControlCabra.png" alt="Logo ControlCabra" class="mobile-logo" style="flex-shrink:0;">
+            <span class="mobile-page-title" style="text-align:left;">Administração</span>
         </div>
-
-        <div class="mobile-header-center">
-            <span class="mobile-page-title">Administração</span>
-        </div>
-
-        <div class="mobile-header-right">
+        <div class="mobile-header-right" style="width:auto; display:flex; align-items:center; gap:6px; flex-shrink:0;">
+            <!-- Notification Button -->
+            <button class="notification-btn btn btn-icon" id="notificationBtn" aria-label="Notificações">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <?php if($notificationCount > 0): ?>
+<span class="badge" id="notificationCount"><?php echo $notificationCount; ?></span>
+<?php endif; ?>
+            </button>
             <button type="button" class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -289,7 +416,6 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
             </button>
         </div>
     </header>
-
 
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
@@ -305,6 +431,11 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                 <a href="estatisticas.php" class="nav-item">Estatísticas</a>
                 <a href="saude.php" class="nav-item">Saúde</a>
                 <a href="cuidados.php" class="nav-item">Cuidados</a>
+
+                <?php if (!isset($_SESSION['usuario_tipo']) || strtolower($_SESSION['usuario_tipo']) !== 'visitante'): ?>
+                    <a href="propriedades.php" class="nav-item">Propriedades</a>
+                <?php endif; ?>
+
                 <a href="configuracoes.php" class="nav-item">Configurações</a>
                 <a href="administracao.php" class="nav-item active">Administração</a>
             </nav>
@@ -339,6 +470,17 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                     </h1>
                     <p class="page-subtitle">Gerenciamento de Usuários do Sistema</p>
                 </div>
+                <div class="header-actions">
+                    <button class="btn btn-icon notification-btn" id="notificationBtnDesktop" aria-label="Notificações">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <?php if($notificationCount > 0): ?>
+                        <span class="badge" id="notificationCountDesktop"><?php echo $notificationCount; ?></span>
+                        <?php endif; ?>
+                    </button>
+                </div>
             </header>
 
             <?php if (isset($_GET['msg'])): ?>
@@ -355,6 +497,9 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                         elseif ($_GET['msg'] == 'status_alterado') echo 'Status do usuário atualizado com sucesso!';
                         elseif ($_GET['msg'] == 'aviso_adicionado') echo 'Aviso enviado com sucesso!';
                         elseif ($_GET['msg'] == 'aviso_removido') echo 'Aviso removido com sucesso!';
+                        elseif ($_GET['msg'] == 'prop_adicionada') echo 'Propriedade criada com sucesso!';
+                        elseif ($_GET['msg'] == 'prop_editada') echo 'Propriedade atualizada com sucesso!';
+                        elseif ($_GET['msg'] == 'prop_removida') echo 'Propriedade removida com sucesso!';
                         ?>
                     </div>
                 <?php endif; ?>
@@ -417,7 +562,8 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                                     $usernameAttr = valorSeguro($usuario['username']);
                                     $emailAttr = valorSeguro($usuario['email']);
                                     $tipoAttr = valorSeguro($usuario['tipo']);
-                                    $propriedadeAttr = valorSeguro($usuario['nome_propriedade']); // CORREÇÃO: era propriedade_id
+                                    $propriedadeAttr = isset($usuario['nome_propriedade']) ? valorSeguro($usuario['nome_propriedade']) : '';
+
                                     $telefoneAttr = valorSeguro($usuario['num_telefone']);
                                     $cpfAttr = valorSeguro($usuario['CPF']);
                                     $cnpjAttr = valorSeguro($usuario['CNPJ']);
@@ -479,7 +625,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                         <?php if (array_sum($users_types) > 0): ?>
                             <canvas id="usersChart"></canvas>
                         <?php else: ?>
-                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum usuário registrado ainda.</p>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum dado disponível ainda.</p>
                         <?php endif; ?>
                     </div>
                     <div class="chart-card">
@@ -487,7 +633,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                         <?php if (count($lots_types) > 0): ?>
                             <canvas id="lotsChart"></canvas>
                         <?php else: ?>
-                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum lote registrado ainda.</p>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum dado disponível ainda.</p>
                         <?php endif; ?>
                     </div>
                     <div class="chart-card">
@@ -495,7 +641,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                         <?php if (count($animals_types) > 0): ?>
                             <canvas id="animalsChart"></canvas>
                         <?php else: ?>
-                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum animal registrado ainda.</p>
+                            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum dado disponível ainda.</p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -504,7 +650,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
             <section class="card mt-4">
                 <div class="card-header admin-tools">
                     <div class="admin-tools-left">
-                        <h3 class="card-title" style="margin: 0;">Avisos do Sistema</h3>
+                        <h3 class="card-title" style="margin: 0;">Avisos</h3>
                     </div>
                     <div class="admin-tools-right">
                         <button type="button" class="btn-add" onclick="abrirModalAviso()">
@@ -520,6 +666,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                                 <th>Data</th>
                                 <th>Destinatário</th>
                                 <th>Lote</th>
+                                <th>Título</th>
                                 <th>Mensagem</th>
                                 <th>Ações</th>
                             </tr>
@@ -534,6 +681,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                                     echo "<td>" . date('d/m/Y H:i', strtotime($aviso['data_criacao'])) . "</td>";
                                     echo "<td><span class='type-badge type-produtor'>{$dest}</span></td>";
                                     echo "<td>{$lote}</td>";
+                                    echo "<td><strong>" . valorSeguro($aviso['titulo']) . "</strong></td>";
                                     echo "<td>" . valorSeguro($aviso['mensagem']) . "</td>";
                                     echo "<td>
                                             <form method='POST' action='administracao.php' style='display:inline;'>
@@ -545,7 +693,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr class='empty-row'><td colspan='5' style='text-align:center; padding: 20px;'>Nenhum aviso cadastrado.</td></tr>";
+                                echo "<tr class='empty-row'><td colspan='6' style='text-align:center; padding: 20px;'>Nenhum aviso cadastrado.</td></tr>";
                             }
                             ?>
                         </tbody>
@@ -553,7 +701,112 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                 </div>
             </section>
 
-            
+            <!-- Seção CRUD de Propriedades -->
+            <section class="card mt-4">
+                <div class="card-header admin-tools">
+                    <div class="admin-tools-left">
+                        <h3 class="card-title" style="margin: 0;">Gerenciamento de Propriedades</h3>
+                    </div>
+                    <div class="admin-tools-right">
+                        <div class="search-wrapper">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="searchPropInput" placeholder="ID, nome ou produtor…">
+                        </div>
+                        <select id="filterPropProdutor" class="filter-select">
+                            <option value="">Todos os produtores</option>
+                            <?php foreach($produtores_list as $pr): ?>
+                                <option value="<?= $pr['user_id'] ?>"><?= valorSeguro($pr['username']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <select id="filterPropSelect" class="filter-select">
+                            <option value="id_desc">ID decrescente</option>
+                            <option value="id_asc">ID crescente</option>
+                            <option value="nome_asc">Nome A-Z</option>
+                            <option value="nome_desc">Nome Z-A</option>
+                            <option value="usuarios_desc">Mais usuários</option>
+                            <option value="todos">Mostrar todas</option>
+                        </select>
+                        <button type="button" class="btn-add" onclick="abrirModalAdicionarProp()">
+                            <span>+</span> Nova Propriedade
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resumo rápido -->
+                <div style="display:flex; gap:12px; flex-wrap:wrap; padding: 0 0 16px 0; margin-bottom:4px; border-bottom:1px solid var(--border-color);">
+                    <div style="background:var(--bg-main); border:1px solid var(--border-color); border-radius:8px; padding:12px 20px; display:flex; flex-direction:column; gap:2px; min-width:120px;">
+                        <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Total de Propriedades</span>
+                        <strong style="font-size:1.4rem; color:var(--primary);"><?= count($all_propriedades) ?></strong>
+                    </div>
+                    <div style="background:var(--bg-main); border:1px solid var(--border-color); border-radius:8px; padding:12px 20px; display:flex; flex-direction:column; gap:2px; min-width:120px;">
+                        <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Usuários Vinculados (total)</span>
+                        <strong style="font-size:1.4rem; color:var(--primary);"><?= array_sum(array_column($all_propriedades, 'total_usuarios')) ?></strong>
+                    </div>
+                    <div style="background:var(--bg-main); border:1px solid var(--border-color); border-radius:8px; padding:12px 20px; display:flex; flex-direction:column; gap:2px; min-width:120px;">
+                        <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Produtores com propriedade</span>
+                        <strong style="font-size:1.4rem; color:var(--primary);"><?= count(array_unique(array_column($all_propriedades, 'produtor_id'))) ?></strong>
+                    </div>
+                </div>
+
+                <div class="table-container" style="width: 100%; overflow-x: auto;">
+                    <table class="data-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome da Propriedade</th>
+                                <th>Produtor Responsável</th>
+                                <th>E-mail do Produtor</th>
+                                <th>Usuários Vinculados</th>
+                                <th>Lotes do Produtor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propsTableBody">
+                            <?php
+                            if (count($all_propriedades) > 0) {
+                                foreach ($all_propriedades as $prop) {
+                                    $propId          = valorSeguro($prop['id']);
+                                    $propNome        = valorSeguro($prop['nome']);
+                                    $propProdutorNome  = valorSeguro($prop['produtor_nome']);
+                                    $propProdutorEmail = valorSeguro($prop['produtor_email']);
+                                    $propProdutorId    = valorSeguro($prop['produtor_id']);
+                                    $propUsuarios      = intval($prop['total_usuarios']);
+                                    $propLotes         = intval($prop['total_lotes']);
+
+                                    echo "<tr data-id='{$propId}' data-nome='{$propNome}' data-produtor='{$propProdutorNome}' data-produtor-id='{$propProdutorId}' data-usuarios='{$propUsuarios}'>";
+                                    echo "<td><strong>{$propId}</strong></td>";
+                                    echo "<td>{$propNome}</td>";
+                                    echo "<td><span class='type-badge type-produtor'>{$propProdutorNome}</span></td>";
+                                    echo "<td>{$propProdutorEmail}</td>";
+                                    echo "<td><span style='font-weight:600; color:" . ($propUsuarios > 0 ? 'var(--primary)' : 'var(--text-muted)') . ";'>{$propUsuarios}</span></td>";
+                                    echo "<td><span style='font-weight:600; color:" . ($propLotes > 0 ? 'var(--info, #2196f3)' : 'var(--text-muted)') . ";'>{$propLotes}</span></td>";
+                                    echo "<td>
+                                            <button class='btn-sm btn-edit'
+                                                data-id='{$propId}'
+                                                data-nome='{$propNome}'
+                                                data-produtor-id='{$propProdutorId}'
+                                                onclick='abrirModalEdicaoProp(this)'>Editar
+                                            </button>
+                                            <form method='POST' action='administracao.php' style='display:inline;'>
+                                                <input type='hidden' name='form_action' value='deletar_propriedade_admin'>
+                                                <input type='hidden' name='propriedade_id' value='{$propId}'>
+                                                <button type='submit' class='btn-sm btn-danger' onclick='return confirm(\"Tem certeza que deseja excluir esta propriedade? Usuários vinculados ({$propUsuarios}) perderão o acesso.\")'>Excluir</button>
+                                            </form>
+                                          </td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr class='empty-row'><td colspan='7' style='text-align:center; padding: 20px;'>Nenhuma propriedade cadastrada.</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -696,7 +949,7 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                         <select name="destinatario" required>
                             <option value="todos">Todos os Usuários</option>
                             <?php foreach($users_options as $u): ?>
-                                <option value="<?= $u['user_id'] ?>"><?= valorSeguro($u['username']) ?></option>
+                                <option value="<?= $u['user_id'] ?>"><?= valorSeguro($u['username']) ?> - <?= valorSeguro(ucfirst($u['tipo'] ?: 'visitante')) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -709,6 +962,11 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
                             <?php endforeach; ?>
                         </select>
                     </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Título</label>
+                    <input type="text" name="titulo" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-dark);" required placeholder="Título do aviso">
                 </div>
 
                 <div class="form-group">
@@ -724,7 +982,92 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
         </div>
     </div>
 
+    <!-- Modal Adicionar Propriedade (Admin) -->
+    <div id="addPropAdminModal" class="modal">
+        <div class="modal-content" style="max-width:500px;">
+            <span class="close-modal" onclick="fecharModal('addPropAdminModal')">&times;</span>
+            <h2 style="margin-top: 0; margin-bottom: 20px; color: var(--primary);">Criar Nova Propriedade</h2>
+            <form method="POST" action="administracao.php">
+                <input type="hidden" name="form_action" value="adicionar_propriedade_admin">
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Nome da propriedade</label>
+                    <input type="text" name="nome_propriedade" required placeholder="Digite o nome da propriedade">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Produtor Responsável</label>
+                    <select name="produtor_id_prop" required>
+                        <option value="">Selecione um produtor</option>
+                        <?php foreach($produtores_list as $pr): ?>
+                            <option value="<?= $pr['user_id'] ?>"><?= valorSeguro($pr['username']) ?> (ID: <?= $pr['user_id'] ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn-sm btn-danger" onclick="fecharModal('addPropAdminModal')" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn-sm btn-edit">Criar Propriedade</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Propriedade (Admin) -->
+    <div id="editPropAdminModal" class="modal">
+        <div class="modal-content" style="max-width:500px;">
+            <span class="close-modal" onclick="fecharModal('editPropAdminModal')">&times;</span>
+            <h2 style="margin-top: 0; margin-bottom: 20px; color: var(--primary);">Editar Propriedade</h2>
+            <form method="POST" action="administracao.php">
+                <input type="hidden" name="form_action" value="editar_propriedade_admin">
+                <input type="hidden" id="edit_prop_id" name="propriedade_id">
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Nome da propriedade</label>
+                    <input type="text" id="edit_prop_nome" name="nome_propriedade" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Produtor Responsável</label>
+                    <select id="edit_prop_produtor" name="produtor_id_prop" required>
+                        <option value="">Selecione um produtor</option>
+                        <?php foreach($produtores_list as $pr): ?>
+                            <option value="<?= $pr['user_id'] ?>"><?= valorSeguro($pr['username']) ?> (ID: <?= $pr['user_id'] ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn-sm btn-danger" onclick="fecharModal('editPropAdminModal')" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn-sm btn-edit">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Dropdown -->
+    <div class="notification-dropdown" id="notificationModal">
+        <div class="notification-dropdown-content">
+            <h3 class="notification-dropdown-title">Notificações</h3>
+            <div id="notificationList">
+                <?php if (mysqli_num_rows($resultadoMyAvisos) > 0): ?>
+                    <ul class="notification-ul">
+                        <?php while ($aviso = mysqli_fetch_assoc($resultadoMyAvisos)): ?>
+                            <li class="notification-item" data-status="unread">
+                                <strong><?php echo date('d/m/Y H:i', strtotime($aviso['data_criacao'])); ?> - <?php echo htmlspecialchars($aviso['titulo'] ?? 'Aviso'); ?>:</strong><br>
+                                <?php echo htmlspecialchars($aviso['mensagem']); ?>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                <?php else: ?>
+                    <p style="color: var(--text-muted); text-align: center; padding: 12px 0;">Nenhuma notificação pendente!</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
     <script src="estatisticas.js"></script>
+    <script src="notifications.js"></script>
     <script>
         const editModal = document.getElementById('editModal');
         const addModal = document.getElementById('addModal');
@@ -815,7 +1158,74 @@ while ($row = mysqli_fetch_assoc($res_animals)) {
             if (event.target === editModal) fecharModal('editModal');
             if (event.target === addModal) fecharModal('addModal');
             if (event.target === avisoModal) fecharModal('avisoModal');
+            const addPropAdminModal = document.getElementById('addPropAdminModal');
+            const editPropAdminModal = document.getElementById('editPropAdminModal');
+            if (event.target === addPropAdminModal) fecharModal('addPropAdminModal');
+            if (event.target === editPropAdminModal) fecharModal('editPropAdminModal');
         });
+
+        // ===== Propriedades CRUD JS =====
+        const searchPropInput      = document.getElementById('searchPropInput');
+        const filterPropSelect     = document.getElementById('filterPropSelect');
+        const filterPropProdutor   = document.getElementById('filterPropProdutor');
+        const propsTableBody       = document.getElementById('propsTableBody');
+
+        function abrirModalAdicionarProp() {
+            document.getElementById('addPropAdminModal').style.display = 'block';
+        }
+
+        function abrirModalEdicaoProp(btn) {
+            document.getElementById('edit_prop_id').value = btn.getAttribute('data-id') || '';
+            document.getElementById('edit_prop_nome').value = btn.getAttribute('data-nome') || '';
+            const produtorId = btn.getAttribute('data-produtor-id') || '';
+            document.getElementById('edit_prop_produtor').value = produtorId;
+            document.getElementById('editPropAdminModal').style.display = 'block';
+        }
+
+        function aplicarPesquisaPropriedades() {
+            if (!searchPropInput || !filterPropSelect || !propsTableBody) return;
+            const termo          = searchPropInput.value.toLowerCase().trim();
+            const filtro         = filterPropSelect.value;
+            const produtorFiltro = filterPropProdutor ? filterPropProdutor.value : '';
+
+            const rows = Array.from(propsTableBody.querySelectorAll('tr')).filter(row => !row.classList.contains('empty-row'));
+
+            rows.forEach(row => {
+                const textoLinha  = row.textContent.toLowerCase();
+                const produtorId  = (row.dataset.produtorId || '');
+                const matchTexto  = textoLinha.includes(termo);
+                const matchProd   = produtorFiltro === '' || produtorId === produtorFiltro;
+                row.style.display = (matchTexto && matchProd) ? '' : 'none';
+            });
+
+            // Sorting
+            const visibleRows = rows.filter(r => r.style.display !== 'none');
+
+            if (filtro === 'id_asc' || filtro === 'id_desc') {
+                visibleRows.sort((a, b) => {
+                    const idA = parseInt(a.dataset.id || '0', 10);
+                    const idB = parseInt(b.dataset.id || '0', 10);
+                    return filtro === 'id_asc' ? idA - idB : idB - idA;
+                });
+            } else if (filtro === 'nome_asc' || filtro === 'nome_desc') {
+                visibleRows.sort((a, b) => {
+                    const nA = (a.dataset.nome || '').toLowerCase();
+                    const nB = (b.dataset.nome || '').toLowerCase();
+                    return filtro === 'nome_asc' ? nA.localeCompare(nB) : nB.localeCompare(nA);
+                });
+            } else if (filtro === 'usuarios_desc') {
+                visibleRows.sort((a, b) => {
+                    return parseInt(b.dataset.usuarios || '0', 10) - parseInt(a.dataset.usuarios || '0', 10);
+                });
+            }
+
+            visibleRows.forEach(row => propsTableBody.appendChild(row));
+        }
+
+        if (searchPropInput)    searchPropInput.addEventListener('keyup',  aplicarPesquisaPropriedades);
+        if (filterPropSelect)   filterPropSelect.addEventListener('change', aplicarPesquisaPropriedades);
+        if (filterPropProdutor) filterPropProdutor.addEventListener('change', aplicarPesquisaPropriedades);
+        aplicarPesquisaPropriedades();
 
         // Gráficos
         const usersData = <?= json_encode(array_values($users_types)) ?>;

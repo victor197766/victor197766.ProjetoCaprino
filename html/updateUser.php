@@ -18,8 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
     if ($password !== '') {
         // Atualiza também a senha
         $senha_hash = password_hash($password, PASSWORD_DEFAULT);
-        // CORREÇÃO: coluna era 'password' (inexistente) — corrigido para 'senha'
-        $stmt = mysqli_prepare($conexao, "UPDATE usuario SET username = ?, email = ?, senha = ? WHERE user_id = ?");
+        $stmt = mysqli_prepare($conexao, "UPDATE usuario SET username = ?, email = ?, password = ? WHERE user_id = ?");
         mysqli_stmt_bind_param($stmt, "sssi", $username, $email, $senha_hash, $user_id);
     } else {
         // Mantém a senha atual

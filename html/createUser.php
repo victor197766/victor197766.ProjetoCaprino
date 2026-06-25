@@ -232,12 +232,12 @@
         <!-- Campos comuns -->
         <div class="form-group">
             <label for="username">Nome de Usuário</label>
-            <input type="text" id="username" name="username" required placeholder="ex: joao_silva">
+            <input type="text" id="username" name="username" required placeholder="Digite o nome de usuário">
         </div>
 
         <div class="form-group">
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required placeholder="ex: joao@email.com">
+            <input type="email" id="email" name="email" required placeholder="seuemail@dominio.com">
         </div>
 
         <div class="form-group">
@@ -247,7 +247,7 @@
 
         <div class="form-group">
             <label for="num_telefone">Telefone <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
-            <input type="text" id="num_telefone" name="num_telefone" placeholder="ex: (87) 99999-9999" maxlength="15">
+            <input type="text" id="num_telefone" name="num_telefone" placeholder="Digite apenas números" maxlength="15">
         </div>
 
         <!-- Campos exclusivos do produtor -->
@@ -256,18 +256,18 @@
 
             <div class="form-group">
                 <label for="nome_propriedade">Nome da Propriedade</label>
-                <input type="text" id="nome_propriedade" name="nome_propriedade" placeholder="ex: Fazenda São João">
+                <input type="text" id="nome_propriedade" name="nome_propriedade" placeholder="Digite o nome da propriedade">
             </div>
 
             <div class="form-group">
                 <label for="cpf">CPF <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
-                <input type="text" id="cpf" name="cpf" placeholder="ex: 12345678901" maxlength="11">
+                <input type="text" id="cpf" name="cpf" placeholder="Digite apenas números" maxlength="11">
                 <p class="hint">Somente números, sem pontos ou traços.</p>
             </div>
 
             <div class="form-group">
                 <label for="cnpj">CNPJ <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
-                <input type="text" id="cnpj" name="cnpj" placeholder="ex: 12345678000199" maxlength="14">
+                <input type="text" id="cnpj" name="cnpj" placeholder="Digite apenas números" maxlength="14">
                 <p class="hint">Somente números, sem pontos ou traços.</p>
             </div>
         </div>

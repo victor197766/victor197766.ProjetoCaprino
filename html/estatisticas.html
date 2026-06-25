@@ -47,8 +47,8 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </div>
                 <div class="user-info">
-                    <strong>Administrador</strong>
-                    <span>Fazenda Boa Vista</span>
+                    <strong>Usuário do sistema</strong>
+                    <span>Nenhuma propriedade cadastrada.</span>
                 </div>
             </div>
         </aside>
@@ -91,14 +91,13 @@
                         <label>Lote</label>
                         <select class="form-control">
                             <option>Todos os lotes</option>
-                            <option>Lote 01</option>
-                            <option>Lote 02</option>
+                            <option>Nenhum lote cadastrado ainda</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Período</label>
                         <select class="form-control">
-                            <option>01/05/2024 - 31/05/2024</option>
+                            <option>Nenhum período selecionado</option>
                         </select>
                     </div>
                     <div class="form-group" style="display: flex; align-items: flex-end;">
@@ -117,7 +116,7 @@
                     </div>
                     <div class="summary-info">
                         <span class="label">Quantidade</span>
-                        <div class="value">348 <span class="unit">animais</span></div>
+                        <div class="value">0 <span class="unit">animais</span></div>
                         <span class="desc">Total no período</span>
                     </div>
                 </div>
@@ -128,7 +127,7 @@
                     </div>
                     <div class="summary-info">
                         <span class="label">Nascimentos</span>
-                        <div class="value">26 <span class="unit">nascimentos</span></div>
+                        <div class="value">0 <span class="unit">nascimentos</span></div>
                         <span class="desc">No período</span>
                     </div>
                 </div>
@@ -139,7 +138,7 @@
                     </div>
                     <div class="summary-info">
                         <span class="label">Mortes</span>
-                        <div class="value">5 <span class="unit">mortes</span></div>
+                        <div class="value">0 <span class="unit">mortes</span></div>
                         <span class="desc">No período</span>
                     </div>
                 </div>
@@ -150,7 +149,7 @@
                     </div>
                     <div class="summary-info">
                         <span class="label">Taxa de Mortalidade</span>
-                        <div class="value">1,44% <span class="unit">do total</span></div>
+                        <div class="value">0,00% <span class="unit">do total</span></div>
                         <span class="desc">No período</span>
                     </div>
                 </div>
@@ -160,22 +159,7 @@
                 <h3 class="card-title">Produção Por Lote (Fibra, Pele, Leite e Seus Derivados e Carne)</h3>
                 
                 <div class="production-content">
-                    <div class="chart-container">
-                        <div class="donut-chart">
-                            <div class="donut-inner">
-                                <span class="donut-title">Total</span>
-                                <span class="donut-value">1.205,4</span>
-                                <span class="donut-unit">kg / L / unid.</span>
-                            </div>
-                        </div>
-                        <div class="chart-legend">
-                            <div class="legend-item"><span class="dot" style="background: #4caf50;"></span> Fibra <span>245,6 (20,4%)</span></div>
-                            <div class="legend-item"><span class="dot" style="background: #2196f3;"></span> Pele <span>156,8 (13,0%)</span></div>
-                            <div class="legend-item"><span class="dot" style="background: #ffc107;"></span> Leite e Derivados <span>512,3 (42,5%)</span></div>
-                            <div class="legend-item"><span class="dot" style="background: #9c27b0;"></span> Carne <span>280,7 (23,3%)</span></div>
-                            <div class="legend-item"><span class="dot" style="background: #f44336;"></span> Outros <span>10,0 (0,8%)</span></div>
-                        </div>
-                    </div>
+                    <div class="empty-state">Nenhum dado de produção disponível ainda.<small>Cadastre lotes e registros de produção para visualizar esta tabela.</small></div>
 
                     <div class="table-container">
                         <table class="data-table">
@@ -192,49 +176,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Lote 01</td>
-                                    <td>Caprino</td>
-                                    <td>68,4</td>
-                                    <td>32</td>
-                                    <td>125,0</td>
-                                    <td>85,2</td>
-                                    <td>310,6</td>
-                                </tr>
-                                <tr>
-                                    <td>Lote 02</td>
-                                    <td>Ovinos</td>
-                                    <td>45,6</td>
-                                    <td>28</td>
-                                    <td>98,5</td>
-                                    <td>62,1</td>
-                                    <td>234,2</td>
-                                </tr>
-                                <tr>
-                                    <td>Lote 03</td>
-                                    <td>Caprino</td>
-                                    <td>55,8</td>
-                                    <td>24</td>
-                                    <td>110,0</td>
-                                    <td>70,3</td>
-                                    <td>260,1</td>
-                                </tr>
-                                <tr>
-                                    <td>Lote 04</td>
-                                    <td>Ovinos</td>
-                                    <td>32,1</td>
-                                    <td>18</td>
-                                    <td>75,3</td>
-                                    <td>40,6</td>
-                                    <td>166,0</td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td>Total</td>
-                                    <td></td>
-                                    <td>245,6</td>
-                                    <td>122</td>
-                                    <td>512,3</td>
-                                    <td>280,7</td>
-                                    <td>1.205,4</td>
+                                    <td colspan="7" style="text-align: center; padding: 20px;">Nenhum dado disponível ainda.</td>
                                 </tr>
                             </tbody>
                         </table>

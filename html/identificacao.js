@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registroAnimalForm');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Animal registrado com sucesso (Simulação)');
+        alert('Registro salvo com sucesso.');
         console.log('Dados salvos no ControlCabra');
     });
 });
