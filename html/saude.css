@@ -126,8 +126,8 @@ body {
     transform: translateX(260px); 
 }
 
-.sidebar-brand { padding: 30px 20px; text-align: center; }
-.sidebar-logo { width: 60px; margin-bottom: 10px; border-radius: 50%; object-fit: contain; }
+.sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo { width: 60px; height: 60px; border-radius: 50%; object-fit: contain; flex-shrink: 0; }
 .sidebar-nav { flex: 1; }
 .nav-item { padding: 15px 25px; color: white; text-decoration: none; display: block; opacity: 0.8; border-left: 4px solid transparent; transition: background-color 0.3s ease, opacity 0.3s ease; }
 .nav-item:hover, .nav-item.active { background-color: rgba(255, 255, 255, 0.1); opacity: 1; }
@@ -363,9 +363,9 @@ body {
         top: 0;
         left: 0;
         transform: none; 
-        height: auto;
+        height: 100vh;
         min-height: 100vh;
-        align-self: stretch;
+        align-self: flex-start;
         flex: 0 0 260px;
         overflow-y: auto;
     }

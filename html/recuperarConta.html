@@ -5,8 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ControlCabra - Login</title>
     <link rel="stylesheet" href="recuperarConta.css">
+    <style>
+        /* ===== TOAST BALLOON ===== */
+        .toast-balloon {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            background: #fff5f5;
+            border: 1.5px solid #f5c2c7;
+            color: #842029;
+            border-radius: 12px;
+            padding: 14px 20px 14px 16px;
+            max-width: 380px;
+            width: calc(100% - 32px);
+            box-shadow: 0 6px 24px rgba(200,0,0,0.12);
+            align-items: center;
+            gap: 12px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .toast-balloon.show {
+            display: flex;
+            animation: slideDown 0.35s ease;
+        }
+        .toast-balloon svg { flex-shrink: 0; }
+        .toast-balloon .toast-msg { flex: 1; }
+        .toast-close {
+            background: none; border: none; cursor: pointer;
+            color: #842029; padding: 2px; display: flex;
+            flex-shrink: 0; opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .toast-close:hover { opacity: 1; }
+        .toast-balloon.toast-success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #14532d;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-14px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
 </head>
 <body>
+    <!-- Toast Balloon -->
+    <div class="toast-balloon" id="toastBalloon" role="alert">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span class="toast-msg" id="toastMsg"></span>
+        <button class="toast-close" onclick="fecharToast()" aria-label="Fechar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
     <div class="app-container">
         <header class="app-header">
             <div class="logo-wrapper">
@@ -129,7 +190,36 @@
     </div>
 
     <script>
-        // Mapeamento das seções
+        // ===== MENSAGENS DE ERRO/SUCESSO =====
+        const ERROS = {
+            'senha'         : 'Senha incorreta. Verifique e tente novamente.',
+            'email'         : 'E-mail não encontrado. Verifique ou crie uma conta.',
+            'suspensa'      : 'Sua conta está suspensa. Entre em contato com o suporte.',
+            'email_repetido': 'Este e-mail já está cadastrado. Tente fazer login.',
+            'campos_vazios' : 'Preencha todos os campos obrigatórios antes de continuar.',
+            'db'            : 'Erro interno ao cadastrar. Tente novamente em instantes.',
+        };
+        const SUCESSO = {
+            'cadastro': 'Conta criada com sucesso! Faça login para continuar.',
+        };
+
+        // ===== TOAST =====
+        function mostrarToast(msg, tipo) {
+            const el  = document.getElementById('toastBalloon');
+            const txt = document.getElementById('toastMsg');
+            txt.textContent = msg;
+            el.classList.toggle('toast-success', tipo === 'sucesso');
+            el.classList.remove('show'); // reset animation
+            void el.offsetWidth;         // force reflow
+            el.classList.add('show');
+            clearTimeout(el._t);
+            el._t = setTimeout(fecharToast, 7000);
+        }
+        function fecharToast() {
+            document.getElementById('toastBalloon').classList.remove('show');
+        }
+
+        // ===== NAVEGAÇÃO ENTRE SEÇÕES =====
         const sections = {
             login: document.getElementById('login-section'),
             recovery: document.getElementById('recovery-section'),
@@ -138,32 +228,47 @@
             visitor: document.getElementById('register-visitor-section')
         };
 
-        // Função universal para trocar de tela
         function showSection(sectionName) {
-            // Esconde todas as seções
             Object.values(sections).forEach(sec => {
-                sec.classList.remove('active');
-                sec.classList.add('hidden');
+                if (sec) { sec.classList.remove('active'); sec.classList.add('hidden'); }
             });
-            // Mostra apenas a desejada
-            sections[sectionName].classList.remove('hidden');
-            sections[sectionName].classList.add('active');
+            if (sections[sectionName]) {
+                sections[sectionName].classList.remove('hidden');
+                sections[sectionName].classList.add('active');
+            }
         }
 
-        // Navegação a partir do Login
+        // ===== LER PARÂMETROS DA URL =====
+        (function() {
+            const p = new URLSearchParams(window.location.search);
+            const erro   = p.get('erro');
+            const sucesso = p.get('sucesso');
+            const form   = p.get('form');
+
+            if (erro && ERROS[erro]) {
+                mostrarToast(ERROS[erro], 'erro');
+                if (form === 'produtor') showSection('farmer');
+                else if (form === 'visitante') showSection('visitor');
+            } else if (sucesso && SUCESSO[sucesso]) {
+                mostrarToast(SUCESSO[sucesso], 'sucesso');
+            }
+            // Limpar URL sem recarregar
+            if (erro || sucesso) {
+                history.replaceState(null, '', window.location.pathname);
+            }
+        })();
+
+        // ===== EVENTOS DE NAVEGAÇÃO =====
         document.getElementById('forgot-link').addEventListener('click', (e) => { e.preventDefault(); showSection('recovery'); });
         document.getElementById('register-link').addEventListener('click', (e) => { e.preventDefault(); showSection('choice'); });
 
-        // Botões de voltar ao Login (existem vários)
         document.querySelectorAll('.back-login-btn').forEach(btn => {
             btn.addEventListener('click', (e) => { e.preventDefault(); showSection('login'); });
         });
 
-        // Escolha de Perfil -> Formulários
         document.getElementById('btn-choice-farmer').addEventListener('click', () => { showSection('farmer'); });
         document.getElementById('btn-choice-visitor').addEventListener('click', () => { showSection('visitor'); });
 
-        // Voltar dos formulários para a tela de escolha
         document.getElementById('back-choice-from-farmer').addEventListener('click', (e) => { e.preventDefault(); showSection('choice'); });
         document.getElementById('back-choice-from-visitor').addEventListener('click', (e) => { e.preventDefault(); showSection('choice'); });
     </script>

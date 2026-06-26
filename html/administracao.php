@@ -1240,7 +1240,7 @@ $fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_
         const chartOptions = {
             responsive: true,
             plugins: {
-                legend: { position: 'bottom', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim() || '#333' } }
+                legend: { position: 'bottom', labels: { color: '#e0e0e0' } }
             }
         };
 

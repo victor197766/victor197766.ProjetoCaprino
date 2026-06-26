@@ -1,5 +1,5 @@
 <?php
-include '../db/connection.php';
+include_once('../db/connection.php');
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: recuperarConta.html');
@@ -24,36 +24,40 @@ if (count($partes) > 1) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="sistema">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saúde e Cuidados - ControlCabra</title>
     <link rel="stylesheet" href="cuidados.css">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <header class="mobile-header">
-        <div class="mobile-header-left">
-            <div class="mobile-logo">
-                <i class="ph-fill ph-leaf" style="color: var(--primary); font-size: 24px;"></i>
-            </div>
+        <div class="mobile-header-left" style="width:auto; flex:1; display:flex; align-items:center; gap:10px; min-width:0;">
+            <img src="logoControlCabra.png" alt="Logo" class="mobile-logo" style="flex-shrink:0;">
+            <span class="mobile-page-title" style="text-align:left;">Cuidados</span>
         </div>
-        <div class="mobile-header-center">
-            <span class="mobile-page-title">Saúde e Cuidados</span>
-        </div>
-        <div class="mobile-header-right">
-            <button class="menu-toggle" id="menuToggle">
-                <i class="ph ph-list" style="font-size: 28px;"></i>
-            </button>
-            <button class="notification-btn btn btn-icon" id="notificationBtn" aria-label="Notificações" style="border: none; background: transparent; padding: 6px; cursor: pointer;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="mobile-header-right" style="width:auto; display:flex; align-items:center; gap:6px; flex-shrink:0;">
+            <button class="notification-btn" id="notificationBtn" aria-label="Notificações">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
-                <?php if($notificationCount > 0): ?>
-<span class="badge" id="notificationCount" style="position: absolute; top: -4px; right: -4px; background: #e53935; color: #fff; border-radius: 50%; font-size: 0.7rem; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;"><?php echo $notificationCount; ?></span>
-<?php endif; ?>
+                <?php if ($notificationCount > 0): ?>
+                    <span class="badge" id="notificationCount"><?php echo $notificationCount; ?></span>
+                <?php endif; ?>
+            </button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
         </div>
     </header>
@@ -97,38 +101,44 @@ if (count($partes) > 1) {
         </aside>
 
         <main class="main-content">
-            
+
             <div class="page-header header-health">
                 <div>
-                    <h1 class="page-title"><i class="ph ph-pulse" style="color: var(--primary); margin-right: 8px;"></i> Cuidados, Higiene e Monitoramento</h1>
+                    <h1 class="page-title">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px; flex-shrink:0;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        Cuidados, Higiene e Monitoramento
+                    </h1>
                     <p class="page-subtitle">Acompanhe e cuide do bem-estar do seu rebanho</p>
                 </div>
-                
+
                 <div class="header-tools">
-                    <button class="icon-btn notification-btn" id="notificationBtnDesktop" style="border: none; background: transparent; padding: 6px; cursor: pointer; position: relative; margin-right: 15px;">
-                        <i class="ph ph-bell"></i>
-                        <?php if($notificationCount > 0): ?>
-<span class="badge" id="notificationCountDesktop" style="position: absolute; top: -4px; right: -4px; background: #e53935; color: #fff; border-radius: 50%; font-size: 0.7rem; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;"><?php echo $notificationCount; ?></span>
-<?php endif; ?>
+                    <button class="btn notification-btn" id="notificationBtnDesktop" aria-label="Notificações">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <?php if ($notificationCount > 0): ?>
+                            <span class="badge" id="notificationCountDesktop"><?php echo $notificationCount; ?></span>
+                        <?php endif; ?>
                     </button>
                 </div>
             </div>
 
             <div class="quick-actions-grid">
-                <a href="identificacao.html" class="action-card">
-                    <i class="ph ph-tag"></i>
+                <a href="identificacao.php" class="action-card">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                     <span>Identificar um novo caprino</span>
                 </a>
-                <a href="#" class="action-card">
-                    <i class="ph ph-magnifying-glass"></i>
+                <a href="busca_codigo.html" class="action-card">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     <span>Pesquisar por código identificador</span>
                 </a>
-                <a href="#" class="action-card">
-                    <i class="ph ph-syringe"></i>
+                <a href="agenda.html" class="action-card">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     <span>Agenda de vacinação</span>
                 </a>
-                <a href="lista_animais.html" class="action-card">
-                    <i class="ph ph-list-numbers"></i>
+                <a href="lista_animais.php" class="action-card">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                     <span>Ver lista de animais</span>
                 </a>
             </div>
@@ -168,7 +178,7 @@ if (count($partes) > 1) {
                 <div class="stats-list">
                     <div class="stat-item success">
                         <div class="stat-header">
-                            <i class="ph ph-check-circle"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                             <span>Saudáveis</span>
                         </div>
                         <div class="stat-values">
@@ -179,7 +189,7 @@ if (count($partes) > 1) {
 
                     <div class="stat-item warning">
                         <div class="stat-header">
-                            <i class="ph ph-warning-circle"></i>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                             <span>Atenção</span>
                         </div>
                         <div class="stat-values">
@@ -218,4 +228,5 @@ if (count($partes) > 1) {
     <script src="cuidados.js"></script>
     <script src="notifications.js"></script>
 </body>
+
 </html>

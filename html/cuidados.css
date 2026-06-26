@@ -52,7 +52,7 @@ body {
 /* Sidebar Desktop */
 .sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; transition: background-color 0.3s ease; z-index: 100; }
 .sidebar-brand { padding: 30px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.sidebar-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; }
+.sidebar-logo { width: 60px; height: 60px; border-radius: 50%; object-fit: contain; flex-shrink: 0; }
 .brand-text h2 { font-size: 1.2rem; font-weight: 700; }
 .brand-text p { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
 .sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
@@ -70,7 +70,8 @@ body {
 .header-tools { display: flex; gap: 15px; align-items: center; }
 .icon-btn { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dark); font-size: 1.2rem; transition: all 0.2s;}
 .icon-btn:hover { background: var(--bg-main); }
-.badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.notification-btn { position: relative; background: transparent; border: none; color: inherit; cursor: pointer; padding: 6px; }
+.notification-btn .badge, .badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: white; font-size: 0.7rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
 .btn { padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; border: none; transition: all 0.2s; font-size: 0.95rem;}
 .btn-primary { background-color: var(--primary); color: white; }
@@ -111,7 +112,8 @@ body {
     transition: transform 0.2s ease, background-color 0.2s ease;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
-.action-card i { font-size: 32px; color: #4caf50; } /* Ícone verde claro */
+.action-card i { font-size: 32px; color: #4caf50; } /* Ícone verde claro (legado) */
+.action-card svg { color: #4caf50; stroke: #4caf50; flex-shrink: 0; }
 .action-card span { font-weight: 600; font-size: 0.95rem; line-height: 1.3;}
 .action-card:hover { background-color: var(--sidebar-hover); transform: translateY(-3px); }
 

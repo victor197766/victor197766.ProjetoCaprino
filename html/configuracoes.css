@@ -221,6 +221,37 @@ body {
     width: 100%;
 }
 
+.btn-icon {
+    padding: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    color: var(--text-dark);
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.notification-btn {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
 /* --- Botão secundário para logout (nova classe) --- */
 .btn-outline-secondary {
     border: 1px solid var(--border-color);
@@ -975,3 +1006,44 @@ input:checked+.slider:before {
     opacity: 0.85;
 }
 
+/* Notification Dropdown */
+.notification-dropdown {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+}
+.notification-dropdown.active {
+    display: block;
+}
+.notification-dropdown-content {
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 12px;
+    padding: 18px;
+    width: 370px;
+    max-height: 420px;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+.notification-dropdown-title {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+.notification-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.notification-item {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+@media (max-width: 480px) {
+    .notification-dropdown-content {
+        width: calc(100vw - 24px);
+    }
+}
