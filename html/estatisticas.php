@@ -16,16 +16,6 @@ $fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_
 // CONSULTA PARA AVISOS DO SISTEMA
 // ==========================================
 $query_avisos = "SELECT id, titulo, mensagem, data_criacao FROM avisos WHERE destinatario_id IS NULL OR destinatario_id = ? ORDER BY data_criacao DESC LIMIT 5";
-mysqli_query($conexao, "CREATE TABLE IF NOT EXISTS avisos (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    destinatario_id INT(11) NULL DEFAULT NULL,
-    lote_id INT(11) NULL DEFAULT NULL,
-    mensagem TEXT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_aviso_usuario_est FOREIGN KEY (destinatario_id) REFERENCES usuario (user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_aviso_lote_est FOREIGN KEY (lote_id) REFERENCES lote (id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 $stmt_avisos = mysqli_prepare($conexao, $query_avisos);
 mysqli_stmt_bind_param($stmt_avisos, "i", $usuario_id);
 mysqli_stmt_execute($stmt_avisos);
@@ -81,6 +71,17 @@ $stmt_tabela = mysqli_prepare($conexao, $query_producao);
 mysqli_stmt_bind_param($stmt_tabela, "i", $usuario_id);
 mysqli_stmt_execute($stmt_tabela);
 $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
+
+// Mapeamento dos tipos de lote para exibição formatada
+$tipos_lote = [
+    'producao_la'     => 'Produção de Lã',
+    'producao_leite'  => 'Produção de Leite',
+    'producao_carne'  => 'Produção de Carne',
+    'producao_pele'   => 'Produção de Pele',
+    'misto'           => 'Misto',
+    'reproducao'      => 'Reprodução',
+    'engorda'         => 'Engorda',
+];
 
 ?>
 <!DOCTYPE html>
@@ -272,7 +273,7 @@ $resultado_producao = mysqli_stmt_get_result($stmt_tabela);
                                 ?>
                                         <tr>
                                             <td><?= htmlspecialchars($linha['lote_nome']) ?></td>
-                                            <td><?= htmlspecialchars($linha['lote_tipo']) ?></td>
+                                            <td><?= htmlspecialchars($tipos_lote[$linha['lote_tipo']] ?? ucwords(str_replace('_', ' ', $linha['lote_tipo']))) ?></td>
                                             <td><?= number_format($linha['total_fibra'], 1, ',', '.') ?></td>
                                             <td><?= number_format($linha['total_pele'], 0, ',', '.') ?></td>
                                             <td><?= number_format($linha['total_leite'], 1, ',', '.') ?></td>

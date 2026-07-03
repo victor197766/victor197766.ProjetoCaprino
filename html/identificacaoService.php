@@ -30,9 +30,14 @@ try {
     $nasceu_fazenda = isset($_POST['nasceu_fazenda']) && $_POST['nasceu_fazenda'] == '1' ? 1 : 0;
     $vacinado_prev  = isset($_POST['vacinado']) && $_POST['vacinado'] == '1' ? 1 : 0;
 
+    // Destino do redirect (cuidados ou identificacao)
+    $redirect_back = $_POST['redirect_back'] ?? 'identificacao';
+    $baseOk  = ($redirect_back === 'cuidados') ? 'cuidados.php?tab=lista' : 'identificacao.php';
+    $baseErr = ($redirect_back === 'cuidados') ? 'cuidados.php?tab=registrar' : 'identificacao.php';
+
     // Basic validation
     if (empty($identificador) || empty($raca) || $peso_kg <= 0) {
-        header('Location: identificacao.php?erro=' . urlencode('Preencha os campos obrigatórios corretamente.'));
+        header('Location: ' . $baseErr . '&erro=' . urlencode('Preencha os campos obrigatórios corretamente.'));
         exit();
     }
 
@@ -68,15 +73,17 @@ try {
     );
 
     if (mysqli_stmt_execute($stmt)) {
-        header('Location: identificacao.php?sucesso=1');
+        header('Location: ' . $baseOk . '&sucesso=1');
     } else {
-        header('Location: identificacao.php?erro=' . urlencode('Erro ao salvar no banco de dados.'));
+        header('Location: ' . $baseErr . '&erro=' . urlencode('Erro ao salvar no banco de dados.'));
     }
 
     mysqli_stmt_close($stmt);
 
 } catch (Exception $e) {
-    header('Location: identificacao.php?erro=' . urlencode($e->getMessage()));
+    $redirect_back = $_POST['redirect_back'] ?? 'identificacao';
+    $baseErr = ($redirect_back === 'cuidados') ? 'cuidados.php?tab=registrar' : 'identificacao.php';
+    header('Location: ' . $baseErr . '&erro=' . urlencode($e->getMessage()));
 }
 
 mysqli_close($conexao);
