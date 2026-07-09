@@ -145,14 +145,14 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`animal` (CORRIGIDA: Adicionada a coluna lote_id)
+-- Table `mydb`.`animal` (CORRIGIDA: Adicionada a coluna lote_id + colunas auxiliares opcionais)
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`animal` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `lote_id` INT(11) NULL DEFAULT NULL, -- COLUNA ADICIONADA PARA RESOLVER O ERRO PHP
   `matriz_id` INT(11) NULL DEFAULT NULL,
-  `reprodutor_id` VARCHAR(45) NOT NULL,
-  `nome` VARCHAR(45) NOT NULL,
+  `reprodutor_id` VARCHAR(45) NULL DEFAULT NULL, -- Pode ser desconhecido
+  `nome` VARCHAR(45) NULL DEFAULT NULL,
   `especie` ENUM('Caprino', 'Ovino') NOT NULL, -- Enum ajustado (estava vazio)
   `sexo` ENUM('Macho', 'Fêmea') NOT NULL, -- Enum ajustado (estava vazio)
   `peso_kg` FLOAT NOT NULL,
@@ -162,16 +162,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`animal` (
   `nascimento_fazenda` TINYINT(4) NOT NULL,
   `vacinado_prev` TINYINT(4) NOT NULL,
   `esta_prenha` TINYINT(4) NOT NULL,
-  `tempo_gestacao` VARCHAR(45) NOT NULL,
-  `estado_atual` VARCHAR(45) NOT NULL,
-  `info_extras` VARCHAR(45) NOT NULL,
-  `criado_em` VARCHAR(45) NOT NULL,
-  `NASCIMENTO_id` INT(11) NOT NULL,
-  `NASCIMENTO_animal_id` INT(11) NOT NULL,
-  `NASCIMENTO_lote_id` INT(11) NOT NULL,
-  `cuidado_ID` INT(11) NOT NULL,
-  `VACINACAO_ID` INT(11) NOT NULL,
-  `MORTE_id` INT(11) NOT NULL,
+  `tempo_gestacao` VARCHAR(45) NULL DEFAULT NULL, -- Animal novo pode não ter
+  `estado_atual` VARCHAR(45) NULL DEFAULT NULL,   -- Animal novo pode não ter
+  `info_extras` VARCHAR(200) NULL DEFAULT NULL,   -- Opcional, tamanho aumentado
+  `criado_em` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, -- Gerado automaticamente
+  `NASCIMENTO_id` INT(11) NULL DEFAULT NULL,       -- Animal novo ainda não tem nascimento registrado
+  `NASCIMENTO_animal_id` INT(11) NULL DEFAULT NULL,
+  `NASCIMENTO_lote_id` INT(11) NULL DEFAULT NULL,
+  `cuidado_ID` INT(11) NULL DEFAULT NULL,          -- Animal novo ainda não tem cuidado registrado
+  `VACINACAO_ID` INT(11) NULL DEFAULT NULL,        -- Animal novo ainda não foi vacinado
+  `MORTE_id` INT(11) NULL DEFAULT NULL,            -- Animal novo ainda não possui morte registrada
   PRIMARY KEY (`id`, `MORTE_id`),
   INDEX `fk_animal_lote1_idx` (`lote_id` ASC),
   INDEX `fk_animal_NASCIMENTO1_idx` (`NASCIMENTO_id` ASC, `NASCIMENTO_animal_id` ASC, `NASCIMENTO_lote_id` ASC),
