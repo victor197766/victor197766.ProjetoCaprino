@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-include '../db/connection.php';
+include 'db/connection.php';
 
 if (isset($_GET['id'])) {
     $target_user_id = intval($_GET['id']);

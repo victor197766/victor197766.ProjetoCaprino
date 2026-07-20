@@ -5,7 +5,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-include '../db/connection.php';
+include 'db/connection.php';
 
 // Verificar se o usuário logado é 'visitante'. Visitantes não podem editar.
 $user_session_id = $_SESSION['usuario_id'];

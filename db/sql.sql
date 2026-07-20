@@ -143,6 +143,23 @@ CREATE TABLE IF NOT EXISTS `mydb`.`cuidado` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- -----------------------------------------------------
+-- Table `mydb`.`avisos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`avisos` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `titulo` VARCHAR(100) NOT NULL,
+  `mensagem` TEXT NOT NULL,
+  `data_criacao` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `destinatario_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_avisos_usuario_idx` (`destinatario_id`),
+  CONSTRAINT `fk_avisos_usuario`
+    FOREIGN KEY (`destinatario_id`)
+    REFERENCES `mydb`.`usuario` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
 -- Table `mydb`.`animal` (CORRIGIDA: Adicionada a coluna lote_id + colunas auxiliares opcionais)

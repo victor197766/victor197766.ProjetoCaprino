@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 // Conexão com o banco (Ajuste o caminho se necessário)
-include '../db/connection.php';
+include 'db/connection.php';
 
 $usuario_id = $_SESSION['usuario_id'];
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome']);

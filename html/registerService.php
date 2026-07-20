@@ -1,5 +1,5 @@
 <?php
-include '../db/connection.php';
+include 'db/connection.php';
 
 function emailJaExiste($conexao, $email) {
     $stmt = mysqli_prepare($conexao, "SELECT user_id FROM usuario WHERE email = ?");

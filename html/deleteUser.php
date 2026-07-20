@@ -1,7 +1,7 @@
 <?php
 ob_start(); 
 
-include '../db/connection.php';
+include 'db/connection.php';
 
 if (isset($_GET['id'])) {
     $user_id = intval($_GET['id']);
