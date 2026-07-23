@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`animal` (
   `cuidado_ID` INT(11) NULL DEFAULT NULL,          -- Animal novo ainda não tem cuidado registrado
   `VACINACAO_ID` INT(11) NULL DEFAULT NULL,        -- Animal novo ainda não foi vacinado
   `MORTE_id` INT(11) NULL DEFAULT NULL,            -- Animal novo ainda não possui morte registrada
-  PRIMARY KEY (`id`, `MORTE_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_animal_lote1_idx` (`lote_id` ASC),
   INDEX `fk_animal_NASCIMENTO1_idx` (`NASCIMENTO_id` ASC, `NASCIMENTO_animal_id` ASC, `NASCIMENTO_lote_id` ASC),
   INDEX `fk_animal_cuidado1_idx` (`cuidado_ID` ASC),
