@@ -124,7 +124,7 @@ if (count($partes) > 1) {
                     </div>
                     <div class="doencas-slider">
                         <div class="doenca-card">
-                            <div class="doenca-img bg-gray" style="background-image: url('https://images.unsplash.com/photo-1511216113906-8f56bb201c10?q=80&w=200&auto=format&fit=crop'); background-size: cover;"></div>
+                            <div class="doenca-img bg-gray" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBWMQ8Pr6rX4WOSRSUUXQ0C3AUbUKQd1CE9aRkkcaOAW86lPPgSvp2ZQ&s=10'); background-size: cover;"></div>
                             <h4>Clostridiose</h4>
                             <p>Doença bacteriana grave que causa morte súbita. Afeta principalmente animais jovens.</p>
                             <a href="#" class="link-action">Saiba mais &rarr;</a>
@@ -136,7 +136,7 @@ if (count($partes) > 1) {
                             <a href="#" class="link-action">Saiba mais &rarr;</a>
                         </div>
                         <div class="doenca-card">
-                            <div class="doenca-img bg-gray" style="background-image: url('https://images.unsplash.com/photo-1542834759-4fa973b185fa?q=80&w=200&auto=format&fit=crop'); background-size: cover;"></div>
+                            <div class="doenca-img bg-gray" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7zIPM2YqWPsXyN1-nvkD9C-7aE2AgUl8OmGVvNZvcGfGC4L5KPtEF3TJu&s=10'); background-size: cover;"></div>
                             <h4>Ectima Contagioso</h4>
                             <p>Infecção viral que causa lesões na boca e ao redor das narinas.</p>
                             <a href="#" class="link-action">Saiba mais &rarr;</a>
