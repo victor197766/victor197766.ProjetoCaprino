@@ -17,13 +17,19 @@ if (isset($_GET['id'])) {
         mysqli_query($conexao, "ALTER TABLE usuario ADD COLUMN suspenso TINYINT(1) NOT NULL DEFAULT 0");
     }
 
-    // Obter o status atual do usuário alvo
-    $stmt = mysqli_prepare($conexao, "SELECT suspenso FROM usuario WHERE user_id = ?");
+    // Obter o status atual e tipo do usuário alvo
+    $stmt = mysqli_prepare($conexao, "SELECT suspenso, tipo FROM usuario WHERE user_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $target_user_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt);
+
+    // Conta de administrador é protegida
+    if ($user && $user['tipo'] === 'administrador') {
+        header('Location: administracao.php?msg=erro');
+        exit();
+    }
 
     if ($user) {
         $novo_status = $user['suspenso'] ? 0 : 1; // Inverte o status

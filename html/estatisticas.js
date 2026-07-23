@@ -1,22 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- LÓGICA DO MENU HAMBÚRGUER (MOBILE) ---
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-    if (menuToggle && sidebar && sidebarOverlay) {
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            sidebarOverlay.classList.toggle('active');
-        });
-
-        sidebarOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-        });
-    }
-
     // --- LEITURA DO TEMA SALVO (Sincronizado com configurações) ---
     const temaSalvo = localStorage.getItem('controlCabra-theme') || 'sistema';
     

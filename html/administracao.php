@@ -79,7 +79,7 @@ if ($checkPropColumn && mysqli_num_rows($checkPropColumn) == 0) {
 
 $user_session_id = $_SESSION['usuario_id'];
 
-// Verificar se o usuário logado é 'visitante'. Se sim, bloqueia o acesso.
+// Verificar se o usuário logado tem permissão (apenas produtor e administrador)
 $stmt_check = mysqli_prepare($conexao, "SELECT tipo FROM usuario WHERE user_id = ?");
 mysqli_stmt_bind_param($stmt_check, "i", $user_session_id);
 mysqli_stmt_execute($stmt_check);
@@ -87,10 +87,14 @@ $res_check = mysqli_stmt_get_result($stmt_check);
 $user_logged_in = mysqli_fetch_assoc($res_check);
 mysqli_stmt_close($stmt_check);
 
+// Visitante não pode acessar administração
 if ($user_logged_in && $user_logged_in['tipo'] === 'visitante') {
     header('Location: estatisticas.php');
     exit();
 }
+
+// Flag para controle: somente administrador pode promover/rebaixar cargos
+$is_admin_logado = ($user_logged_in && $user_logged_in['tipo'] === 'administrador');
 
 // ===============================
 // ADICIONAR / EDITAR USUÁRIO
@@ -179,7 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
     $CPF = somenteNumeros($_POST['CPF'] ?? '');
     $CNPJ = somenteNumeros($_POST['CNPJ'] ?? '');
 
-    if (!in_array($tipo, ['produtor', 'visitante'], true)) {
+    // Apenas administradores podem atribuir o tipo 'administrador'
+    $tiposPermitidos = $is_admin_logado ? ['produtor', 'visitante', 'administrador'] : ['produtor', 'visitante'];
+    if (!in_array($tipo, $tiposPermitidos, true)) {
         $tipo = 'produtor';
     }
 
@@ -328,7 +334,7 @@ if ($resultadoProdutores) {
 // Fetch stats for charts
 $query_users_type = "SELECT tipo, COUNT(*) as qtd FROM usuario GROUP BY tipo";
 $res_users_type = mysqli_query($conexao, $query_users_type);
-$users_types = ['produtor' => 0, 'empregado rural' => 0];
+$users_types = ['produtor' => 0, 'empregado rural' => 0, 'administrador' => 0];
 while ($row = mysqli_fetch_assoc($res_users_type)) {
     $t = $row['tipo'] ? strtolower($row['tipo']) : 'visitante';
     if ($t === 'visitante') {
@@ -386,6 +392,13 @@ $fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_
             margin-bottom: 15px;
             color: var(--text-dark);
             font-size: 1rem;
+        }
+        /* Badge especial para administrador */
+        .type-badge.type-admin {
+            background: linear-gradient(135deg, #7c3aed22, #a78bfa22);
+            color: #a78bfa;
+            border: 1px solid #7c3aed;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -555,53 +568,71 @@ $fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_
                                 while ($usuario = mysqli_fetch_assoc($resultado)) {
                                     $is_suspenso = $usuario['suspenso'] ? true : false;
                                     $tipoConta = $usuario['tipo'] ?: 'não informado';
-                                    $tipoClasse = ($tipoConta === 'visitante') ? 'type-visitante' : 'type-produtor';
-                                    $tipoLabel = ($tipoConta === 'visitante') ? 'Empregado Rural' : 'Produtor';
 
-                                    $idAttr = valorSeguro($usuario['user_id']);
-                                    $usernameAttr = valorSeguro($usuario['username']);
-                                    $emailAttr = valorSeguro($usuario['email']);
-                                    $tipoAttr = valorSeguro($usuario['tipo']);
+                                    // Badge visual de tipo
+                                    if ($tipoConta === 'administrador') {
+                                        $tipoClasse = 'type-admin';
+                                        $tipoLabel  = 'Administrador';
+                                    } elseif ($tipoConta === 'visitante') {
+                                        $tipoClasse = 'type-visitante';
+                                        $tipoLabel  = 'Empregado Rural';
+                                    } else {
+                                        $tipoClasse = 'type-produtor';
+                                        $tipoLabel  = 'Produtor';
+                                    }
+
+                                    $isAdminUser  = ($tipoConta === 'administrador');
+                                    $isSelf       = ($usuario['user_id'] == $user_session_id);
+
+                                    $idAttr         = valorSeguro($usuario['user_id']);
+                                    $usernameAttr   = valorSeguro($usuario['username']);
+                                    $emailAttr      = valorSeguro($usuario['email']);
+                                    $tipoAttr       = valorSeguro($usuario['tipo']);
                                     $propriedadeAttr = isset($usuario['nome_propriedade']) ? valorSeguro($usuario['nome_propriedade']) : '';
-
-                                    $telefoneAttr = valorSeguro($usuario['num_telefone']);
-                                    $cpfAttr = valorSeguro($usuario['CPF']);
-                                    $cnpjAttr = valorSeguro($usuario['CNPJ']);
+                                    $telefoneAttr   = valorSeguro($usuario['num_telefone']);
+                                    $cpfAttr        = valorSeguro($usuario['CPF']);
+                                    $cnpjAttr       = valorSeguro($usuario['CNPJ']);
 
                                     echo "<tr data-id='{$idAttr}' data-tipo='{$tipoAttr}' data-status='" . ($is_suspenso ? 'suspenso' : 'ativo') . "'>";
                                     echo "<td><strong>" . valorSeguro($usuario['user_id']) . "</strong></td>";
-                                    echo "<td>" . valorSeguro($usuario['username']) . "</td>";
+                                    echo "<td>" . valorSeguro($usuario['username']) . ($isSelf ? " <em style='color:var(--text-muted);font-size:0.75rem;'>(você)</em>" : '') . "</td>";
                                     echo "<td>" . valorSeguro($usuario['email']) . "</td>";
                                     echo "<td><span class='type-badge {$tipoClasse}'>" . valorSeguro($tipoLabel) . "</span></td>";
                                     echo "<td>" . date('d/m/Y H:i', strtotime($usuario['create_time'])) . "</td>";
 
                                     echo "<td>";
-                                    if ($is_suspenso) {
+                                    if ($isAdminUser) {
+                                        echo "<span class='status-badge' style='background:#7c3aed22;color:#a78bfa;border:1px solid #7c3aed;'>Admin</span>";
+                                    } elseif ($is_suspenso) {
                                         echo "<span class='status-badge status-suspended'>Suspenso</span>";
                                     } else {
                                         echo "<span class='status-badge status-active'>Ativo</span>";
                                     }
                                     echo "</td>";
 
-                                    echo "<td>
-                                            <button class='btn-sm btn-edit'
-                                                data-id='{$idAttr}'
-                                                data-username='{$usernameAttr}'
-                                                data-email='{$emailAttr}'
-                                                data-tipo='{$tipoAttr}'
-                                                data-propriedade-id='{$usuario['propriedade_id']}' data-propriedade='{$propriedadeAttr}'
-                                                data-telefone='{$telefoneAttr}'
-                                                data-cpf='{$cpfAttr}'
-                                                data-cnpj='{$cnpjAttr}'
-                                                onclick='abrirModalEdicao(this)'>Editar
-                                            </button>
+                                    // Botão editar
+                                    $acoesHtml = "<button class='btn-sm btn-edit'
+                                        data-id='{$idAttr}'
+                                        data-username='{$usernameAttr}'
+                                        data-email='{$emailAttr}'
+                                        data-tipo='{$tipoAttr}'
+                                        data-propriedade-id='{$usuario['propriedade_id']}'
+                                        data-propriedade='{$propriedadeAttr}'
+                                        data-telefone='{$telefoneAttr}'
+                                        data-cpf='{$cpfAttr}'
+                                        data-cnpj='{$cnpjAttr}'
+                                        onclick='abrirModalEdicao(this)'>Editar
+                                    </button>";
 
-                                            <a href='toggleSuspendUser.php?id=" . valorSeguro($usuario['user_id']) . "' class='btn-sm btn-warning'>
-                                                " . ($is_suspenso ? 'Ativar' : 'Suspender') . "
-                                            </a>
+                                    // Não permite suspender/excluir o próprio admin ou outro admin
+                                    if (!$isAdminUser) {
+                                        $acoesHtml .= "<a href='toggleSuspendUser.php?id=" . valorSeguro($usuario['user_id']) . "' class='btn-sm btn-warning'>" . ($is_suspenso ? 'Ativar' : 'Suspender') . "</a>";
+                                        $acoesHtml .= "<a href='deleteUser.php?id=" . valorSeguro($usuario['user_id']) . "' class='btn-sm btn-danger' onclick='return confirm(\"Tem certeza que deseja deletar este usuário?\")'>Excluir</a>";
+                                    } else {
+                                        $acoesHtml .= "<span style='font-size:0.75rem;color:var(--text-muted);margin-left:4px;'>conta protegida</span>";
+                                    }
 
-                                            <a href='deleteUser.php?id=" . valorSeguro($usuario['user_id']) . "' class='btn-sm btn-danger' onclick='return confirm(\"Tem certeza que deseja deletar este usuário?\")'>Excluir</a>
-                                          </td>";
+                                    echo "<td>{$acoesHtml}</td>";
                                     echo "</tr>";
                                 }
                             } else {
@@ -839,6 +870,9 @@ $fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_
                         <select name="tipo" required>
                             <option value="produtor">Produtor</option>
                             <option value="visitante">Empregado Rural</option>
+                            <?php if ($is_admin_logado): ?>
+                            <option value="administrador">Administrador</option>
+                            <?php endif; ?>
                         </select>
                     </div>
                 </div>
@@ -903,6 +937,9 @@ $fazenda = htmlspecialchars(trim($_SESSION['usuario_fazenda'] ?? '') !== '' ? $_
                         <select id="modal_tipo" name="tipo" required>
                             <option value="produtor">Produtor</option>
                             <option value="visitante">Empregado Rural</option>
+                            <?php if ($is_admin_logado): ?>
+                            <option value="administrador">Administrador</option>
+                            <?php endif; ?>
                         </select>
                     </div>
                     <div class="form-group">

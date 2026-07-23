@@ -463,7 +463,9 @@ foreach ($animaisDisponiveis as $an) {
                     <a href="propriedades.php" class="nav-item active">Propriedades</a>
                 <?php endif; ?>
                 <a href="configuracoes.php" class="nav-item">Configurações</a>
+                <?php if (isset($_SESSION['usuario_tipo']) && strtolower($_SESSION['usuario_tipo']) === 'administrador'): ?>
                 <a href="administracao.php" class="nav-item">Administração</a>
+                <?php endif; ?>
             </nav>
             <div class="user-profile">
                 <div class="user-avatar">
@@ -934,6 +936,35 @@ foreach ($animaisDisponiveis as $an) {
             cb.addEventListener('change', () => atualizarQtd('add')));
         document.querySelectorAll('.edit-animal-cb').forEach(cb =>
             cb.addEventListener('change', () => atualizarQtd('edit')));
+    </script>
+    <script>
+        // Menu responsivo para celular
+        (function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            function fecharMenuMobile() {
+                if (!sidebar || !sidebarOverlay || !menuToggle) return;
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            function alternarMenuMobile() {
+                if (!sidebar || !sidebarOverlay || !menuToggle) return;
+                const abriu = sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active', abriu);
+                document.body.classList.toggle('menu-open', abriu);
+                menuToggle.setAttribute('aria-expanded', abriu ? 'true' : 'false');
+            }
+
+            if (menuToggle) menuToggle.addEventListener('click', alternarMenuMobile);
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', fecharMenuMobile);
+            document.querySelectorAll('.sidebar-nav a').forEach(link => link.addEventListener('click', fecharMenuMobile));
+            window.addEventListener('resize', function() { if (window.innerWidth > 768) fecharMenuMobile(); });
+        })();
     </script>
 </body>
 </html>

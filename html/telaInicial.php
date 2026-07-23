@@ -1,6 +1,6 @@
 <?php
 include '../db/connection.php';
-include_once 'init_admin.php'; // Garante que o admin existe ao carregar a tela inicial
+include_once 'init_admin.php'; // Garante que o admin existe antes de exibir a tela inicial
 ?>
 <!DOCTYPE html>
 

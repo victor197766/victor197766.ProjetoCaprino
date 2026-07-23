@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../db/connection.php';
+include_once 'init_admin.php'; // Setup automático do administrador (roda só se ainda não existir)
 
 $email    = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
@@ -29,7 +30,13 @@ if (mysqli_num_rows($result) == 1) {
 
         mysqli_stmt_close($stmt);
         mysqli_close($conexao);
-        header('Location: estatisticas.php');
+
+        // Administrador é redirecionado direto para a área de administração
+        if (($user['tipo'] ?? '') === 'administrador') {
+            header('Location: administracao.php');
+        } else {
+            header('Location: estatisticas.php');
+        }
         exit();
     } else {
         header('Location: recuperarConta.html?erro=senha');

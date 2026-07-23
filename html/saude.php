@@ -74,7 +74,9 @@ if (count($partes) > 1) {
                 <?php endif; ?>
 
                 <a href="configuracoes.php" class="nav-item">Configurações</a>
+                <?php if (isset($_SESSION['usuario_tipo']) && strtolower($_SESSION['usuario_tipo']) === 'administrador'): ?>
                 <a href="administracao.php" class="nav-item">Administração</a>
+                <?php endif; ?>
             </nav>
 
             <div class="user-profile">

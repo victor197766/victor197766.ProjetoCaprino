@@ -1,0 +1,3 @@
+# Processa arquivos .html como PHP para permitir código server-side
+# Necessário para que recuperarConta.html e telaInicial.html executem PHP
+AddType application/x-httpd-php .html .htm
