@@ -1,5 +1,5 @@
 <?php
-include 'db/connection.php';
+include '../db/connection.php';
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: recuperarConta.html');

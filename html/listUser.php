@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-include 'db/connection.php';
+include '../db/connection.php';
 
 $sql = "SELECT user_id, username, email, create_time FROM usuario ORDER BY user_id DESC";
 $resultado = mysqli_query($conexao, $sql);

@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-include 'db/connection.php';
+include '../db/connection.php';
 
 function emailJaExiste($conexao, $email)
 {

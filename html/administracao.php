@@ -5,7 +5,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-include 'db/connection.php';
+include '../db/connection.php';
 
 // ===============================
 // FUNÇÕES AUXILIARES

@@ -1,7 +1,7 @@
 <?php
 ob_start();
 
-include 'db/connection.php';
+include '../db/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
     $user_id  = intval($_POST['user_id']);

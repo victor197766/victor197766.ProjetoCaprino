@@ -4,7 +4,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: recuperarConta.html');
     exit();
 }
-include 'db/connection.php';
+include '../db/connection.php';
 
 $user_id     = intval($_SESSION['usuario_id']);
 $nomeUsuario = htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário');
